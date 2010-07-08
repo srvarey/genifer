@@ -233,6 +233,7 @@
 (defun system-test ()
   (setf *abduce* nil)
   (setf *debug-level* 10)
+  (format t "Time elapsed: ~1,15@T expected TV ~1,30@T confidence ~1,45@T substitutions~%")
   ; format:  query expected-tv expected-sub
   (test-1-query '(having-fun kellie) '(0.3 . 0.9) nil)         ; 1
   (test-1-query '(at-bar kellie) '(0.3 . 0.9) nil)             ; 1 **** not yet ready
@@ -273,7 +274,7 @@
       (progn
         (setf tv-accuracy         (* 100.0 (- 1.0 (- (car (tv s1)) (car expected-tv)))))
         (setf confidence-accuracy (* 100.0 (- 1.0 (- (cdr (tv s1)) (cdr expected-tv))))))))
-  (format t "Time elapsed: ~aus ~1,40@T ~a% ~1,55@T ~a% ~%" (- (get-internal-run-time) timer)
+  (format t "~aus ~1,15@T ~a% ~1,30@T ~a% ~%" (- (get-internal-run-time) timer)
                      tv-accuracy confidence-accuracy))
 
 ;;; **** Add a clause to memory
