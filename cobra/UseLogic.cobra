@@ -1,0 +1,23 @@
+"""
+An example of using the Genifer.Logic.dll .NET library.
+To build that library, see the docs at the top of Logic.cobra.
+
+To run this program simply use this:
+
+cobra UseLogic.cobra
+"""
+
+@args -debug
+
+use Genifer.Logic
+
+
+class Program
+
+	def main
+		t = ImpliesOpApp(NotOpApp(NotOpApp(Variable('x'))), Variable('x'))
+		print 'term:', t
+		print 'variables:'
+		for variable in t.variables
+			print '  ', variable
+		print 'done.'
