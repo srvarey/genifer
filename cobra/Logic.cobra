@@ -1,4 +1,17 @@
 """
+== Usage
+
+This code is delivered as a library which you can use from other programs.
+
+See UseLogic.cobra and UseLogic.cs for two examples of referencing and using it.
+
+To compile: cobra Logic.cobra
+
+This produces Genifer.Logic.dll with namespace Genifer.Logic.
+
+Or to run the unit tests directly: cobra -test Logic.cobra
+	(to-do: that currently fails with a complaint from Cobra. will fix)
+
 
 == ClassHier
 
@@ -41,9 +54,13 @@ http://www.dai.ed.ac.uk/groups/ssp/bookpages/quickprolog/node5.html
 
 # to-do: Group which contains logical entities
 
+@args -debug -t:lib -namespace:Genifer.Logic -out:Genifer.Logic.dll
+
 
 class Term is abstract
 	"""
+	The abstract base class of all further term classes including constants, functor applications
+	and operator applications.
 	"""
 
 	# to-do: creation date. serial num?
@@ -68,6 +85,9 @@ class Constant inherits Term is abstract
 		base.init
 
 	def variables as Variable* is override
+		# A constant can never break down into more complex things.
+		# And it is never a variable.
+		# So this implementation is sufficient for all constants.
 		yield break
 
 
@@ -288,9 +308,3 @@ class TestVariables
 		t = ImpliesOpApp(NotOpApp(NotOpApp(Variable('x'))), Variable('x'))
 		vars = t.variables.toList
 		assert vars.count == 2 and vars[0].name == 'x' and vars[1].name == 'x'
-
-
-class Program
-
-	def main
-		print 'done.'
