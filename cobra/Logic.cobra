@@ -1,0 +1,336 @@
+"""
+== Usage
+
+This code is delivered as a library which you can use from other programs.
+
+See UseLogic.cobra and UseLogic.cs for two examples of referencing and using it.
+
+To compile: cobra Logic.cobra
+
+This produces Genifer.Logic.dll with namespace Genifer.Logic.
+
+Or to run the unit tests directly: cobra -test Logic.cobra
+	(to-do: that currently fails with a complaint from Cobra. will fix)
+
+
+== ClassHier
+
+	Term
+		Constant
+			Atom
+			Number
+			StringConstant
+		Variable
+		FunctionApp
+		BinaryOpApp
+			AndOpApp
+			OrOpApp
+		UnaryOpApp
+			NotOpApp
+
+	"Op" stands for "Operator".
+	"App" suffix stands for "Application". It emphasizes that instances of these classes are
+	the application of a function or operator, not the definition thereof.
+
+== To Do
+
+ to-do: implement unify.
+	rwallace says: It's a standard algorithm so there are no decisions to be made there, it gives your data definitions a reasonable workout, and it is something of a Rosetta stone
+	http://norvig.com/unify-bug.pdf
+	http://en.wikipedia.org/wiki/Unification_(computing)
+	http://www.google.com/search?hl=en&q=unify+algorithm
+
+== References
+
+2010-07-07 through 09 #Genifer IRC chat
+
+http://en.wikipedia.org/wiki/Prolog
+
+http://en.wikibooks.org/wiki/Prolog/Putting_it_Together
+
+http://www.dai.ed.ac.uk/groups/ssp/bookpages/quickprolog/node5.html
+
+"""
+
+# to-do: Group which contains logical entities
+
+@args -debug -target:lib -namespace:Genifer.Logic -out:Genifer.Logic.dll
+
+
+class Term is abstract
+	"""
+	The abstract base class of all further term classes including constants, functor applications
+	and operator applications.
+	"""
+
+	# to-do: creation date. serial num?
+	
+	def variables as Variable* is abstract
+		"""
+		Yields a stream of all variables in this term and its nested terms.
+		May be empty.
+		Technically, the list of variables couldn't number more than the list of nested terms.
+		"""
+
+
+class Constant inherits Term is abstract
+	"""
+	Constants are... constant.
+	Constant is the abstract base class of Atom, Number and StringConstant.
+	Subclasses must override Object.equals and Object.getHashCode.
+	Constants can be treated as "value types". If two constants have the same value, they are the same constant.
+	"""
+
+	cue init
+		base.init
+
+	def variables as Variable* is override
+		# A constant can never break down into more complex things.
+		# And it is never a variable.
+		# So this implementation is sufficient for all constants.
+		yield break
+
+
+class Atom inherits Constant
+	"""
+	Atoms are opaque, symbolic names.
+	"""
+
+	cue init(name as String)
+		require name.length > 0
+		base.init
+		_name = name
+	
+	get name from var as String
+
+	def toString as String is override
+		return .name
+
+	def equals(obj as Object?) as bool is override
+		if obj inherits Atom, return obj.name == .name
+		return false
+
+	def getHashCode as int is override
+		return .name.getHashCode
+
+
+class Bool inherits Constant
+
+	test
+		b = Bool(true)
+		assert b.value and b.toString == 'true'
+		
+		b = Bool(false)
+		assert not b.value and b.toString == 'false'
+
+	cue init(value as bool)
+		base.init
+		_value = value
+
+	get value from var as bool
+	
+	def toString as String is override
+		return if(.value, 'true', 'false')
+
+	def equals(obj as Object?) as bool is override
+		if obj inherits Bool, return obj.value == .value
+		return false
+
+	def getHashCode as int is override
+		return .value.getHashCode
+
+
+class Number inherits Constant
+	"""
+	Numbers are numeric values such as -1, 1.1 and 3.
+	"""
+
+	test
+		a = Number(1)
+		assert a.value == 1 and a.toString == '1'
+
+		b = Number(1)
+		assert a == b
+		assert a.getHashCode == b.getHashCode
+
+		b = Number(2)
+		assert a <> b and a.getHashCode <> b.getHashCode
+		
+	cue init(value as number)
+		base.init
+		_value = value
+
+	get value from var as number
+
+	def toString as String is override
+		return .value.toString
+
+	def equals(obj as Object?) as bool is override
+		if obj inherits Number, return obj.value == .value
+		return false
+
+	def getHashCode as int is override
+		return .value.getHashCode
+
+
+class StringConstant inherits Constant
+	"""
+	Strings are sequences of characters such as 'foo'.
+	"""
+
+	cue init(value as String)
+		base.init
+		_value = value
+	
+	get value from var as String
+
+	def toString as String is override
+		# to-do: deal with embedded single quotes
+		return "'" + .value + "'"
+
+	def equals(obj as Object?) as bool is override
+		if obj inherits StringConstant, return obj.value == .value
+		return false
+
+	def getHashCode as int is override
+		return .value.getHashCode
+
+
+class Variable inherits Term
+
+	cue init(name as String)
+		require name.trim.length > 0
+		ensure .name == name.trim
+		base.init
+		_name = name.trim
+		# to-do verify legal name with a regex?
+	
+	get name from var as String
+
+	def toString as String is override
+		return .name + '?'
+
+	def variables as Variable* is override
+		yield this
+
+
+class FunctorApp inherits Term
+	"""
+	FunctorApp is a functor application consisting of a name and arguments.
+	
+	A functor application must have one or more arguments.
+	Otherwise, you should create an Atom instead.
+	"""
+
+	cue init(name as String, args as IList<of Term>)
+		require name.length > 0 and args.count > 0
+		base.init
+		_name, _args = name, args
+
+	get name from var as String
+	
+	var _args as IList<of Term>  # to-do: add accessor
+
+	def toString as String is override
+		sb = StringBuilder()
+		sb.append('[.name](')
+		sep = ''
+		for arg in _args
+			sb.append('[sep][arg]')
+			sep = ', '
+		sb.append(')')
+		return sb.toString
+
+	def variables as Variable* is override
+		for arg in _args
+			for variable in arg.variables
+				yield variable
+
+
+class BinaryOpApp inherits Term is abstract
+	"""
+	BinaryOpApp is the application of a binary operator to two terms.
+
+	This is the abstract base class of all binary operators such as AndOpApp and OrOpApp.
+	"""
+
+	cue init(left as Term, right as Term)
+		base.init
+		_left, _right = left, right
+
+	get left from var as Term
+	
+	get right from var as Term
+
+	def toString as String is override
+		return '[.typeOf.name]([.left], [.right])'
+
+	def variables as Variable* is override
+		for variable in .left.variables, yield variable
+		for variable in .right.variables, yield variable
+
+
+class ImpliesOpApp inherits BinaryOpApp
+
+	cue init(condition as Term, consequent as Term)
+		base.init(condition, consequent)
+	
+	get condition as Term
+		return .left
+	
+	get consequent as Term
+		return .right
+
+
+class AndOpApp inherits BinaryOpApp
+
+	cue init(left as Term, right as Term)
+		base.init(left, right)
+
+
+class OrOpApp inherits BinaryOpApp
+
+	cue init(left as Term, right as Term)
+		base.init(left, right)
+
+
+class UnaryOpApp inherits Term is abstract
+	"""
+	UnaryOpApp is the application of a unary operator to one term.
+
+	This is the abstract base class of all unary operators such as NotOpApp.
+	"""
+	
+	cue init(x as Term)
+		base.init
+		_x = x
+	
+	get x from var as Term
+
+	def toString as String is override
+		return '[.typeOf.name]([.x])'
+
+	def variables as Variable* is override
+		for variable in .x.variables, yield variable
+
+
+class NotOpApp inherits UnaryOpApp
+
+	cue init(x as Term)
+		base.init(x)
+
+
+class TestVariables
+
+	test
+		t = ImpliesOpApp(Variable('x'), Atom('exists')) to Term
+		vars = t.variables.toList
+		assert vars.count == 1 and vars[0].name == 'x'
+
+		t = Atom('exists')
+		vars = t.variables.toList
+		assert vars.count == 0
+
+		t = ImpliesOpApp(NotOpApp(NotOpApp(Variable('x'))), Variable('x'))
+		vars = t.variables.toList
+		assert vars.count == 2 and vars[0].name == 'x' and vars[1].name == 'x'
