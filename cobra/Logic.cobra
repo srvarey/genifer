@@ -54,7 +54,7 @@ http://www.dai.ed.ac.uk/groups/ssp/bookpages/quickprolog/node5.html
 
 # to-do: Group which contains logical entities
 
-@args -debug -t:lib -namespace:Genifer.Logic -out:Genifer.Logic.dll
+@args -debug -target:lib -namespace:Genifer.Logic -out:Genifer.Logic.dll
 
 
 class Term is abstract
@@ -112,6 +112,32 @@ class Atom inherits Constant
 
 	def getHashCode as int is override
 		return .name.getHashCode
+
+
+class Bool inherits Constant
+
+	test
+		b = Bool(true)
+		assert b.value and b.toString == 'true'
+		
+		b = Bool(false)
+		assert not b.value and b.toString == 'false'
+
+	cue init(value as bool)
+		base.init
+		_value = value
+
+	get value from var as bool
+	
+	def toString as String is override
+		return if(.value, 'true', 'false')
+
+	def equals(obj as Object?) as bool is override
+		if obj inherits Bool, return obj.value == .value
+		return false
+
+	def getHashCode as int is override
+		return .value.getHashCode
 
 
 class Number inherits Constant
