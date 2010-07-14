@@ -44,16 +44,19 @@
 ;    (setf studio-off nil)))
 
 (defvar prolog-off t)
-(if (or (null prolog-off)
-        (equal (first  ext:*args*) '"prolog")
-        (equal (second ext:*args*) '"prolog"))
-  (progn
-    (format t "creating socket for SWI prolog...~%")
-    (setq prolog-server (socket:socket-server 8224 :interface "127.0.0.1" :backlog 5))
-    (setq prolog-socket (socket:socket-accept prolog-server))
-    (setf prolog-off nil)))
+; (if (or (null prolog-off)
+;         (equal (first  ext:*args*) '"prolog")
+;         (equal (second ext:*args*) '"prolog"))
+;   (progn
+;     (format t "creating socket for SWI prolog...~%")
+;     (setq prolog-server (socket:socket-server 8224 :interface "127.0.0.1" :backlog 5))
+;     (setq prolog-socket (socket:socket-accept prolog-server))
+;     (setf prolog-off nil)))
 
 (defvar command-from 'keyboard)
+
+(defvar command)
+
 ;;; **** read a single character either from keyboard or from GUI's socket
 (defun get-command ()
   (loop
@@ -89,6 +92,7 @@
 ;;; **** read a single line from either keyboard, GUI's socket, or Visual Studio socket
 (defun get-input (prompt)
   (format t prompt)
+  (finish-output *standard-output*)
   (if (equal command-from 'GUI)
     (progn
       (setf input (read GUI-socket))
@@ -119,7 +123,6 @@
 (defun main ()
   (init-memories)
   (defvar from-GUI)
-  (defvar command)
   ;(trace resolve)
   ;(trace unify)
   ;(trace do-subst)
@@ -135,7 +138,8 @@
     (format t "    x = quit ~%?")
     (setf command-from 'keyboard)
     (setf command nil)
-    (get-command)
+    ;(get-command)    ; this is a more sophisticated read-char but I've forgotten what good it is
+    (setf command (read-char))
     ;(format t "command = [~a]~%" command)
 
     ;; Try to abduce the fact (see deduction.lisp)

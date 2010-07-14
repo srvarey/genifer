@@ -253,6 +253,7 @@
   (test-1-query '(grandpa john paul) '(1.0 . 0.9) '(?a . pete))
   (test-1-query '(grandpa john sam) '(1.0 . 0.9) '(?b . mary))
   (test-1-query '(grandpa ?1 sam) '(1.0 . 0.9) '((?1 . john) (?a . mary)))
+  (setf *debug-level* 1)
 )
 
 (defun test-1-query (query &optional expected-tv expected-sub)
