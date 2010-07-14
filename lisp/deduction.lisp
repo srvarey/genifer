@@ -602,6 +602,7 @@
     (format t "~a" (car data))))
 
 ;;; Print the list of solutions into a string
+;;;
 ;;; The escape sequences below set colors.  For a list of ASCII color codes see:
 ;;;     http://en.wikipedia.org/wiki/ANSI_escape_code#Sequence_elements
 ;;; -------------------------------------------------------------------
@@ -610,6 +611,9 @@
 ;;; --------------------------------------------------------------- ---
 ;;; 30-37 = text color
 ;;; 40-47 = background color
+
+;(defparameter *Esc* #\Esc)                  ; for CLISP
+;(defparameter *Esc* #\Escape)               ; for ABCL, but ABCL can't print ASCII colors anyway
 
 (defun print-solutions (solutions)
   (if (equal 'fail solutions)
@@ -620,9 +624,11 @@
   (dolist (solution solutions)
     (setf str
       (concatenate 'string str
-                           (format nil "~C[36m~a~C[0m " #\Esc (sub solution) #\Esc)))
+           ;(format nil "~C[36m~a~C[0m " *Esc* (sub solution) *Esc*)    ; print in color
+           (format nil "~a " (sub solution))))
     (setf str
       (concatenate 'string str
-                           (format nil "~C[31m~a~C[0m " #\Esc (tv solution) #\Esc)))
+           ;(format nil "~C[31m~a~C[0m " *Esc* (tv solution) *Esc*)     ; print in color
+           (format nil "~a " (tv solution))))
   )
   str)              ; return the string
