@@ -10,7 +10,4 @@ CD to the directory containing Genifer, eg:
 Load the main program:
      (load "main")
 
-Run it:
-     (main)
-
 This should work for both Windows and Linux, but I usually test it on Windows.
