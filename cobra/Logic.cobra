@@ -32,13 +32,25 @@ Or to run the unit tests directly: cobra -test Logic.cobra
 	"App" suffix stands for "Application". It emphasizes that instances of these classes are
 	the application of a function or operator, not the definition thereof.
 
+
+== Notes
+
+As with other languages, if you want to use an object as a key in a dictionary (aka hashmap)
+or as a member in a set (aka hashset), it must have valid .equals and .getHashCode methods
+that incorporate its contents.
+
+For combining hash codes, I'm using "ShiftPrimeXOR" from http://blog.roblevine.co.uk/?cat=10
+which is: hash = 23; for each field, hash = ((hash << 5) * 37) ^ field.getHashCode
+
+
 == To Do
 
- to-do: implement unify.
-	rwallace says: It's a standard algorithm so there are no decisions to be made there, it gives your data definitions a reasonable workout, and it is something of a Rosetta stone
-	http://norvig.com/unify-bug.pdf
-	http://en.wikipedia.org/wiki/Unification_(computing)
-	http://www.google.com/search?hl=en&q=unify+algorithm
+to-do: review http://norvig.com/unify-bug.pdf
+
+to-do: do we need to add lists?
+
+to-do: "groups" so multiple KBs can reside in the same process
+
 
 == References
 
@@ -50,9 +62,10 @@ http://en.wikibooks.org/wiki/Prolog/Putting_it_Together
 
 http://www.dai.ed.ac.uk/groups/ssp/bookpages/quickprolog/node5.html
 
+http://en.wikipedia.org/wiki/Unification_(computing)
+
 """
 
-# to-do: Group which contains logical entities
 
 @args -debug -target:lib -namespace:Genifer.Logic -out:Genifer.Logic.dll
 
@@ -65,6 +78,10 @@ class Term is abstract
 
 	# to-do: creation date. serial num?
 	
+	def containsVariable(v as Variable) as bool
+		for v2 in .variables, if v2 == v, return true
+		return false
+
 	def variables as Variable* is abstract
 		"""
 		Yields a stream of all variables in this term and its nested terms.
@@ -72,13 +89,37 @@ class Term is abstract
 		Technically, the list of variables couldn't number more than the list of nested terms.
 		"""
 
+	def unify(t as Term) as Substitutions is nonvirtual
+		"""
+		Returns variable substitutions from unification, potentially throwing UnifyException
+		at some point if unification fails.
+		Subclasses should override _unify.
+		Reference: AIMA3 fig 9.1 pg 328
+		"""
+		subs = Substitutions()
+		.unify(t, subs)
+		return subs
+
+	def unify(t as Term, subs as Substitutions) is nonvirtual
+		"""
+		Calls protected _unify method which subclasses override.
+		"""
+		if t <> this, _unify(t, subs)
+
+	def _unify(t as Term, subs as Substitutions)
+		""" Subclasess should override. """
+		if t inherits Variable, t._unify(this, subs)
+		else, throw UnifyException(this, t)
+
 
 class Constant inherits Term is abstract
 	"""
 	Constants are... constant.
 	Constant is the abstract base class of Atom, Number and StringConstant.
+	Constants are immutable. If you want a different value, create it.
 	Subclasses must override Object.equals and Object.getHashCode.
-	Constants can be treated as "value types". If two constants have the same value, they are the same constant.
+	Constants can be treated as "value types".
+	If two constants have the same value, they are the same constant.
 	"""
 
 	cue init
@@ -89,6 +130,9 @@ class Constant inherits Term is abstract
 		# And it is never a variable.
 		# So this implementation is sufficient for all constants.
 		yield break
+
+	def _unify(t as Term, subs as Substitutions) is override
+		if this <> t, base._unify(t, subs)
 
 
 class Atom inherits Constant
@@ -106,7 +150,7 @@ class Atom inherits Constant
 	def toString as String is override
 		return .name
 
-	def equals(obj as Object?) as bool is override
+	def equals(obj) as bool is override
 		if obj inherits Atom, return obj.name == .name
 		return false
 
@@ -132,7 +176,7 @@ class Bool inherits Constant
 	def toString as String is override
 		return if(.value, 'true', 'false')
 
-	def equals(obj as Object?) as bool is override
+	def equals(obj) as bool is override
 		if obj inherits Bool, return obj.value == .value
 		return false
 
@@ -165,7 +209,7 @@ class Number inherits Constant
 	def toString as String is override
 		return .value.toString
 
-	def equals(obj as Object?) as bool is override
+	def equals(obj) as bool is override
 		if obj inherits Number, return obj.value == .value
 		return false
 
@@ -188,7 +232,7 @@ class StringConstant inherits Constant
 		# to-do: deal with embedded single quotes
 		return "'" + .value + "'"
 
-	def equals(obj as Object?) as bool is override
+	def equals(obj) as bool is override
 		if obj inherits StringConstant, return obj.value == .value
 		return false
 
@@ -197,6 +241,21 @@ class StringConstant inherits Constant
 
 
 class Variable inherits Term
+
+	test
+		a = Variable('a')
+		b = Variable('b')
+
+		assert a.toString == 'a?' and b.toString == 'b?'
+		
+		assert a == Variable('a')      # equality vs.
+		assert a is not Variable('a')  # reference identity
+		assert a <> b
+		assert a.getHashCode == Variable('a').getHashCode
+		assert a.getHashCode <> b.getHashCode
+
+		assert a.variables.toList == [a]
+		assert b.variables.toList == [b]
 
 	cue init(name as String)
 		require name.trim.length > 0
@@ -207,11 +266,31 @@ class Variable inherits Term
 	
 	get name from var as String
 
+	def equals(obj) as bool is override
+		if obj inherits Variable, return obj.name == .name
+		return false
+
+	def getHashCode as int is override
+		return .name.getHashCode
+
 	def toString as String is override
 		return .name + '?'
 
 	def variables as Variable* is override
 		yield this
+
+	def _unify(t as Term, subs as Substitutions) is override
+		value = subs.get(this)
+		if value
+			value.unify(t, subs)
+			return
+		if t inherits Variable
+			value = subs.get(t)
+			if value
+				_unify(value, subs)
+				return
+		if t.containsVariable(this), throw UnifyException(this, t)
+		subs.add(this, t)
 
 
 class FunctorApp inherits Term
@@ -222,14 +301,18 @@ class FunctorApp inherits Term
 	Otherwise, you should create an Atom instead.
 	"""
 
+	cue init(name as String, args as vari Term)
+		require name.length and args.length > 0
+		.init(name, args.toList)
+		
 	cue init(name as String, args as IList<of Term>)
 		require name.length > 0 and args.count > 0
 		base.init
 		_name, _args = name, args
 
 	get name from var as String
-	
-	var _args as IList<of Term>  # to-do: add accessor
+
+	get args from var as IList<of Term>
 
 	def toString as String is override
 		sb = StringBuilder()
@@ -245,6 +328,14 @@ class FunctorApp inherits Term
 		for arg in _args
 			for variable in arg.variables
 				yield variable
+
+	def _unify(t as Term, subs as Substitutions) is override
+		if t inherits FunctorApp
+			if .name <> t.name, throw UnifyException(this, t)
+			if .args.count <> t.args.count, throw UnifyException(this, t)
+			for i in .args.count, .args[i].unify(t.args[i], subs)
+		else
+			throw UnifyException(this, t)
 
 
 class BinaryOpApp inherits Term is abstract
@@ -268,6 +359,14 @@ class BinaryOpApp inherits Term is abstract
 	def variables as Variable* is override
 		for variable in .left.variables, yield variable
 		for variable in .right.variables, yield variable
+
+	def _unify(t as Term, subs as Substitutions) is override
+		if t inherits BinaryOpApp
+			if t.typeOf is not .typeOf, throw UnifyException(this, t)			
+			.left.unify(t.left, subs)
+			.right.unify(t.right, subs)
+		else
+			throw UnifyException(this, t)
 
 
 class ImpliesOpApp inherits BinaryOpApp
@@ -313,11 +412,63 @@ class UnaryOpApp inherits Term is abstract
 	def variables as Variable* is override
 		for variable in .x.variables, yield variable
 
+	def _unify(t as Term, subs as Substitutions) is override
+		if t inherits UnaryOpApp
+			if t.typeOf is not .typeOf, throw UnifyException(this, t)
+			.x.unify(t.x, subs)
+		else
+			throw UnifyException(this, t)
+
 
 class NotOpApp inherits UnaryOpApp
 
 	cue init(x as Term)
 		base.init(x)
+
+
+class UnifyException inherits Exception
+
+	cue init(a as Term, b as Term)
+		base.init
+		_a, _b = a, b
+
+	get a from var as Term
+
+	get b from var as Term
+
+	def toString as String is override
+		return '[.typeOf.name](a=[.a], b=[.b])'
+
+
+class Substitutions inherits Dictionary<of Variable, Term>
+	"""
+	A dictionary mapping variables to their substituted terms.
+	Returned by Term.unify.
+	"""
+
+	def get(s as String) as Term?
+		""" Return the Term for the given Variable name, or nil if there is none. """
+		require s.length > 0
+		return .get(Variable(s))
+
+	def get(v as Variable) as Term?
+		""" Return the Term for the given Variable, or nil if there is none. """
+		t as Term?
+		if .tryGetValue(v, out t), return t
+		else, return nil
+
+
+class Utils
+
+	def combineHashes(a as int, b as int) as int is shared
+		test
+			# a simple xor hash would give the same result for combine(a, b) and combine(b, a)
+			assert Utils.combineHashes(5, 10) <> Utils.combineHashes(10, 5)
+		body
+			hash = 23
+			hash = ((hash << 5) * 37) ^ a
+			hash = ((hash << 5) * 37) ^ b
+			return hash
 
 
 class TestVariables
@@ -326,11 +477,51 @@ class TestVariables
 		t = ImpliesOpApp(Variable('x'), Atom('exists')) to Term
 		vars = t.variables.toList
 		assert vars.count == 1 and vars[0].name == 'x'
+		assert t.containsVariable(Variable('x'))
+		assert not t.containsVariable(Variable('y'))
 
 		t = Atom('exists')
 		vars = t.variables.toList
 		assert vars.count == 0
+		assert not t.containsVariable(Variable('exists'))
 
 		t = ImpliesOpApp(NotOpApp(NotOpApp(Variable('x'))), Variable('x'))
 		vars = t.variables.toList
 		assert vars.count == 2 and vars[0].name == 'x' and vars[1].name == 'x'
+		assert t.containsVariable(Variable('x'))
+		assert not t.containsVariable(Variable('y'))
+
+
+class TestUnify
+
+	test
+		# at least some test cases taken from AIMA3 sect 9.2.2 pg 327
+		
+		a as Term?
+		b as Term?
+		
+		a = Atom('foo')
+		b = Atom('foo')
+		assert a.unify(b).count == 0
+		
+		a = FunctorApp('knows', Atom('John'), Variable('x'))
+		b = FunctorApp('knows', Atom('John'), Atom('Jane'))
+		subs = a.unify(b)
+		assert subs.count == 1 and subs.get('x') == Atom('Jane')
+
+		a = FunctorApp('knows', Atom('John'), Variable('x'))
+		b = FunctorApp('knows', Variable('y'), Atom('Bill'))
+		subs = a.unify(b)
+		assert subs.count == 2 and subs.get('x') == Atom('Bill') and subs.get('y') == Atom('John')
+
+		a = FunctorApp('knows', Atom('John'), Variable('x'))
+		b = FunctorApp('knows', Variable('y'), FunctorApp('Mother', Variable('y')))
+		subs = a.unify(b)
+		assert subs.count == 2 and subs.get('y') == Atom('John')
+		x = subs.get('x')
+		assert x inherits FunctorApp and x.toString == 'Mother(y?)'
+
+		a = FunctorApp('knows', Atom('John'), Variable('x'))
+		b = FunctorApp('knows', Variable('x'), Atom('Elizabeth'))
+		expect UnifyException, a.unify(b)
+
