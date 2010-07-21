@@ -64,4 +64,5 @@
 ;(load "natural-language.lisp")
 ;(load "GUI.lisp")
 (load "lisp/user-interface.lisp")    ; this must be loaded last
-(main)
+;(main)
+(init-memories)

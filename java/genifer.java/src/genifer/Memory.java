@@ -2,11 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package genifer;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.commons.collections15.ListUtils;
+import org.apache.commons.collections15.Predicate;
 
 /**
  *
@@ -17,7 +18,10 @@ public interface Memory {
     public static class RAMMemory implements Memory {
 
         List<Term> terms = new LinkedList();
+        List<Rule> rules = new LinkedList();
+        List<Fact> facts = new LinkedList();
 
+        
         @Override
         public boolean add(Term f) {
             return terms.add(f);
@@ -27,12 +31,89 @@ public interface Memory {
         public boolean remove(Term f) {
             return terms.remove(f);
         }
-        
 
+        @Override
+        public boolean add(Rule r) {
+            return rules.add(r);
+        }
+
+        @Override
+        public boolean remove(Rule r) {
+            return rules.remove(r);
+        }
+
+        @Override
+        public boolean add(Fact f) {
+            return facts.add(f);
+        }
+
+        @Override
+        public boolean remove(Fact f) {
+            return facts.remove(f);
+        }
+
+        @Override
+        public List<Term> getAll(final String key) {
+            return ListUtils.predicatedList(terms, new Predicate<Term>() {
+                @Override public boolean evaluate(Term t) {
+                    if (t instanceof Atom) {
+                        return ((Atom)t).name.equals(key);
+                    }
+                    return false;
+                }                
+            });
+        }
+
+        @Override
+        public List<Rule> getAllRules(final String key) {
+            return ListUtils.predicatedList(rules, new Predicate<Rule>() {
+                @Override public boolean evaluate(Rule r) {
+                    if (r.head instanceof Atom) {
+                        return ((Atom)r.head).name.equals(key);
+                    }
+                    return false;
+                }                
+            });
+        }
+
+        @Override
+        public List<Fact> getAllFacts(final String key) {
+            return ListUtils.predicatedList(facts, new Predicate<Fact>() {
+                @Override public boolean evaluate(Fact t) {
+                    if (t.term instanceof Atom) {
+                        return ((Atom)t.term).name.equals(key);
+                    }
+                    return false;
+                }                
+            });
+        }
+        
     }
 
     public boolean add(Term f);
+
     public boolean remove(Term f);
+
+    boolean add(Rule r);
+
+    boolean remove(Rule r);
+        //Rule addRule(head)
+        //Rule addRule(head, body)
+        //Rule addRule(head, body, ...)
+    
+    boolean add(Fact f);
+
+    boolean remove(Fact f);
+
+    List<Term> getAll(String key);
+
+    List<Rule> getAllRules(String key);    
+        //ex: getAllRules("loves") includes (implies (loves john mary) (loves john ann))
+
+    List<Fact> getAllFacts(String key);
+        //ex: getAllFacts("loves") includes (loves john mary)     
+    
+    
     
 //;;; **** Add a fact to Generic Memory
 //(defun add-fact-to-mem (fact &optional tv justifies justified-by)
