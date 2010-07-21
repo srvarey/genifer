@@ -40,43 +40,21 @@ package genifer;
  * @author SEH
  */
 public class Term {
-
-    /**
-     * Atoms are opaque, symbolic names.
-     */
-    public static class Atom extends Constant {
-        public final String id;
-
-        public Atom(String id) {
-            this.id = id;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof Term.Atom) {
-                Term.Atom a = (Term.Atom)obj;
-                return id.equals(a.id);
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return id.hashCode();
-        }
-    }
+    
     public static class BoolVal extends Constant {   }
     
     /** Number: both an integer or double */
     public static class ScalarVal extends Constant {   }
 
-    public static class StringVal extends Constant {   }
+    public static class StringVal extends Atom {
+        public StringVal(String name) {
+            super(name);
+        }            
+    }
 
-    public class Variable extends Term {
-        public final String name;
-
+    public class Variable extends Atom {
         public Variable(String name) {
-            this.name = name;
+            super(name);
         }       
     }
 
@@ -159,9 +137,7 @@ public class Term {
             super(condition, consequent);
         }
         public Term getCondition() { return left; }
-        public Term getConsequent() { return right; }
-
-        
+        public Term getConsequent() { return right; }        
     }
 
 

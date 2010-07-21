@@ -122,6 +122,17 @@
 ;;; **** Main loop (REPL)
 (defun main ()
   (init-memories)
+  ;(defvar from-GUI)
+  ;(trace resolve)
+  ;(trace unify)
+  ;(trace do-subst)
+  ;(trace subst)
+)
+
+
+;;; **** Main loop (REPL)
+(defun main-console ()
+  (init-memories)
   (defvar from-GUI)
   ;(trace resolve)
   ;(trace unify)

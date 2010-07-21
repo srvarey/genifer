@@ -10,28 +10,24 @@ package genifer;
  * @author SEH
  */
 public class Fact extends Term {
-    public final Term fact;
+    public final Term term;
 
-    /** truth value & confidence. default = (1.0, 1.0) */
-    public final double truth;
-    
-    public  final double confidence;
-    
+    public final Truth truth;
+        
     /** a list of clauses that this fact justifies */
-    public  final Clause[] justifies;
+    //public  final Clause[] justifies;
 
     /** a list of clauses that justify this fact */
-    public  final Clause[] justifiedBy;
+    //public  final Clause[] justifiedBy;
 
     //TODO timestamp / time-marker?
 
-    public Fact(Term fact, double truth, double confidence, Clause[] justifies, Clause[] justifiedBy) {
+    public Fact(Term term, double truth, double confidence /*, Clause[] justifies, Clause[] justifiedBy*/) {
         super();
-        this.fact = fact;
-        this.truth = truth;
-        this.confidence = confidence;
-        this.justifies = justifies;
-        this.justifiedBy = justifiedBy;
+        this.term = term;
+        this.truth = new Truth(truth, confidence);
+        //this.justifies = justifies;
+        //this.justifiedBy = justifiedBy;
 
     }
 

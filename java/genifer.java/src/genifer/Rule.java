@@ -32,8 +32,13 @@ public class Rule {
     private double support;
     public final List<Term> examplePlus = new LinkedList();
     public final List<Term> exampleNeg = new LinkedList();
+    
+    /** premise, precondition */
     public final Term head;
+    
+    /** conclusion, postcondition */
     public final Term body;
+    
     public final List<Rule> parents = new LinkedList();
     public final List<Rule> children = new LinkedList();
 

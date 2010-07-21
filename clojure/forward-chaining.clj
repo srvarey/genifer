@@ -25,7 +25,7 @@
 ;;;; Algorithm:
 ;;;;   0.  REPEAT until no new conclusion can be generated
 ;;;;   1.      FOR each rule in KB
-;;;;   2.          IF  rule can applied, apply it
+;;;;   2.          IF  rule can be applied, apply it
 ;;;;   3.              store the new conclusion in KB
 ;;;;
 ;;;; How to apply a rule?
