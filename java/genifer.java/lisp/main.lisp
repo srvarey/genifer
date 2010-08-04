@@ -66,3 +66,10 @@
 (load "lisp/user-interface.lisp")    ; this must be loaded last
 ;(main)
 (init-memories)
+
+(defun void-function (param)
+  (let* ((class (jclass "genifer.SimpleMemory"))
+       (intclass (jclass "int"))
+       (method (jmethod class "test" intclass intclass))
+       (result (jcall method param 2 4)))
+    (format t "Result of calling test(2, 4): ~a~%" result)))

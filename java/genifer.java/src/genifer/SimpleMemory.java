@@ -13,33 +13,84 @@ import org.apache.commons.collections15.Predicate;
  *
  * @author SEH
  */
-public interface Memory {
+public class SimpleMemory implements Memory {
 
-    public boolean add(Term f);
+        List<Term> terms = new LinkedList();
+        List<Rule> rules = new LinkedList();
+        List<Fact> facts = new LinkedList();
 
-    public boolean remove(Term f);
+        public int test(int x, int y) {
+            return (x + y);
+        }
 
-    boolean add(Rule r);
+        @Override
+        public boolean add(Term f) {
+            return terms.add(f);
+        }
 
-    boolean remove(Rule r);
-        //Rule addRule(head)
-        //Rule addRule(head, body)
-        //Rule addRule(head, body, ...)
-    
-    boolean add(Fact f);
+        @Override
+        public boolean remove(Term f) {
+            return terms.remove(f);
+        }
 
-    boolean remove(Fact f);
+        @Override
+        public boolean add(Rule r) {
+            return rules.add(r);
+        }
 
-    List<Term> getAll(String key);
+        @Override
+        public boolean remove(Rule r) {
+            return rules.remove(r);
+        }
 
-    List<Rule> getAllRules(String key);    
-        //ex: getAllRules("loves") includes (implies (loves john mary) (loves john ann))
+        @Override
+        public boolean add(Fact f) {
+            return facts.add(f);
+        }
 
-    List<Fact> getAllFacts(String key);
-        //ex: getAllFacts("loves") includes (loves john mary)     
-    
-    
-    
+        @Override
+        public boolean remove(Fact f) {
+            return facts.remove(f);
+        }
+
+        @Override
+        public List<Term> getAll(final String key) {
+            return ListUtils.predicatedList(terms, new Predicate<Term>() {
+                @Override public boolean evaluate(Term t) {
+                    if (t instanceof Atom) {
+                        return ((Atom)t).name.equals(key);
+                    }
+                    return false;
+                }
+            });
+        }
+
+        @Override
+        public List<Rule> getAllRules(final String key) {
+            return ListUtils.predicatedList(rules, new Predicate<Rule>() {
+                @Override public boolean evaluate(Rule r) {
+                    if (r.head instanceof Atom) {
+                        return ((Atom)r.head).name.equals(key);
+                    }
+                    return false;
+                }
+            });
+        }
+
+        @Override
+        public List<Fact> getAllFacts(final String key) {
+            return ListUtils.predicatedList(facts, new Predicate<Fact>() {
+                @Override public boolean evaluate(Fact t) {
+                    if (t.term instanceof Atom) {
+                        return ((Atom)t.term).name.equals(key);
+                    }
+                    return false;
+                }
+            });
+        }
+
+    }
+
 //;;; **** Add a fact to Generic Memory
 //(defun add-fact-to-mem (fact &optional tv justifies justified-by)
 //  (if (null tv)
@@ -168,4 +219,3 @@ public interface Memory {
 //        (format t "  e-:           ~a ~%" (e-          item))
 //        (format t "  ancestors:    ~a ~%" (ancestors   item))
 //        (format t "  ancestors-to: ~a ~%" (ancestor-to item))))))
-}
