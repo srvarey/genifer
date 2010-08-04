@@ -51,19 +51,10 @@ public class TestGeniferLisp extends TestCase {
         }
 
         try {
-            Main thisObject = new Main();
-            //Interpreter interpreter = Interpreter.createInstance();
-            //interpreter.eval("(load \"lispfunctions.lisp\")");
-            // the function is not in a separate package, thus the
-            // correct package is CL-USER. Symbol names are
-            // upper case. Package needs the prefix, because java
-            // also has a class named Package.
-            //org.armedbear.lisp.Package defaultPackage =
-            //        Packages.findPackage("CL-USER");
             Symbol voidsym =
                     gl.defaultPackage.findAccessibleSymbol("VOID-FUNCTION");
             Function voidFunction = (Function) voidsym.getSymbolFunction();
-            voidFunction.execute(new JavaObject(thisObject));
+            voidFunction.execute(new JavaObject(new SimpleMemory()));
         } catch (Throwable t) {
             System.out.println("exception!");
             t.printStackTrace();
