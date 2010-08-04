@@ -5,22 +5,24 @@
 package genifer.test;
 
 import genifer.GeniferLisp;
-import genifer.Memory.RAMMemory;
+import genifer.SimpleMemory;
 import java.util.Arrays;
 import java.util.List;
 import junit.framework.TestCase;
 import org.armedbear.lisp.Lisp;
 import org.armedbear.lisp.LispObject;
 import org.armedbear.lisp.StandardObject;
+import org.armedbear.lisp.*;
 
 /**
  *
  * @author seh
  */
 public class TestGeniferLisp extends TestCase {
+    private static Object defaultPackage;
 
     public void testMemory() {
-        GeniferLisp gl = new GeniferLisp(new RAMMemory());
+        GeniferLisp gl = new GeniferLisp(new SimpleMemory());
         
         List<LispObject> objects = Arrays.asList(gl.getSymbols());
         for (LispObject lo : objects) {
@@ -47,9 +49,30 @@ public class TestGeniferLisp extends TestCase {
             }
 
         }
+
+        try {
+            Main thisObject = new Main();
+            //Interpreter interpreter = Interpreter.createInstance();
+            //interpreter.eval("(load \"lispfunctions.lisp\")");
+            // the function is not in a separate package, thus the
+            // correct package is CL-USER. Symbol names are
+            // upper case. Package needs the prefix, because java
+            // also has a class named Package.
+            //org.armedbear.lisp.Package defaultPackage =
+            //        Packages.findPackage("CL-USER");
+            Symbol voidsym =
+                    gl.defaultPackage.findAccessibleSymbol("VOID-FUNCTION");
+            Function voidFunction = (Function) voidsym.getSymbolFunction();
+            voidFunction.execute(new JavaObject(thisObject));
+        } catch (Throwable t) {
+            System.out.println("exception!");
+            t.printStackTrace();
+        }
+
     }
 
     public static void main(String[] args) {
         new TestGeniferLisp().testMemory();
-    }
+
+     }
 }
