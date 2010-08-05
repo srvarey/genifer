@@ -11,6 +11,10 @@ import java.util.List;
 /**
   A Generic-Memory "Rule" item
  * @author SEH
+
+ YKY:  This code should be changed.  Rule should contain a Term plus additional
+ information.  The Term will include both the head and body of the rule.
+  
  */
 public class Rule {
 //;;; Entries:
@@ -55,6 +59,6 @@ public class Rule {
     public void setSupport(double support) {
         this.support = support;
     }        
-    
+
 }
 
