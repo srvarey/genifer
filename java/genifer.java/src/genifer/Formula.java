@@ -7,14 +7,14 @@ package genifer;
 
 /**
  *
- * Terms = formulas.  This allows for self-reference, ie, to talk about formulas in formulas.
+ * Formulas = formulas.  This allows for self-reference, ie, to talk about formulas in formulas.
  * At the top level is the formula (or proposition, or sentence, or logic statement, all synonyms).
  * A formula can be a rule or a fact.  A rule is of the form
      A <- X, Y, Z, ...
    And a fact does not contain the "<-" operator.
  * Each formula consists of a number of literals joined by logical operators (aka connectives) such as AND and OR, and operations can be nested.  Note that NOT is a unary operator.
  *
-   The abstract base class of all further term classes including constants, functor applications
+   The abstract base class of all further Formula classes including constants, functor applications
    and operator applications.
 
    Possible Metadata: creation date, URI (serial num)
@@ -39,7 +39,7 @@ package genifer;
 
  * @author SEH
  */
-public class Term {
+public class Formula {
     
     public static class BoolVal extends Constant {   }
     
@@ -61,11 +61,11 @@ public class Term {
 /** FunctorApp is a functor application consisting of a name and arguments.
     A functor application must have one or more arguments.
     Otherwise, you should create an Atom instead. */
-    public class ApplyFunc extends Term {
+    public class ApplyFunc extends Formula {
         final public String function;
-        final public Term[] arguments;
+        final public Formula[] arguments;
 
-        public ApplyFunc(String function, Term[] arguments) {
+        public ApplyFunc(String function, Formula[] arguments) {
             this.function = function;
             this.arguments = arguments;
         }
@@ -76,7 +76,7 @@ public class Term {
         //tostring
     }
 
-    abstract public static class ApplyOp extends Term {
+    abstract public static class ApplyOp extends Formula {
 //        all,
 //        and,
 //        eq,
@@ -89,10 +89,10 @@ public class Term {
 
 
     /**
-     UnaryOpApp is the application of a unary operator to one term.
+     UnaryOpApp is the application of a unary operator to one Formula.
      This is the abstract base class of all unary operators such as NotOpApp.
      */
-    abstract public static class ApplyUnaryOp<X extends Term> extends ApplyOp {
+    abstract public static class ApplyUnaryOp<X extends Formula> extends ApplyOp {
         public final X x;
 
         public ApplyUnaryOp(X x) {
@@ -111,10 +111,10 @@ public class Term {
     }
 
 /**
-    BinaryOpApp is the application of a binary operator to two terms.
+    BinaryOpApp is the application of a binary operator to two Formulas.
     This is the abstract base class of all binary operators such as AndOpApp and OrOpApp.
  */
-    abstract public static class ApplyBinaryOp<A extends Term, B extends Term> extends ApplyOp {
+    abstract public static class ApplyBinaryOp<A extends Formula, B extends Formula> extends ApplyOp {
        public final A left;
        public final B right;
 
@@ -133,33 +133,33 @@ public class Term {
     
     public static class ImpliesOp extends ApplyBinaryOp {
 
-        public ImpliesOp(Term condition, Term consequent) {
+        public ImpliesOp(Formula condition, Formula consequent) {
             super(condition, consequent);
         }
-        public Term getCondition() { return left; }
-        public Term getConsequent() { return right; }        
+        public Formula getCondition() { return left; }
+        public Formula getConsequent() { return right; }
     }
 
 
 //
 //class AndOpApp inherits BinaryOpApp
 //
-//	cue init(left as Term, right as Term)
+//	cue init(left as Formula, right as Formula)
 //		base.init(left, right)
 //
 //
 //class OrOpApp inherits BinaryOpApp
 //
-//	cue init(left as Term, right as Term)
+//	cue init(left as Formula, right as Formula)
 //		base.init(left, right)
 //
 //
-//class UnaryOpApp inherits Term is abstract
+//class UnaryOpApp inherits Formula is abstract
 //
 //
 //class NotOpApp inherits UnaryOpApp
 //
-//	cue init(x as Term)
+//	cue init(x as Formula)
 //		base.init(x)
 //
 //

@@ -10,12 +10,12 @@ package genifer;
  * @author seh
  */
 public class Truth {
-    public double truth;
+    public double p;                   // p = probability
     public double confidence;
 
-    public Truth(double truth, double confidence) {
-        this.truth = truth;
+    public Truth(double p, double confidence) {
+        this.p = p;
         this.confidence = confidence;
     }
-        
+
 }

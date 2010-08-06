@@ -21,7 +21,6 @@ public class RunLisp {
     public static void main(String[] args) {
         Interpreter lisp = Interpreter.createInstance();
         lisp.eval("(format t \"Hello, world!\")");
-        
 
         Package defaultPackage = Packages.findPackage("CL-USER");
         

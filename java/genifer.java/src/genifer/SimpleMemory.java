@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.collections15.ListUtils;
 import org.apache.commons.collections15.Predicate;
+import org.armedbear.lisp.*;
 
 /**
  *
@@ -15,22 +16,24 @@ import org.apache.commons.collections15.Predicate;
  */
 public class SimpleMemory implements Memory {
 
-        List<Term> terms = new LinkedList();
+        List<Formula> Formulas = new LinkedList();
         List<Rule> rules = new LinkedList();
         List<Fact> facts = new LinkedList();
 
-        public int test(int x, int y) {
-            return (x + y);
+        public boolean addFact(Cons formula, Cons tv) {
+            System.out.println(formula.car().javaInstance());
+            System.out.println(tv.car().javaInstance());
+            return true;
         }
 
         @Override
-        public boolean add(Term f) {
-            return terms.add(f);
+        public boolean add(Formula f) {
+            return Formulas.add(f);
         }
 
         @Override
-        public boolean remove(Term f) {
-            return terms.remove(f);
+        public boolean remove(Formula f) {
+            return Formulas.remove(f);
         }
 
         @Override
@@ -54,9 +57,9 @@ public class SimpleMemory implements Memory {
         }
 
         @Override
-        public List<Term> getAll(final String key) {
-            return ListUtils.predicatedList(terms, new Predicate<Term>() {
-                @Override public boolean evaluate(Term t) {
+        public List<Formula> getAll(final String key) {
+            return ListUtils.predicatedList(Formulas, new Predicate<Formula>() {
+                @Override public boolean evaluate(Formula t) {
                     if (t instanceof Atom) {
                         return ((Atom)t).name.equals(key);
                     }
@@ -69,8 +72,10 @@ public class SimpleMemory implements Memory {
         public List<Rule> getAllRules(final String key) {
             return ListUtils.predicatedList(rules, new Predicate<Rule>() {
                 @Override public boolean evaluate(Rule r) {
-                    if (r.head instanceof Atom) {
-                        return ((Atom)r.head).name.equals(key);
+                    if (r.formula instanceof Atom) {
+                        // TODO:  This is wrong,
+                        //        we need the formula's second element here:
+                        return ((Atom)r.formula).name.equals(key);
                     }
                     return false;
                 }
@@ -81,8 +86,8 @@ public class SimpleMemory implements Memory {
         public List<Fact> getAllFacts(final String key) {
             return ListUtils.predicatedList(facts, new Predicate<Fact>() {
                 @Override public boolean evaluate(Fact t) {
-                    if (t.term instanceof Atom) {
-                        return ((Atom)t.term).name.equals(key);
+                    if (t.formula instanceof Atom) {
+                        return ((Atom)t.formula).name.equals(key);
                     }
                     return false;
                 }

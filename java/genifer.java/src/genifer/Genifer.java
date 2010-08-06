@@ -14,8 +14,8 @@ public interface Genifer {
     public void abduce();
     public void induce();
     public void backwardChain();
+    //public void forwardChain();
     public void setDebug(int level);
 
     public Memory getMemory();
-    
 }
