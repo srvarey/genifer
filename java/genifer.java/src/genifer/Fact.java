@@ -7,28 +7,29 @@ package genifer;
 
 /**
   A Generic-Memory "Fact" item
+ * This is used to store facts in memory.  Its base class is Formula.
+ * Additionally a fact has an ID and a TV.
  * @author SEH
  */
-public class Fact extends Term {
-    public final Term term;
+public class Fact extends Formula {
+    public final Formula formula;
 
     public final Truth truth;
         
     /** a list of clauses that this fact justifies */
-    //public  final Clause[] justifies;
+    //public  final Formula[] justifies;
 
     /** a list of clauses that justify this fact */
-    //public  final Clause[] justifiedBy;
+    //public  final Formula[] justifiedBy;
 
-    //TODO timestamp / time-marker?
+    // TODO timestamp / time-marker?
+    // YKY:  currently I think there's no need for timestamps
 
-    public Fact(Term term, double truth, double confidence /*, Clause[] justifies, Clause[] justifiedBy*/) {
+    public Fact(Formula formula, double truth, double confidence) {
         super();
-        this.term = term;
+        this.formula = formula;
         this.truth = new Truth(truth, confidence);
-        //this.justifies = justifies;
-        //this.justifiedBy = justifiedBy;
-
+        //this.justifies = justifies;         // Formula[]
+        //this.justifiedBy = justifiedBy;     // Formula[]
     }
-
 }

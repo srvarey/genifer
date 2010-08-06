@@ -9,9 +9,6 @@ import genifer.SimpleMemory;
 import java.util.Arrays;
 import java.util.List;
 import junit.framework.TestCase;
-import org.armedbear.lisp.Lisp;
-import org.armedbear.lisp.LispObject;
-import org.armedbear.lisp.StandardObject;
 import org.armedbear.lisp.*;
 
 /**
@@ -23,7 +20,17 @@ public class TestGeniferLisp extends TestCase {
 
     public void testMemory() {
         GeniferLisp gl = new GeniferLisp(new SimpleMemory());
-        
+
+        try {
+            Symbol voidsym =
+                    gl.defaultPackage.findAccessibleSymbol("INIT-MEMORY2");
+            Function voidFunction = (Function) voidsym.getSymbolFunction();
+            voidFunction.execute(new JavaObject(new SimpleMemory()));
+        } catch (Throwable t) {
+            System.out.println("exception!");
+            t.printStackTrace();
+        }
+
         List<LispObject> objects = Arrays.asList(gl.getSymbols());
         for (LispObject lo : objects) {
             StandardObject so = (StandardObject)lo;
@@ -47,23 +54,10 @@ public class TestGeniferLisp extends TestCase {
                 System.out.println(so.getInstanceSlotValue(Lisp.intern("JUSTIFIES", gl.defaultPackage)).cdr().javaInstance());
                 System.out.println(so.getInstanceSlotValue(Lisp.intern("JUSTIFIED-BY", gl.defaultPackage)).cdr().javaInstance());                                
             }
-
         }
-
-        try {
-            Symbol voidsym =
-                    gl.defaultPackage.findAccessibleSymbol("VOID-FUNCTION");
-            Function voidFunction = (Function) voidsym.getSymbolFunction();
-            voidFunction.execute(new JavaObject(new SimpleMemory()));
-        } catch (Throwable t) {
-            System.out.println("exception!");
-            t.printStackTrace();
-        }
-
     }
 
     public static void main(String[] args) {
         new TestGeniferLisp().testMemory();
-
      }
 }
