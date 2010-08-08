@@ -369,6 +369,7 @@
 ;;; **** Propagate TVs up the proof tree
 ;;; INPUT:   a new list of solutions arrives at the current node
 ;;; RETURN:  nothing (update solutions in proof tree)
+;;; **** TODO: algorithm will be revised by Abram's new approach
 ;;; Algorithm:
 ;;; 0.  IF  we have reached root of the proof tree:
 ;;; 1.      return a list of new solutions
