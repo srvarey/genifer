@@ -23,7 +23,7 @@ public class TestGeniferLisp extends TestCase {
 
         try {
             Symbol voidsym =
-                    gl.defaultPackage.findAccessibleSymbol("INIT-MEMORY2");
+                    gl.defaultPackage.findAccessibleSymbol("INIT-MEMORY-JAVA");
             Function voidFunction = (Function) voidsym.getSymbolFunction();
             voidFunction.execute(new JavaObject(new SimpleMemory()));
         } catch (Throwable t) {

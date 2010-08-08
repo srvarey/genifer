@@ -52,7 +52,7 @@
       (format t "~%"))))
 
 ;;; load modules
-(load "lisp/memory.lisp")
+(load "lisp/memory-java.lisp")
 (load "lisp/unification.lisp")
 ;(load "lisp/lazy-sequence.lisp")
 (load "lisp/deduction.lisp")

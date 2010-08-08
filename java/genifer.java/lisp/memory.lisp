@@ -74,15 +74,6 @@
 (defvar *newly-added*)
 (defvar new-rule)
 
-;;; **** try to connect to Java
-(defun init-memory2 (param)
-  (let* ((class (jclass "genifer.SimpleMemory"))
-       (consclass (jclass "org.armedbear.lisp.Cons"))
-       (method (jmethod class "addFact" consclass consclass))
-       (result (jcall method param '(busy kellie) '(0.7 1.0))))
-    ; (add-fact-to-mem '(busy kellie) '(0.7 . 1.0))
-    (format t "Result of calling test(2, 4): ~a~%" result)))
-
 ;;; **** Initialize memories
 (defun init-memories ()
   ;; Generic Memory
@@ -92,7 +83,6 @@
   ;; counter used in batch processing
   (setf *newly-added* 0)
 
-  (return-from init-memories)
   (format t ";; Adding knowledge to KB.... ~%")
 
   ;;; the format for facts is:
