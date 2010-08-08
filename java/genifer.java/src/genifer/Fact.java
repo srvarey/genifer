@@ -7,7 +7,7 @@ package genifer;
 
 /**
   A Generic-Memory "Fact" item
- * This is used to store facts in memory.  Its base class is Formula.
+ * This class if for storing facts in memory.  Its base class is Formula.
  * Additionally a fact has an ID and a TV.
  * @author SEH
  */
