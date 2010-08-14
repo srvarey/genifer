@@ -88,10 +88,10 @@
 ;;; Add the facts and rules
 ;;; This function must be called from Java
 (defun init-memory-java (param)
-  (setf (class          (jclass "genifer.SimpleMemory"))
-        (cons-class     (jclass "org.armedbear.lisp.Cons"))
-        (method-addFact (jmethod class "addFact" cons-class cons-class))
-        (method-addRule (jmethod class "addRule" cons-class cons-class)))
+  (setf class          (jclass "genifer.SimpleMemory")
+        cons-class     (jclass "org.armedbear.lisp.Cons")
+        method-addFact (jmethod class "addFact" cons-class cons-class)
+        method-addRule (jmethod class "addRule" cons-class cons-class))
 
   (defmacro add-fact-2-mem ()
     (add-fact-to-mem method-addFact param))
@@ -104,6 +104,8 @@
   ;; must call the func, but must pass the method
   ; (add-fact-to-mem '(busy kellie) '(0.7 . 1.0))
   (jcall method-addFact param '(busy kellie) '(0.7 1.0))
+
+  (return-from init-memory-java)
 
   ;;; the format for facts is:
   ;;;   (add-fact-to-mem (head) (TV) (justifies) (justified-by))
