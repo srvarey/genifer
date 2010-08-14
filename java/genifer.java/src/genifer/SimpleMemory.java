@@ -26,6 +26,12 @@ public class SimpleMemory implements Memory {
             return true;
         }
 
+        public boolean addRule(Cons formula, Cons tv) {
+            System.out.println(formula.car().javaInstance());
+            System.out.println(tv.car().javaInstance());
+            return true;
+        }
+
         @Override
         public boolean add(Formula f) {
             return Formulas.add(f);
