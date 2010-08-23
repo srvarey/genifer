@@ -5,6 +5,8 @@
 
 package genifer;
 
+import genifer.Truth.SimpleTruth;
+
 /**
   A Generic-Memory "Fact" item
  * This class if for storing facts in memory.  Its base class is Formula.
@@ -28,8 +30,21 @@ public class Fact extends Formula {
     public Fact(Formula formula, double truth, double confidence) {
         super();
         this.formula = formula;
-        this.truth = new Truth(truth, confidence);
+        this.truth = new SimpleTruth(truth, confidence);
         //this.justifies = justifies;         // Formula[]
         //this.justifiedBy = justifiedBy;     // Formula[]
     }
+    
+    public Fact(Formula formula, Truth t) {
+        super();
+        this.formula = formula;
+        this.truth = t;
+    }
+
+    @Override
+    public String toString() {
+        return formula.toString() + "<" + truth + ">";
+    }
+    
+    
 }

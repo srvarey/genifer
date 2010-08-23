@@ -39,7 +39,7 @@ package genifer;
 
  * @author SEH
  */
-public class Formula {
+abstract public class Formula {
     
     public static class BoolVal extends Constant {   }
     

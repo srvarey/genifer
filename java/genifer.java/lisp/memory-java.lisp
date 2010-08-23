@@ -90,8 +90,10 @@
 (defun init-memory-java (param)
   (setf class          (jclass "genifer.SimpleMemory")
         cons-class     (jclass "org.armedbear.lisp.Cons")
+        lispobject-class     (jclass "org.armedbear.lisp.LispObject")
+        floatclass          (jclass "float")
         method-addFact (jmethod class "addFact" cons-class cons-class)
-        method-addRule (jmethod class "addRule" cons-class cons-class))
+        method-addRule (jmethod class "addRule" cons-class floatclass))
 
   (defmacro add-fact-2-mem ()
     (add-fact-to-mem method-addFact param))
@@ -103,7 +105,10 @@
 
   ;; must call the func, but must pass the method
   ; (add-fact-to-mem '(busy kellie) '(0.7 . 1.0))
+
   (jcall method-addFact param '(busy kellie) '(0.7 1.0))
+  
+  (jcall method-addRule param '(Cond (having-fun ?1) (Z-NOT (busy ?1)) ) 0.8)
 
   (return-from init-memory-java)
 

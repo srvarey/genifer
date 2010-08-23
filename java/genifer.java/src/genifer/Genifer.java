@@ -11,10 +11,10 @@ package genifer;
  */
 public interface Genifer {
     
-    public void abduce();
     public void induce();
-    public void backwardChain();
-    //public void forwardChain();
+    public void abduce(String input);
+    public void backwardChain(String query);
+    
     public void setDebug(int level);
 
     public Memory getMemory();

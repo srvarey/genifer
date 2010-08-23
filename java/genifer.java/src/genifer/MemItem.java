@@ -1,5 +1,7 @@
 package genifer;
 
+import genifer.Truth.SimpleTruth;
+
 /**
    structure for a rule / fact
  * @author SEH
@@ -15,7 +17,7 @@ public class MemItem extends Formula {
     public MemItem(Formula formula, double truth, double confidence) {
         super();
         this.formula = formula;
-        this.truth = new Truth(truth, confidence);
+        this.truth = new SimpleTruth(truth, confidence);
     }
 
 }
