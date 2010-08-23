@@ -43,4 +43,9 @@ public class Rule {
         this.w = w;
     }        
 
+    @Override
+    public String toString() {
+        return formula.toString() + "<" + w + ">";
+    }
+    
 }

@@ -9,13 +9,38 @@ package genifer;
  *
  * @author seh
  */
-public class Truth {
-    public double p;                   // p = probability
-    public double confidence;
+public interface Truth {
+    
+    public double getProbability();    
+    public double getConfidence();
+    
+    public static class SimpleTruth implements Truth {
+        public double prob;                   
+        public double confidence;
+        
+        public SimpleTruth(double p, double confidence) {
+            super();
+            this.prob = p;
+            this.confidence = confidence;
+        }
 
-    public Truth(double p, double confidence) {
-        this.p = p;
-        this.confidence = confidence;
+        @Override
+        public String toString() {
+            return prob + ", " + confidence;
+        }
+
+        @Override
+        public double getConfidence() {
+            return confidence;
+        }
+
+        @Override
+        public double getProbability() {
+            return prob;
+        }
+        
+        
     }
 
+    
 }

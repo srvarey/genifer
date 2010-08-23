@@ -49,13 +49,15 @@ public class GeniferLisp implements Genifer {
         return lisp.eval(e);
     }
     
-    public void abduce() {
+    public void abduce(String query) {
     }
 
-    public void induce() {
+    public void induce() {        
+        System.out.println("induce()");
+        lisp.eval("(induce)");
     }
 
-    public void backwardChain() {
+    public void backwardChain(String query) {
     }
 
     public void setDebug(int level) {

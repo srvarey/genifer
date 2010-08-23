@@ -16,92 +16,174 @@ import org.armedbear.lisp.*;
  */
 public class SimpleMemory implements Memory {
 
-        List<Formula> Formulas = new LinkedList();
-        List<Rule> rules = new LinkedList();
-        List<Fact> facts = new LinkedList();
+    //List<Formula> Formulas = new LinkedList();
+    List<Rule> rules = new LinkedList();
+    List<Fact> facts = new LinkedList();
 
-        public boolean addFact(Cons formula, Cons tv) {
-            System.out.println(formula.car().javaInstance());
-            System.out.println(tv.car().javaInstance());
-            return true;
+    /**
+     * 
+     * @param tv
+     * @param truthOrConfidence true = get truth value, false = get confidence value
+     * @return
+     */
+    protected static double getTV(Cons tv, boolean truthOrConfidence) {
+        Object j = (truthOrConfidence) ? tv.car().javaInstance() : tv.cdr().car().javaInstance();
+        if (j instanceof Float) {
+            return ((Float) j).floatValue();
         }
+        System.err.println("invalid tv: " + tv + " ( " + tv.car() + " , " + tv.cdr().car() + " )");
+        return 0.0f;
+    }
 
-        public boolean addRule(Cons formula, Cons tv) {
-            System.out.println(formula.car().javaInstance());
-            System.out.println(tv.car().javaInstance());
-            return true;
-        }
+    public static double getProbability(Cons tv) {
+        return getTV(tv, true);
+    }
 
-        @Override
-        public boolean add(Formula f) {
-            return Formulas.add(f);
-        }
+    public static double getConfidence(Cons tv) {
+        return getTV(tv, false);
+    }
 
-        @Override
-        public boolean remove(Formula f) {
-            return Formulas.remove(f);
-        }
+    public static class LispTruth implements Truth {
 
-        @Override
-        public boolean add(Rule r) {
-            return rules.add(r);
-        }
+        private final Cons tv;
 
-        @Override
-        public boolean remove(Rule r) {
-            return rules.remove(r);
-        }
-
-        @Override
-        public boolean add(Fact f) {
-            return facts.add(f);
+        public LispTruth(Cons tv) {
+            super();
+            this.tv = tv;
         }
 
         @Override
-        public boolean remove(Fact f) {
-            return facts.remove(f);
+        public double getConfidence() {
+            return SimpleMemory.getConfidence(tv);
         }
 
         @Override
-        public List<Formula> getAll(final String key) {
-            return ListUtils.predicatedList(Formulas, new Predicate<Formula>() {
-                @Override public boolean evaluate(Formula t) {
-                    if (t instanceof Atom) {
-                        return ((Atom)t).name.equals(key);
-                    }
-                    return false;
-                }
-            });
+        public double getProbability() {
+            return SimpleMemory.getProbability(tv);
         }
 
         @Override
-        public List<Rule> getAllRules(final String key) {
-            return ListUtils.predicatedList(rules, new Predicate<Rule>() {
-                @Override public boolean evaluate(Rule r) {
-                    if (r.formula instanceof Atom) {
-                        // TODO:  This is wrong,
-                        //        we need the formula's second element here:
-                        return ((Atom)r.formula).name.equals(key);
-                    }
-                    return false;
-                }
-            });
-        }
-
-        @Override
-        public List<Fact> getAllFacts(final String key) {
-            return ListUtils.predicatedList(facts, new Predicate<Fact>() {
-                @Override public boolean evaluate(Fact t) {
-                    if (t.formula instanceof Atom) {
-                        return ((Atom)t.formula).name.equals(key);
-                    }
-                    return false;
-                }
-            });
+        public String toString() {
+            return getProbability() + ", " + getConfidence();
         }
 
     }
 
+    public boolean addFact(Cons formula, Cons tv) {
+//        System.out.println(formula.car().javaInstance());
+//        System.out.println(tv.car().javaInstance());
+        Fact f = new Fact(new Sexp(formula), new LispTruth(tv));
+        if (facts.add(f)) {
+            System.out.println("added fact: " + f);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean addRule(Cons formula, float w) {
+//        System.out.println(formula.car().javaInstance());
+//        System.out.println(tv.car().javaInstance());
+        Rule r = new Rule(new Sexp(formula), w);
+        if (rules.add(r)) {
+            System.out.println("added rule: " + r);
+            return true;
+        }
+        return false;
+    }
+
+//    @Override
+//    public boolean add(Formula f) {
+//        return Formulas.add(f);
+//    }
+//
+//    @Override
+//    public boolean remove(Formula f) {
+//        return Formulas.remove(f);
+//    }
+    @Override
+    public boolean add(Rule r) {
+        return rules.add(r);
+    }
+
+    @Override
+    public boolean remove(Rule r) {
+        return rules.remove(r);
+    }
+
+    @Override
+    public boolean add(Fact f) {
+        return facts.add(f);
+    }
+
+    @Override
+    public boolean remove(Fact f) {
+        return facts.remove(f);
+    }
+
+//        @Override
+//        public List<Formula> getAllFacts(final String key) {
+//            return ListUtils.predicatedList(Formulas, new Predicate<Formula>() {
+//                @Override public boolean evaluate(Formula t) {
+//                    if (t instanceof Atom) {
+//                        return ((Atom)t).name.equals(key);
+//                    }
+//                     else if (t instanceof Con) {
+//
+//                     }
+//                    return false;
+//                }
+//            });
+//        }
+    @Override
+    public List<Rule> getAllRules(final String key) {
+        return ListUtils.predicatedList(rules, new Predicate<Rule>() {
+
+            @Override public boolean evaluate(Rule r) {
+                Formula f = r.formula;
+                if (f instanceof Atom) {
+                    // TODO:  This is wrong,
+                    //        we need the formula's second element here:
+                    return ((Atom) r.formula).name.equals(key);
+                } else if (f instanceof Sexp) {
+                    //_KY_: For rules, we need to match the car of the second element
+                    LispObject l = ((Sexp) f).cons.cdr().car();
+                    return matchesKey(l, key);
+                }
+                return false;
+            }
+        });
+    }
+
+    public static boolean matchesKey(LispObject l, String key) {
+        if (l.atom()) {
+            String s = l.getStringValue();
+            System.out.println("matching: " + l.getStringValue() + " w/ " + key);
+            if (s.equals(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public List<Fact> getAllFacts(final String key) {
+        return ListUtils.predicatedList(facts, new Predicate<Fact>() {
+
+            @Override public boolean evaluate(Fact t) {
+                Formula f = t.formula;
+                if (f instanceof Atom) {
+                    return ((Atom) t.formula).name.equals(key);
+                } else if (f instanceof Sexp) {
+                    //match its car
+                    LispObject l = ((Sexp) f).cons.car();
+                    return matchesKey(l, key);
+                }
+
+                return false;
+            }
+        });
+    }
+}
 //;;; **** Add a fact to Generic Memory
 //(defun add-fact-to-mem (fact &optional tv justifies justified-by)
 //  (if (null tv)
@@ -230,3 +312,4 @@ public class SimpleMemory implements Memory {
 //        (format t "  e-:           ~a ~%" (e-          item))
 //        (format t "  ancestors:    ~a ~%" (ancestors   item))
 //        (format t "  ancestors-to: ~a ~%" (ancestor-to item))))))
+

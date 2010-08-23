@@ -15,9 +15,9 @@ import org.apache.commons.collections15.Predicate;
  */
 public interface Memory {
 
-    public boolean add(Formula f);
-
-    public boolean remove(Formula f);
+//    public boolean add(Formula f);
+//
+//    public boolean remove(Formula f);
 
     boolean add(Rule r);
 
@@ -30,7 +30,7 @@ public interface Memory {
 
     boolean remove(Fact f);
 
-    List<Formula> getAll(String key);
+    //List<Formula> getAll(String key);
 
     List<Rule> getAllRules(String key);    
         //ex: getAllRules("loves") includes (implies (loves john mary) (loves john ann))
