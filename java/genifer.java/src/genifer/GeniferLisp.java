@@ -53,8 +53,8 @@ public class GeniferLisp implements Genifer {
     }
 
     public void induce() {        
-        // System.out.println("induce()");
-        // lisp.eval("(induce)");
+        System.out.println("induce()");
+        lisp.eval("(induce)");
     }
 
     public void backwardChain(String query) {
@@ -64,6 +64,7 @@ public class GeniferLisp implements Genifer {
     }
 
     public void testSystem() {
+        lisp.eval("(system-test)");
     }
 
     public String toString() {

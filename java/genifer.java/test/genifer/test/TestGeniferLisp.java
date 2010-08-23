@@ -23,15 +23,27 @@ public class TestGeniferLisp extends TestCase {
 
         try {
             Symbol voidsym =
-                    gl.defaultPackage.findAccessibleSymbol("INIT-MEMORY-JAVA");
+                    gl.defaultPackage.findAccessibleSymbol("INIT-TEST-MEM");
             Function voidFunction = (Function) voidsym.getSymbolFunction();
             voidFunction.execute(new JavaObject(gl.getMemory()));
         } catch (Throwable t) {
             System.err.println(t);
             t.printStackTrace();
-        }
-        
-        gl.induce();
+                }
+
+        // gl.testSystem();
+
+        try {
+            Symbol voidsym =
+                    gl.defaultPackage.findAccessibleSymbol("SYSTEM-TEST");
+            Function voidFunction = (Function) voidsym.getSymbolFunction();
+            voidFunction.execute(new JavaObject(gl.getMemory()));
+        } catch (Throwable t) {
+            System.err.println(t);
+            t.printStackTrace();
+                }
+
+        // gl.induce();
 
         List<LispObject> objects = Arrays.asList(gl.getSymbols());
         for (LispObject lo : objects) {

@@ -53,6 +53,7 @@
 
 ;;; load modules
 (load "lisp/memory-java.lisp")
+(load "lisp/tests.lisp")            ; this must be loaded after memory-java.lisp
 (load "lisp/unification.lisp")
 ;(load "lisp/lazy-sequence.lisp")
 (load "lisp/deduction.lisp")
