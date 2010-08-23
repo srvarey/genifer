@@ -27,7 +27,7 @@ public class SimpleMemory implements Memory {
      * @return
      */
     protected static double getTV(Cons tv, boolean truthOrConfidence) {
-        Object j = (truthOrConfidence) ? tv.car().javaInstance() : tv.cdr().car().javaInstance();
+        Object j = (truthOrConfidence) ? tv.car().javaInstance() : tv.cdr().javaInstance();
         if (j instanceof Float) {
             return ((Float) j).floatValue();
         }
