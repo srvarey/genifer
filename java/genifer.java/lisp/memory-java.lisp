@@ -95,22 +95,19 @@
         method-addFact (jmethod class "addFact" cons-class cons-class)
         method-addRule (jmethod class "addRule" cons-class floatclass))
 
-  (defmacro add-fact-2-mem ()
-    (add-fact-to-mem method-addFact param))
+  (defun add-fact-to-memJ (formula &optional tv justifies justified-by)
+    (add-fact-to-mem method-addFact param formula tv justifies justified-by))
 
-  (defmacro add-rule-2-mem ()
-    (add-rule-to-mem method-addRule param))
+  (defun add-rule-to-memJ (formula &optional w e+ e- ancestors ancestor-to)
+    (add-rule-to-mem method-addRule param formula w e+ e- ancestors ancestor-to))
 
   (format t ";; Adding knowledge to KB.... ~%")
 
-  ;; must call the func, but must pass the method
-  ; (add-fact-to-mem '(busy kellie) '(0.7 . 1.0))
+  ;(jcall method-addFact param '(busy kellie) '(0.7 1.0))
+  (add-fact-to-memJ '(busy kellie) '(0.7 . 1.0))
 
-  (jcall method-addFact param '(busy kellie) '(0.7 1.0))
-  
-  (jcall method-addRule param '(Cond (having-fun ?1) (Z-NOT (busy ?1)) ) 0.8)
-
-  (return-from init-memory-java)
+  ;(jcall method-addRule param '(<- (having-fun ?1) (Z-NOT (busy ?1)) ) 0.8)
+  (add-rule-to-memJ '(<- (having-fun ?1) (Z-NOT (busy ?1))) 0.8)
 
   ;;; the format for facts is:
   ;;;   (add-fact-to-mem (head) (TV) (justifies) (justified-by))
@@ -133,70 +130,70 @@
   ;;;   (at-bar kellie) ?
   ;;; And the answer would be false (or its equivalent numerical truth value)
 
-  (add-fact-to-mem '(busy kellie) '(0.7 . 1.0))
+  (add-fact-to-memJ '(busy kellie) '(0.7 . 1.0))
 
-  (add-rule-to-mem '(having-fun ?1) '(Z-NOT (busy ?1)))
-  (add-rule-to-mem '(having-fun ?1) '(Z-MOD2 (at-bar ?1) 0.5 5.0))
+  (add-rule-to-memJ '(<- (having-fun ?1) (Z-NOT (busy ?1))))
+  (add-rule-to-memJ '(<- (having-fun ?1) (Z-MOD2 (at-bar ?1) 0.5 5.0)))
 
   ;;; ************* Example 2
   ;;; Just a 6-layer-deep search problem with a distracting branch
   ;;; Query:  (goal robot) ?
-  (add-fact-to-mem '(do-a robot) '(0.6 . 1.0))
+  (add-fact-to-memJ '(do-a robot) '(0.6 . 1.0))
 
-  (add-rule-to-mem '(do-b ?1) '(Z-MOD2 (do-a ?1) 0.5 5.0))
-  (add-rule-to-mem '(do-c ?1) '(Z-MOD2 (do-b ?1) 0.5 5.0))
-  (add-rule-to-mem '(do-d ?1) '(Z-MOD2 (do-c ?1) 0.5 5.0))
-  (add-rule-to-mem '(do-e ?1) '(Z-MOD2 (do-d ?1) 0.5 5.0))
-  (add-rule-to-mem '(do-f ?1) '(Z-MOD2 (do-e ?1) 0.5 5.0))
-  (add-rule-to-mem '(goal ?1) '(Z-MOD2 (do-f ?1) 0.5 5.0))
+  (add-rule-to-memJ '(<- (do-b ?1) (Z-MOD2 (do-a ?1) 0.5 5.0)))
+  (add-rule-to-memJ '(<- (do-c ?1) (Z-MOD2 (do-b ?1) 0.5 5.0)))
+  (add-rule-to-memJ '(<- (do-d ?1) (Z-MOD2 (do-c ?1) 0.5 5.0)))
+  (add-rule-to-memJ '(<- (do-e ?1) (Z-MOD2 (do-d ?1) 0.5 5.0)))
+  (add-rule-to-memJ '(<- (do-f ?1) (Z-MOD2 (do-e ?1) 0.5 5.0)))
+  (add-rule-to-memJ '(<- (goal ?1) (Z-MOD2 (do-f ?1) 0.5 5.0)))
   ; let's add a little distraction:
-  (add-rule-to-mem '(do-x ?1) '(Z-MOD2 (do-w ?1) 0.5 5.0))
-  (add-rule-to-mem '(do-y ?1) '(Z-MOD2 (do-x ?1) 0.5 5.0))
-  (add-rule-to-mem '(do-z ?1) '(Z-MOD2 (do-y ?1) 0.5 5.0))
-  (add-rule-to-mem '(goal ?1) '(Z-MOD2 (do-z ?1) 0.5 5.0))
+  (add-rule-to-memJ '(<- (do-x ?1) (Z-MOD2 (do-w ?1) 0.5 5.0)))
+  (add-rule-to-memJ '(<- (do-y ?1) (Z-MOD2 (do-x ?1) 0.5 5.0)))
+  (add-rule-to-memJ '(<- (do-z ?1) (Z-MOD2 (do-y ?1) 0.5 5.0)))
+  (add-rule-to-memJ '(<- (goal ?1) (Z-MOD2 (do-z ?1) 0.5 5.0)))
 
   ;;; ************* Example 3
   ;;; c is a chair:
   ;;;     chair(X) <- leg(1,X) & leg(2,X) & leg(3,X) & leg(4,X) & seat(X) & back(X)
   ;;; Query:  (chair c) ?
-  (add-fact-to-mem '(leg 1 c) '(0.7 . 1.0))
-  (add-fact-to-mem '(leg 2 c) '(0.8 . 1.0))
-  (add-fact-to-mem '(leg 3 c) '(0.9 . 1.0))
-  (add-fact-to-mem '(leg 4 c) '(0.8 . 1.0))
-  (add-fact-to-mem '(seat  c) '(0.7 . 1.0))
-  (add-fact-to-mem '(back  c) '(0.9 . 1.0))
+  (add-fact-to-memJ '(leg 1 c) '(0.7 . 1.0))
+  (add-fact-to-memJ '(leg 2 c) '(0.8 . 1.0))
+  (add-fact-to-memJ '(leg 3 c) '(0.9 . 1.0))
+  (add-fact-to-memJ '(leg 4 c) '(0.8 . 1.0))
+  (add-fact-to-memJ '(seat  c) '(0.7 . 1.0))
+  (add-fact-to-memJ '(back  c) '(0.9 . 1.0))
 
-  (add-rule-to-mem '(chair ?1) '(Z-AND (seat  ?1)
+  (add-rule-to-memJ '(<- (chair ?1) (Z-AND (seat  ?1)
                                        (back  ?1)
                                        (leg 1 ?1)
                                        (leg 2 ?1)
                                        (leg 3 ?1)
-                                       (leg 4 ?1)))
+                                       (leg 4 ?1))))
 
   ;;; A longer version using multiple intermediary predicates
   ;;; Query:  (chair2 c) ?
-  (add-rule-to-mem '(chair2 ?1) '(Z-AND (seat  ?1) (tmp4  ?1)))
-  (add-rule-to-mem '(tmp4   ?1) '(Z-AND (back  ?1) (tmp3  ?1)))
-  (add-rule-to-mem '(tmp3   ?1) '(Z-AND (leg 1 ?1) (tmp2  ?1)))
-  (add-rule-to-mem '(tmp2   ?1) '(Z-AND (leg 2 ?1) (tmp1  ?1)))
-  (add-rule-to-mem '(tmp1   ?1) '(Z-AND (leg 3 ?1) (leg 4 ?1)))
+  (add-rule-to-memJ '(<- (chair2 ?1) (Z-AND (seat  ?1) (tmp4  ?1))))
+  (add-rule-to-memJ '(<- (tmp4   ?1) (Z-AND (back  ?1) (tmp3  ?1))))
+  (add-rule-to-memJ '(<- (tmp3   ?1) (Z-AND (leg 1 ?1) (tmp2  ?1))))
+  (add-rule-to-memJ '(<- (tmp2   ?1) (Z-AND (leg 2 ?1) (tmp1  ?1))))
+  (add-rule-to-memJ '(<- (tmp1   ?1) (Z-AND (leg 3 ?1) (leg 4 ?1))))
 
   ;;; ************* Example 4
   ;;; From Luger's AI textbook, 2009
   ;;; Query:  (happy john) ?
 
   ;;; Anyone passing his history exams and winning the lottery is happy:
-  (add-rule-to-mem '(happy ?1) '(Z-AND (pass ?1 history) (win ?1 lottery)))
+  (add-rule-to-memJ '(<- (happy ?1) (Z-AND (pass ?1 history) (win ?1 lottery))))
 
   ;;; Anyone who studies or is lucky can pass all his exams:
-  (add-rule-to-mem '(pass ?1 ?2) '(Z-OR (study ?1) (lucky ?1)))
+  (add-rule-to-memJ '(<- (pass ?1 ?2) (Z-OR (study ?1) (lucky ?1))))
 
   ;;; John did not study but is lucky:
-  (add-fact-to-mem '(study john) '(0.0 . 1.0))
-  (add-fact-to-mem '(lucky john))
+  (add-fact-to-memJ '(study john) '(0.0 . 1.0))
+  (add-fact-to-memJ '(lucky john))
 
   ;;; Anyone who is lucky wins the lottery:
-  (add-rule-to-mem '(win ?1 lottery) '(ID (lucky ?1)))
+  (add-rule-to-memJ '(<- (win ?1 lottery) (ID (lucky ?1))))
 
   ;;; ************* Example 5
   ;;; Test handling of function symbols, ie unification.
@@ -204,10 +201,10 @@
 
   ;;; This is an example of a body-less rule:
   ;;; parent(X, son-of(X)) <-
-  (add-rule-to-mem '(parent ?1 (son-of ?1)))
+  (add-rule-to-memJ '(<- (parent ?1 (son-of ?1))))
 
   ;;; ~parent(W,Y) \/ ~parent(Y,Z) \/ grandparent(W,Z)
-  (add-rule-to-mem '(grandparent ?1 ?3) '(Z-AND (parent ?1 ?2) (parent ?2 ?3)))
+  (add-rule-to-memJ '(<- (grandparent ?1 ?3) (Z-AND (parent ?1 ?2) (parent ?2 ?3))))
 
   ;;; ************* Example 6
   ;;; Test of variable binding across a conjunction.
@@ -222,38 +219,38 @@
   ;;; Query: grandpa(john,paul)?
   ;;; Query: grandpa(john,sam)?
 
-  (add-rule-to-mem '(grandpa ?1 ?2) '(Z-AND (pa ?1 ?3) (pa ?3 ?2)))
-  (add-rule-to-mem '(grandpa ?1 ?2) '(Z-AND (pa ?1 ?3) (ma ?3 ?2)))
-  (add-fact-to-mem '(pa john pete) '(1.0 . 1.0))
-  (add-fact-to-mem '(pa pete paul) '(1.0 . 1.0))
-  (add-fact-to-mem '(ma mary sam)  '(1.0 . 1.0))
-  (add-fact-to-mem '(pa john mary) '(1.0 . 1.0))
+  (add-rule-to-memJ '(<- (grandpa ?1 ?2) (Z-AND (pa ?1 ?3) (pa ?3 ?2))))
+  (add-rule-to-memJ '(<- (grandpa ?1 ?2) (Z-AND (pa ?1 ?3) (ma ?3 ?2))))
+  (add-fact-to-memJ '(pa john pete) '(1.0 . 1.0))
+  (add-fact-to-memJ '(pa pete paul) '(1.0 . 1.0))
+  (add-fact-to-memJ '(ma mary sam)  '(1.0 . 1.0))
+  (add-fact-to-memJ '(pa john mary) '(1.0 . 1.0))
 
   ;;; ************* Example 7
   ;;; This background knowledge is used for testing induction in "induction1.lisp"
   ;;; Query: (has-dau pam) ?   **** should return false
 
-  ;(add-rule-to-mem '(has-dau ?1) '(Z-AND (parent ?1 ?2) (female ?2)))
+  ;(add-rule-to-memJ '(<- (has-dau ?1) (Z-AND (parent ?1 ?2) (female ?2))))
 
-  (add-fact-to-mem '(parent pam bob))
-  (add-fact-to-mem '(parent tom bob))
-  (add-fact-to-mem '(parent tom liz))
-  (add-fact-to-mem '(parent bob ann))
-  (add-fact-to-mem '(parent bob pat))
-  (add-fact-to-mem '(parent pat jim))
-  (add-fact-to-mem '(parent pat eve))
-  ;(add-fact-to-mem '(parent juu luu))
+  (add-fact-to-memJ '(parent pam bob))
+  (add-fact-to-memJ '(parent tom bob))
+  (add-fact-to-memJ '(parent tom liz))
+  (add-fact-to-memJ '(parent bob ann))
+  (add-fact-to-memJ '(parent bob pat))
+  (add-fact-to-memJ '(parent pat jim))
+  (add-fact-to-memJ '(parent pat eve))
+  ;(add-fact-to-memJ '(parent juu luu))
 
-  (add-fact-to-mem '(female pam))
-  (add-fact-to-mem '(male tom))
-  (add-fact-to-mem '(male bob))
-  (add-fact-to-mem '(female liz))
-  (add-fact-to-mem '(female ann))
-  (add-fact-to-mem '(female pat))
-  (add-fact-to-mem '(male jim))
-  (add-fact-to-mem '(female eve))
-  ;(add-fact-to-mem '(male juu))
-  ;(add-fact-to-mem '(male luu))
+  (add-fact-to-memJ '(female pam))
+  (add-fact-to-memJ '(male tom))
+  (add-fact-to-memJ '(male bob))
+  (add-fact-to-memJ '(female liz))
+  (add-fact-to-memJ '(female ann))
+  (add-fact-to-memJ '(female pat))
+  (add-fact-to-memJ '(male jim))
+  (add-fact-to-memJ '(female eve))
+  ;(add-fact-to-memJ '(male juu))
+  ;(add-fact-to-memJ '(male luu))
 
   (format t ";; Working Memory initialized... ~%"))
 
@@ -314,52 +311,30 @@
       (return-from add-to-memory)))     ; if so, exit
   ;; if not in memory, add it
   (if (is-ground clause)
-    (add-fact-to-mem clause)
-    (add-rule-to-mem clause)))
+    (add-fact-to-memJ clause)
+    (add-rule-to-memJ clause)))
 
 (defvar new-fact)
 
 ;;; **** Add a fact to Generic Memory
-(defun add-fact-to-mem (method formula &optional tv justifies justified-by)
+;;; The last 2 parameter are unused as of this version
+(defun add-fact-to-mem (method param formula &optional tv justifies justified-by)
   (if (null tv)
     (setf tv (cons 1.0 1.0)))          ; default TV
-  (****DEBUG 1 "adding fact to memory: ~a" fact)
-  ;; create an object
-  (setf new-fact (make-instance 'fact-item
-                          :fact         fact
-                          :id           *memory-size*
-                          :tv           tv
-                          :justifies    justifies
-                          :justified-by justified-by))
-  ;; increase the index
-  (incf *memory-size*)
-  (incf *newly-added*)
-  ;; add the object to GM, by appending to the end of list
-  (setf *generic-memory* (cons new-fact *generic-memory*)))
+  (****DEBUG 1 "adding fact to memory: ~a" formula)
+  (****DEBUG 1 "tv is: ~a" tv)
+  (jcall method param formula tv))
 
 ;;; **** Add a rule to Generic Memory
-(defun add-rule-to-mem (method formula &optional w e+ e- ancestors ancestor-to)
+;;; The last 4 parameters are unused as of this version
+(defun add-rule-to-mem (method param formula &optional w e+ e- ancestors ancestor-to)
   ;; Set default values:
-  (****DEBUG 1 "adding rule to memory: ~a <- ~a" head body)
-  (if (null body) (setf body '(*bodyless*)))
-  (if (null w )   (setf w    100))
+  (****DEBUG 1 "adding rule to memory: ~a <- ~a" (second formula) (third formula))
+  ;(if (null body) (setf body '(*bodyless*)))
+  (if (null w )   (setf w    100.0))
   (if (null e+)   (setf e+   0))
   (if (null e-)   (setf e-   0))
-  ;; create an object
-  (setf new-rule (make-instance 'rule-item
-                          :head         head
-                          :body         body
-                          :id           *memory-size*
-                          :w            w
-                          :e+           e+
-                          :e-           e-
-                          :ancestors    ancestors
-                          :ancestor-to  ancestor-to))
-  ;; increase the index
-  (incf *memory-size*)
-  (incf *newly-added*)
-  ;; add the object to GM, by appending to the end of list
-  (setf *generic-memory* (cons new-rule *generic-memory*)))
+  (jcall method param formula w))
 
 (defun delete-memory-item (item)
   (setf ptr *generic-memory*)
