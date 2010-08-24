@@ -16,6 +16,6 @@ public interface Genifer {
     public void backwardChain(String query);
     
     public void setDebug(int level);
-
+    
     public Memory getMemory();
 }

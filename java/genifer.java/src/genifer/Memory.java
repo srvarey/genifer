@@ -30,6 +30,11 @@ public interface Memory {
 
     boolean remove(Fact f);
 
+
+    public List<Fact> getFacts();
+    
+    public List<Rule> getRules();
+
     //List<Formula> getAll(String key);
 
     List<Rule> getAllRules(String key);    
