@@ -4,14 +4,8 @@
  */
 package genifer;
 
-import genifer.swing.GeniferPanel;
-import genifer.swing.util.SwingWindow;
-import java.util.Arrays;
-import org.armedbear.lisp.Interpreter;
-import org.armedbear.lisp.LispObject;
-import org.armedbear.lisp.Package;
-import org.armedbear.lisp.Packages;
 import org.armedbear.lisp.*;
+import org.armedbear.lisp.Package;
 
 /**
  *
@@ -28,15 +22,15 @@ public class GeniferLisp implements Genifer {
         super();
 
         this.memory = memory;
-        
+
         lisp = Interpreter.createInstance();
 
         lisp.eval("(load \"lisp/main.lisp\")");
-      
+
         lispMemory = lisp.eval("*generic-memory*");
-               
+
         //System.out.println("packages: " + Arrays.asList(Packages.getAllPackages()));
-        
+
         defaultPackage = Packages.findPackage("CL-USER");
 
     }
@@ -44,15 +38,15 @@ public class GeniferLisp implements Genifer {
     public Memory getMemory() {
         return memory;
     }
-    
+
     public LispObject eval(String e) {
         return lisp.eval(e);
     }
-    
+
     public void abduce(String query) {
     }
 
-    public void induce() {        
+    public void induce() {
         System.out.println("induce()");
         lisp.eval("(induce)");
     }
@@ -63,18 +57,16 @@ public class GeniferLisp implements Genifer {
     public void setDebug(int level) {
     }
 
-    public void testSystem() {
-        lisp.eval("(system-test)");
-    }
-
+//    public void testSystem() {
+//        lisp.eval("(system-test)");
+//    }
     public String toString() {
         return "[dump memory]";
     }
 
     protected void update() {
-        
     }
-    
+
     public LispObject[] getSymbols() {
         //System.out.println( defaultPackage.getAccessibleSymbols() );// findAccessibleSymbol("*generic-memory*");
         //System.out.println(genMem);
@@ -85,8 +77,26 @@ public class GeniferLisp implements Genifer {
         //return ((Cons)defaultPackage.getSymbols().javaInstance()).copyToArray();        
     }
 
+    public void execute(String function, Object... params) {
+        try {
+            Symbol voidsym =
+                defaultPackage.findAccessibleSymbol(function);
+            Function voidFunction = (Function) voidsym.getSymbolFunction();
+            
+            LispObject[] loArgs = new LispObject[params.length];
+            int i = 0;
+            for (Object o : params) {
+                loArgs[i++] = new JavaObject(o);
+            }            
+                        
+            voidFunction.execute(loArgs);
+            
+        } catch (Throwable t) {
+            System.err.println(t);
+            t.printStackTrace();
+        }
+    }
 //    public static void main(String[] args) {
 //        new SwingWindow(new GeniferPanel(new GeniferLisp(new RAMMemory())), 800, 600, true);
 //    }
-    
 }

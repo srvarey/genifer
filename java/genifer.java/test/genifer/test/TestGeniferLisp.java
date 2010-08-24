@@ -6,6 +6,8 @@ package genifer.test;
 
 import genifer.GeniferLisp;
 import genifer.SimpleMemory;
+import genifer.swing.GeniferBrowserPanel;
+import genifer.swing.util.SwingWindow;
 import java.util.Arrays;
 import java.util.List;
 import junit.framework.TestCase;
@@ -21,29 +23,14 @@ public class TestGeniferLisp extends TestCase {
     public void testMemory() {
         GeniferLisp gl = new GeniferLisp(new SimpleMemory());
 
-        try {
-            Symbol voidsym =
-                    gl.defaultPackage.findAccessibleSymbol("INIT-TEST-MEM");
-            Function voidFunction = (Function) voidsym.getSymbolFunction();
-            voidFunction.execute(new JavaObject(gl.getMemory()));
-        } catch (Throwable t) {
-            System.err.println(t);
-            t.printStackTrace();
-                }
-
-        // gl.testSystem();
-
-        try {
-            Symbol voidsym =
-                    gl.defaultPackage.findAccessibleSymbol("SYSTEM-TEST");
-            Function voidFunction = (Function) voidsym.getSymbolFunction();
-            voidFunction.execute(new JavaObject(gl.getMemory()));
-        } catch (Throwable t) {
-            System.err.println(t);
-            t.printStackTrace();
-                }
-
-        // gl.induce();
+        GeniferBrowserPanel gPanel = new GeniferBrowserPanel(gl);
+        new SwingWindow(gPanel, 800, 600, true);
+        
+        gl.execute("INIT-TEST-MEM", gl.getMemory());
+        
+        //gl.execute("SYSTEM-TEST", gl.getMemory());
+        
+        //gl.induce();
 
         List<LispObject> objects = Arrays.asList(gl.getSymbols());
         for (LispObject lo : objects) {
@@ -69,6 +56,8 @@ public class TestGeniferLisp extends TestCase {
                 System.out.println(so.getInstanceSlotValue(Lisp.intern("JUSTIFIED-BY", gl.defaultPackage)).cdr().javaInstance());                                
             }
         }
+        
+        gPanel.refresh();
     }
 
     public static void main(String[] args) {

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package genifer;
+package genifer.test;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +16,7 @@ import org.armedbear.lisp.Packages;
  *
  * @author SEH
  */
-public class RunLisp {
+public class TestLisp {
 
     public static void main(String[] args) {
         Interpreter lisp = Interpreter.createInstance();

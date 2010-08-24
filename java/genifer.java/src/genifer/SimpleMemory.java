@@ -74,7 +74,7 @@ public class SimpleMemory implements Memory {
 //        System.out.println(tv.car().javaInstance());
         Fact f = new Fact(new Sexp(formula), new LispTruth(tv));
         if (facts.add(f)) {
-            System.out.println("added fact: " + f);
+            //System.out.println("added fact: " + f);
             return true;
         }
         return false;
@@ -85,7 +85,7 @@ public class SimpleMemory implements Memory {
 //        System.out.println(tv.car().javaInstance());
         Rule r = new Rule(new Sexp(formula), w);
         if (rules.add(r)) {
-            System.out.println("added rule: " + r);
+            //System.out.println("added rule: " + r);
             return true;
         }
         return false;
@@ -164,6 +164,9 @@ public class SimpleMemory implements Memory {
         }
         return false;
     }
+
+    public List<Fact> getFacts() { return facts; }
+    public List<Rule> getRules() { return rules; }
 
     @Override
     public List<Fact> getAllFacts(final String key) {
