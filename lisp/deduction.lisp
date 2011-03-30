@@ -21,7 +21,7 @@
 ;;;; 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 ;;;; ==========================================================
-;;;; **** Deduction: backward-chaining, using Z logic, best-first search
+;;;; **** Deduction: backward-chaining, using P logic, best-first search
 
 ;;;; Abbreviations:
 ;;;;     sub           = substitution
@@ -30,9 +30,10 @@
 ;;; ************************************* TO-DO *****************************************
 ;;; 1. using rules in the abductive direction
 ;;; 2. abduction
+;;; 3. factor graph algorithm
 
 ;;; ************************************* intro *****************************************
-;;; All truth values are formated as (Z . confidence)
+;;; All truth values are formated as (P . confidence) where P is a point-valued probability
 ;;; All rules are all of the form:
 ;;;     ((head) (body))
 ;;; where
@@ -40,7 +41,7 @@
 ;;; note:  the # of args can be 0
 ;;; and
 ;;;     (body) = (op X1 X2)
-;;; where op is an operator such as 'Z-AND (fuzzy AND)
+;;; where op is an operator such as 'P-AND (probabilistic AND)
 ;;; and X1, X2, ... etc can invoke other operators recursively
 
 ;;; For example:
@@ -66,25 +67,37 @@
 ;;; This is to facilitate the bottom-up evaluation of expressions, with the goal at the root.
 ;;; A tree node can be either a sub-goal or a fact/rule.
 ;;; Each tree node has a pointer to its parent.
+
 ;;; A sub-goal node contains a list in its "node-data" slot:
 ;;;     (sub-goal (child node1) (child node2) ...)
+
 ;;; A rule node contains a rule class item (see below) in the "node-data" slot;
 ;;; It has the following elements:
 ;;;     operator confidence literal1 [literal2...] [params...]
 ;;; where literal1,2,... are proof tree nodes and each has a pointer pointing to _this_ node.
+;;; The parameters of the rule create a CPT (conditional probability table) which is then
+;;;   represented as a factor (as in factor graph).
+
 ;;; A fact node contains the fact (as a list) in its "data" slot;
-;;; Solutions = a list of substitutions & truth-value pairs that satisfy the node
-;;;             (In a more advanced version, it can be implemented as a lazy sequence)
+
+;;; solutions = probabilistic messages that pass from node to node in the factor graph algorithm
+;;;   The idea originated from Judea Pearl's message-passing algorithm for Bayes nets
+;;;   Each solution is also associated with a substitution (because each substitution instantiates
+;;;       a distinct propositional sub-tree in the factor graph, and we use only one sub-tree to
+;;;       represent all those instances)
+;;;   So we can potentially have a list of solutions for each node, not just one solution per node
+;;;   (In a more advanced version, such a list can be implemented as a lazy sequence)
+
 (defclass tree-node () (
-  (parent       :initarg :parent       :accessor parent                      :type symbol)
-  (solutions    :initarg :solutions    :accessor solutions    :initform nil  :type (list solution))
-  (node-data    :initarg :node-data    :accessor node-data    :initform nil  :type list)
+  (parent     :initarg :parent     :accessor parent                    :type symbol)
+  (solutions  :initarg :solutions  :accessor solutions  :initform nil  :type (list solution))
+  (node-data  :initarg :node-data  :accessor node-data  :initform nil  :type list)
 ))
 
-;;; A solution is just a pair:  (sub, TV)
+;;; Each solution is a pair:  (sub, message)
 (defclass solution () (
-  (sub  :initarg :sub  :accessor sub  :initform nil  :type list)
-  (tv   :initarg :tv   :accessor tv   :initform nil  :type (cons single-float single-float))
+  (sub      :initarg :sub      :accessor sub      :initform nil  :type list)
+  (message  :initarg :message  :accessor message  :initform nil  :type single-float)
 ))
 
 ;;; Class for a rule data item within a proof tree node
@@ -92,6 +105,7 @@
   (op         :accessor op         :initarg :op         :type symbol)
   (confidence :accessor confidence :initarg :confidence :type single-float)
   (literals   :accessor literals   :initarg :literals   :type list           :initform nil)
+  (factor     :accessor factor     :initarg :factor     :type single-float)
 ))
 
 ;;; The initial proof-tree
@@ -108,12 +122,13 @@
 ))
 
 (defvar timer 0)
+
 (defvar priority-list nil)
 (defvar new-states-list nil)
 (defvar *explanation* nil)         ; the result of abduction
 (defvar *abduct-mode* nil)         ; true if abduction mode is ON
 
-(setf *print-circle* t)            ; this allows printing of circular objects
+(setf *print-circle* t)            ; Lisp key that allows printing of circular objects
 
 ;;; NOTE:  the abduction algorithm is embedded in this code.
 ;;; TO-DO: explain abduction algorithm here
@@ -256,7 +271,7 @@
 ;;; 2.     add the sub to the node;
 ;;; 3.     send the resulting sub up to parent node
 ;;; 5.     update the entire proof tree in a bottom-up manner (by calling propagate)
-;;; 6. ELSE              ; if unify() fails
+;;; 6. ELSE              ; unify() fails
 ;;; 7.     no substitution is added
 ;;; 8.     the node can be deleted
 (defun process-fact (node clause best)
@@ -270,10 +285,13 @@
       (return-from process-fact)))
   ;; If unify succeeds:
   (****DEBUG 1 "process-fact: substitution = ~a" sub)
-  ;; Store the (TV,sub) pair in the list of solutions in the current node
+  ;; Store the (sub, message) pair in the list of solutions in the current node
+  ;; Here we pass the first message from a leaf node
+  ;; Note that there is an implicit factor node below this leaf, but it simply passes the
+  ;;    probability of the variable to its parent.  (first TV) = probability value
   (setf current-solution (make-instance 'solution
-                             :sub sub
-                             :tv  (tv clause)))
+                             :sub     sub
+                             :message (first (tv clause))))
   ;; The current node is filled with the literal (this is useful for abduction; see below)
   (setf (node-data node) (list 'fact (head clause)))
   ;; Record the node for abduction
@@ -308,8 +326,8 @@
   (if (equal (car body) '*bodyless*)
     (progn
       (setf current-solution (make-instance 'solution
-                                  :sub sub
-                                  :tv  *true*))
+                                  :sub      sub
+                                  :message  1.0))
       (propagate node (list current-solution))
       (return-from process-rule)))
   ;; For each literal...
@@ -366,7 +384,7 @@
     ;; If parent is a rule: delete parent
     (retract parent best)))
 
-;;; **** Propagate TVs up the proof tree
+;;; **** Propagate messages up the proof tree
 ;;; INPUT:   a new list of solutions arrives at the current node
 ;;; RETURN:  nothing (update solutions in proof tree)
 ;;; Algorithm:
@@ -380,9 +398,9 @@
 ;;;         ELSE IF  current solution has causal primacy over competing ones:
 ;;; 5.               current solution wins;  send to parent and kill the other solutions
 ;;; 6.      ELSE apply mixture rule, such as NARS' rule or Ben's rule;  send result to parent
-;;;                                                   w1 f1 + w2 f2
-;;;                  This is Wang's formula:    f0 = ---------------
-;;;                                                      w1 + w2
+;;;                                                        w1 f1 + w2 f2
+;;;                  This is Pei Wang's formula:    f0 = -----------------
+;;;                                                           w1 + w2
 ;;;     **** Note:  In the current code, we don't do 3-6.
 ;;;     **** We simply send multiple solutions to the parent, even if they are conflicting.
 ;;; 7.  IF  parent is a rule:
@@ -483,8 +501,8 @@
           ;; send new-solutions to parent node;  recurse
           (propagate parent new-solutions)))))
 
-;;; Merge 2 lists of solutions
-;;; INPUT:   2 lists of solutions
+;;; Merge two lists of solutions
+;;; INPUT:   two lists of solutions
 ;;;          tv-operation = operation to be performed on truth values if merging is OK
 ;;; OUTPUT:  new list of merged solutions
 (defun merge-solutions (soln-list1 soln-list2 tv-operation)
@@ -629,6 +647,6 @@
     (setf str
       (concatenate 'string str
            ;(format nil "~C[31m~a~C[0m " *Esc* (tv solution) *Esc*)     ; print in color
-           (format nil "~a " (tv solution))))
+           (format nil "~a " (message solution))))
   )
   str)              ; return the string
