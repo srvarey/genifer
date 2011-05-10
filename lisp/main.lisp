@@ -25,6 +25,12 @@
 ;;; change to the directory containing the code
 ;(cd "/cygdrive/c/lisp/Genifer")
 
+;;; Logic-type can be:
+;;;     "Z"    = pure fuzzy
+;;;     "P"    = P(B) = binary probabilistic
+;;;     "P(Z)" = fuzzy probabilistic
+(defvar *logic-type* "P")
+
 (defvar *debug-level* 1)
 
 ;;; TODO: breakpoint macro -- still buggy
@@ -38,8 +44,7 @@
   "********************************************** ~a *******************************************"
   msg)))
 
-
-(defun ****DEBUG (msg &optional arg1 arg2 arg3 arg4 arg5)
+(defun ****DEBUG (msg &optional arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10)
   (if (numberp msg)
     (setf level msg)
     (setf level 10))
@@ -47,16 +52,23 @@
     (progn
       (format t "DEBUG: ")
       (if (numberp msg)
-        (format t arg1 arg2 arg3 arg4 arg5)
-        (format t msg arg1 arg2 arg3 arg4 arg5))
+        (format t arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10)
+        (format t msg arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9 arg10))
       (format t "~%"))))
 
 ;;; load modules
 (load "memory.lisp")
 (load "unification.lisp")
 ;(load "lazy-sequence.lisp")
-(load "deduction.lisp")
-(load "Z-calculus.lisp")
+(cond
+  ((equalp *logic-type* "Z")
+    (load "deduction-Z.lisp")
+    (load "Z-calculus.lisp"))
+  ((equalp *logic-type* "P")
+    (load "Z-calculus.lisp")                          ; convert-w-to-C is needed
+    (load "deduction-P.lisp"))
+  (T
+    (load "deduction-PZ.lisp")))
 (load "induction1.lisp")
 ;(load "abduction.lisp")
 ;(load "induction.lisp")
