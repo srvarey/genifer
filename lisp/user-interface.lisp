@@ -131,15 +131,17 @@
     (format t "~%Commands:~%")
     (format t "    a = abduce ~%")
     (format t "    b = backward chain ~%")
-    (format t "    d = set debug level, current = ~a ~%" *debug-level*)
+    (format t "    d = set debug level, current = ~a (1 = most verbose) ~%" *debug-level*)
     (format t "    i = induce ~%")
     (format t "    m = dump memory ~%")
     (format t "    t = system test ~%")
+    (format t "    T = system test with debug off ~%")
     (format t "    x = quit ~%?")
     (setf command-from 'keyboard)
     (setf command nil)
     ;(get-command)    ; this is a more sophisticated read-char but I've forgotten what good it is
     (setf command (read-char))
+    (read-char-no-hang *standard-input*)
     ;(format t "command = [~a]~%" command)
 
     ;; Try to abduce the fact (see deduction.lisp)
@@ -189,6 +191,14 @@
     (if (equal command #\t)
       (progn
         (format t "~% ************ system test ************* ~%")
+        (system-test)
+        (setf command nil)))
+
+    ;; System test without debug
+    (if (equal command #\T)
+      (progn
+        (format t "~% ************ system test ************* ~%")
+        (setf *debug-level* 100)
         (system-test)
         (setf command nil)))
 
