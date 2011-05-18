@@ -1,0 +1,528 @@
+\documentclass[12pt,a4paper]{report}
+
+\usepackage[dvips, pdfauthor={Yan King Yin}, bookmarks, anchorcolor=blue, colorlinks, linkcolor=blue, citecolor=blue, urlcolor=blue, breaklinks]{hyperref}
+\usepackage{breakurl}
+\usepackage[dvips,final]{graphicx}
+\usepackage{float}
+\usepackage[square]{natbib}
+\usepackage{color}
+\usepackage{amsmath}   % for {equation} {cases} {xleftarrow}
+\usepackage{amssymb}   % for \curlyvee
+\usepackage{stmaryrd}  % for \bigcurlyvee, \widetilde{\bigwedge}
+\usepackage{wasysym}   % for \iint (double integral)
+\usepackage{makeidx}
+\usepackage[style=list,acronym=true,number=none]{glossary}
+\usepackage{alg}
+\usepackage{minitoc}
+\usepackage[pointedenum]{paralist}
+\usepackage[sf,bf,big,raggedright,compact]{titlesec}
+
+\definecolor{DarkGreen}{rgb}{0.1,0.4,0.1}
+
+\newcommand{\code}[1]{{\footnotesize{\ttfamily #1}}}
+\newcommand{\formula}[1]{\textcolor{DarkGreen}{#1}}
+\renewcommand{\star}{$* \;$}
+\newcommand{\app}{$\cdot \;$}
+\newcommand{\eg}{\textbf{Example:} }
+
+\renewcommand{\familydefault}{\sfdefault} 
+\renewcommand{\mtcfont}{\small\sffamily}
+\renewcommand{\mtcSfont}{\small\sffamily}
+\renewcommand{\mtcSSfont}{\small\sffamily}
+\renewcommand{\mtcSSSfont}{\small\sffamily}
+\renewcommand{\mtifont}{\small\sffamily}
+\renewcommand{\mtctitle}{}
+\renewcommand{\chaptername}{Ch }
+
+\titlespacing{\chapter}{0pt}{0pt}{0pt}
+\titleformat{\chapter}[hang]{\sffamily\bfseries\Huge\color{blue}}{\thechapter \hspace{30pt}}{0pt}{}
+\titleformat{\appendix}[hang]{\sffamily\bfseries\Huge\color{blue}}{\thechapter \hspace{30pt}}{0pt}{}
+\titleformat{\section}[hang]{\sffamily\bfseries\Large\color{blue}}{\thesection \hspace{10pt}}{0pt}{}
+\titleformat{\subsection}[hang]{\sffamily\bfseries\large\color{blue}}{\thesubsection \hspace{5pt}}{0pt}{}
+\titleformat{\subsubsection}[hang]{\sffamily\bfseries\color{blue}}{\thesubsubsection \hspace{5pt}}{0pt}{}
+
+\newcommand{\algrepeatforever}{\textbf{repeat forever}\\\algbegin}
+
+\interfootnotelinepenalty=50000
+
+\title{\textbf{Genifer\\-- an artificial general intelligence}}
+\author{Yan King Yin (general.intelligence@Gmail.com)\\ \\
+with input from:\\
+Abram Demski\\
+Ben Goertzel\\
+Martin Magnusson\\
+Russell Wallace\\
+Pei Wang
+}
+\date{\copyright last revision: \today}
+
+\setlength{\headheight}{0cm}
+\setlength{\hoffset}{0cm}
+\setlength{\topmargin}{-2cm}
+\setlength{\oddsidemargin}{-2cm}
+\setlength{\evensidemargin}{-2cm}
+\setlength{\textwidth}{19cm}
+\setlength{\textheight}{28.5cm}
+\setlength{\headsep}{0cm}
+\setlength{\topskip}{0cm}
+\setlength{\footskip}{0.5cm}  % between bottom of page and page number
+\setlength{\floatsep}{0cm}
+\setlength{\textfloatsep}{0.6cm}
+\setlength{\intextsep}{0.5cm}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{7pt}
+\setlength{\pltopsep}{-5pt}   % for compact-enum
+\pagestyle{plain}
+
+\includeonly{architecture, logic, vagueness, probabilities, confidence, inference, pattern-recognition, belief-revision, induction, natural-language, planning, vision, implementation, business-aspects}
+
+\makeindex
+\makeglossary
+
+\begin{document}
+\maketitle
+\dominitoc
+\tableofcontents
+
+\setcounter{chapter}{-1}
+\chapter{Preface}
+
+\begin{enumerate}
+
+\item  This book is a perpetual draft.  Some people get upset that it is very unpolished and contains ideas that I often retract later.  I find the pros of doing this out-weight the cons:  It allows us to develop our theory much more rapidly.  Very often the details I glossed over are superceded by higher-level design changes and the previous details recede to much lesser importance.  The con is that this book may not be up to scholarly standards.
+
+\item  My \textit{personal} top priority is to obtain life extension if and when the technology is available.  I guess:\\
+\hspace*{1cm} if sufficiently many people want technology X,\\
+\hspace*{1cm} and X can be achieved at a cost affordable by those people,\\
+\hspace*{1cm} then X is likely to happen.\\
+I estimate my natural death would be around 2048, so for me AGI must happen before 2023, to allow 25 years of AGI diffusion (just to be safe!)  That means I have $\sim$13 years to build an AGI.  I don't mean to sound selfish, this is just to let people understand my priorities and motives better.
+
+\item  The source code of $\mbox{Genifer}$ is hosted on \href{http://launchpad.net/genifer}{LaunchPad}.  Some materials from my older web site have not been transferred to this book yet.  Also feel free to \href{mailto:Generic.Intelligence@Gmail.com}{contact me}!
+
+\end{enumerate}
+
+\begin{flushright}
+--- YKY
+\end{flushright}
+
+\chapter{Introduction}
+\begin{flushright}
+\emph{I am an enthusiast, but not a crank in the sense that I have some\\
+pet theories as to the proper construction of a flying machine. I wish to\\
+avail myself of all that is already known and then, if possible,\\
+add my mite to help on the future worker who will attain final success.}\\
+--- Wilbur Wright
+\end{flushright}
+
+\begin{flushright}
+\emph{Everything should be made as simple as possible, but no simpler.}\\
+--- Albert Einstein (rephrased)
+\end{flushright}
+
+\begin{flushright}
+\emph{An inventor is simply a fellow who doesn't take his education too seriously.}\\
+--- Charles Kettering 
+\end{flushright}
+
+\begin{flushright}
+\emph{When a subject becomes totally obsolete we make it a required course.}\\
+--- Peter Drucker
+\end{flushright}
+
+%\begin{flushright}
+%\emph{A problem well stated is a problem half-solved.}\\
+%--- Charles Kettering
+%\end{flushright}
+\minitoc
+
+This book describes a theory of AGI (Artificial General Intelligence) \citep*{Goertzel2007} that is still being developed.  I think the AGI problem can be decomposed into $\sim$10 computational issues and we will somehow integrate them together:
+
+\leftskip 1cm
+knowledge representation\\
+fuzzy-probabilistic logic\\
+deduction\\
+abductive reasoning\\
+inductive learning\\
+pattern recognition / categorization\\
+belief revision\\
+memory organization\\
+natural language\\
+sensory processing
+
+\leftskip 0cm
+My approach is predominantly logic-based, but it also employs redundancy in knowledge representation, including sub-symbolic knowledge, and therefore is somewhat like neural networks.  Also, it may merge with neural networks at the sensory level.  This approach can be called ``neo-classical AI''.
+
+\section{Some background of AI}
+
+The word ``logic'' comes from \textit{logos} which can mean ``word'', ``thought'', or ``reason''.  The study of logic is the study of the \textbf{mechanisms of thinking}.  Aristotle (ca 350BC) is often credited with the first substantial study of logic, with a focus on syllogisms.  Our current system of logics was developed by people such as De Morgan (1840s), Boole (1840s), Frege (1879, \textit{Begriffsschrift}), Russell and Whitehead (1903, \textit{Principia Mathematica}), and others (including Liebniz (1670s, ``algebra of thought'') whose work remain undiscovered till the 1880s).
+
+\textbf{Logic-based AI}\\
+Thus it is not so surprising that the design of AI can be based on logic.  John McCarthy (who coined the term ``AI'' in a 1956 Darthmouth conference) was first to propose the use of \textbf{formal logic} in AI.  Herbrand (1908-1931) created a basis of provability in predicate logic.  In 1965, Robinson discovered the \textbf{resolution} method for logical inference, which enabled the creation of \textbf{logic programming} and the language Prolog (Kowalski and Colmerauer, 1970s).
+
+\textbf{Connectionism}\\
+In 1943, McCulloch and Pitts formulated a formal model of neurons, leading to Rosenblatt's Perceptron (1957), and later the computational paradigm of artificial neural networks (ANNs).  In the 1980s there was a resurgence of interests in ANNs and connectionism due to the invention of the backpropagation algorithm for multilayer perceptrons.  At this point it was recognized that connectionism has the advantages of \textbf{robustness} and \textbf{graded response}, in contrast to logic-based AI's \textbf{brittleness} and \textbf{bivalence}.
+
+\textbf{Recent trends}
+In the 1990s there was rapid development in \textbf{statistical learning}.  It was then realized that ANN learning algorithms are a special case of statistical learning.  Recent development in AI is distanced from ``GOFAI'' (Good Old-Fashioned AI) by their use of statistical learning, \textbf{sub-symbolic representations}, and \textbf{optimization methods} (computational intelligence).  Computational intelligence includes new paradigms such as evolutionary computing (drawing inspiration from sexual reproduction) and swarm intelligence (drawing from social interactions).
+
+\section{Why logic?}
+\label{sec:why-logic}
+
+I started designing AGI using the neural network approach for a few years, until I discovered some fundamental difficulties in the NN approach, so I switched to a more logic-based one\footnote{Though my approach is not purely logic-based.}.
+
+Logic-based AI went out of vogue beginning in the 1980s because of the advent of connectionism and later statistical learning methods.  As a result, many researchers nowadays are unfamiliar with even the basics of logic-based AI.  In order to understand my approach it is extremely important to be familiar with \textbf{first-order logic} (FOL) and to understand the difference between first-order representations and propositional ones.
+
+\textbf{Propositional vs first-order.}  This is a typical propositional statement:\\
+\hspace*{1cm} $ p \vee q \wedge r $\\
+and a typical first-order statement:\\
+\hspace*{1cm} $ p(X) \vee q(X,Y) \wedge r(w(Y,Z)) $\\
+The chief distinction is the use of \emph{variables} in first-order logic, which greatly increases its expressiveness.
+
+The vast majority of statistical learning literature assumes that the data is represented by points in a high-dimensional space.  I call this the ``spatial'' approach which includes methods like nearest neighbor, support vector machines (SVMs), principal component analysis (PCA), and artificial neural networks (ANNs).  \textit{Spatial datasets are equivalent to propositional representations.}  First-order logic is a symbolic or relational\footnote{Relational representations are a subclass of first-order representations that do not allow functors and structured terms.} approach which is qualitatively very different.  There is strong evidence that some datasets can be easily learned by relational methods but are very difficult, if not impossible, to learn with spatial methods.  (\citep*{Thornton1996}, \citep*{Thornton2000}.\footnote{He demonstrated this with the example of a ``checkerboard'' pattern of 0's and 1's that can be easily learned by a logical formula, but would be very difficult for a neural-network learner.  This is actually the age-old debate between symbolic AI and connectionism, given a new twist in the context of machine learning.} provides an interesting and detailed analysis of this issue.)
+
+To put it more bluntly, I suspect that propositional approaches are rather useless in the logic-based AI framework (but I'd be pleasantly surprised to learn otherwise).
+
+Notice in the figure below, that all \textbf{spatial classifiers} work by ``chopping'' the space of data points (shown in 2D here) into various regions with the use of hyper-planes (as a line in 2D) or some curved boundaries.  This is very different from how first-order logic classifies data.
+
+\begin{figure}[H]
+\includegraphics{spatial-vs-logical.eps}
+\caption{Spatial vs logical classification}
+\end{figure}
+
+To illustrate this with an example:  Let's think of how a child (AGI or human) learns the concept of (blood) relatives.  The child (Jane) would be given some examples of people around her and whether they are her relatives, eg:\\
+\hspace*{1cm} father(jane, john), relative(john)\\
+\hspace*{1cm} mother(jane, mary), relative(mary)\\
+\hspace*{1cm} uncle(jane, pete), relative(pete)\\
+\hspace*{1cm} neighbor(jane, joe), $\neg$relative(joe)\\
+\hspace*{1cm} friend(jane, kate), $\neg$relative(kate)\\
+and the task is to learn a general rule for relatives.  The solution can be stated quite succinctly\footnote{This solution is not entirely correct, as relatedness can grow unbounded and everyone would be ultimately blood-related.  Perhaps this problem can be resolved by fuzziness and other mechanisms such as non-monotonicity, but my point here is to show that the situation for propositional representation is even worse, as the problem appears insurmountable in that case.} in first-order logic:\\
+\hspace*{1cm} relative(X, Y) $\leftarrow$ parent(X, Y)\\
+\hspace*{1cm} relative(X, Y) $\leftarrow$ sibling(X, Y)\\
+\hspace*{1cm} relative(X, Y) $\leftarrow$ married(X, Y)\\
+\hspace*{1cm} relative(X, Y) $\leftarrow$ relative(X,Z), relative(Y,Z)\\
+but it is very difficult to express in propositional logic unless we limit the domain of entities to a few people.  Also, we can see that \textit{spatial} statistical learning will fail to learn this rule because:\\
+1. The dataset cannot be represented as numerical values in a vector space, or it could be done only very awkwardly.\\
+2. Even when the dataset is cast in vector space, the learning algorithm can mostly learn to classify \textit{existing} examples, but the \textit{generalizations} would be wrong -- this is because the formulae in first order logic can entail discrete examples that are not necessarily located in a localized region in the numerical space.  Even if you carve the space into ridiculously complex regions, the next example would still be an exception because ``spatial compactness'' is simply absent in the underlying concept.\\
+3. The child's world typically has very few people in it, yet she is able to learn the concept.  In ANNs and statistical learning, the sample size is typically at least 100s, but logic-based learning can learn the concept with just a few examples.
+
+Although first-order representations can be converted to propositional ones via the process of propositionalization, such algorithms cost exponential time and space.  This is not difficult to see:  FOL allows us to express knowledge very succinctly.  There are some techniques that ameliorate the combinatorial explosion, such as partial instantiation (\citep*{Chandru1999}) or sparse matrix (\citep*{Domingos2008}).  But I still think it is easier and more intuitive to working on a FOL KB directly, especially for AGI.
+
+And, despite propositionalization, the class of spatial statistical learning techniques still seem to be unsuitable for logic-based AGI because propositionalization does not cure the fundamental lack of ``spatial compactness'' in logical structures that I pointed out above.  (After propositionalization, some fast propositional SATisfiability algorithms can be invoked, but they are still qualitatively different from the spatial learning algorithms.)  From this consideration, my current strategy is to focus on algorithms specifically for FOL / HOL / predicate logic.
+
+\{ Update:  \citep*{Muggleton2005} developed a support-vector ILP method.  \citep*{Gartner2008} describes a general method that constructs kernels for (first-order and higher-order) logic formulae, based on a representation of logic by typed lambda calculus formulated by \citep*{Lloyd2003}.  This may be a bridge between logical and spatial methods, but I have not looked into it in detail (It involves the use of a ``matching kernel'' that seems to have bad properties).  Also, category and topos theory may offer a way to construct morphisms between models of logic theory and geometric spaces (cf Joseph Goguen's unified concept theory and theory of institutions).  Intuitively it is obvious that a morphism can exist between the model of a theory and a geometrical space (think of a theory describing my bedroom and the physical space of my bedroom), but the relations among objects are still ``non-spatial'' (eg the predicate \texttt{on(X,Y)} is not something that has physical extension) and so they still cannot be recognized by spatial classification techniques. The question remains whether propositional techniques can classify logical concepts efficiently, not whether it can be done, which is positive. \}
+
+\{ Some new techniques have been developed to lift neural networks to first-order representations, but I have not examined them in detail (eg, \citep*{Garcez2009}, \citep*{Hammer2007}).  \}
+
+\section{Why not neural network?}
+
+There are several reasons why I think the NN approach may be less promising:
+
+1.  First-order logic is a more powerful representation scheme than (feed-forward) neural networks (\S\ref{sec:why-logic}), whereas dynamic neural networks are very difficult to work with.
+
+2.  A neuron is "fixed" within a network and cannot "move around", which seems to make it difficult to perform invariant pattern recognition (eg, translational, rotational, and scale- invariance in vision). The brain has to use neurons due to biological constraints, but it seems more effective to use other pattern matching methods on von Neumann machines. (Scale invariance is particularly difficult for ANNs, see \citep*{Muresan2004}.)
+
+3.  Neural learning is slower and require a larger amount of examples. Logic-based learning is coarse-grained and thus require fewer examples to induce the correct representation, sometimes as few as 1 example.
+
+4.  As Ben Goertzel pointed out some years ago, a network of redundant propositions can be reduced to a minimum number of non-redundant propositions, without loss of information;  the only thing that is lost is \textit{fault tolerance}.
+
+However, neural networks may be used for handling low-level vision, especially at the feature-extraction level.
+
+\section{Recursive self-improvement}
+\label{sec:RSI}
+
+RSI refers to the ability of an AGI to reprogram itself.  Some authors predict that the RSI point will trigger the Technological Singularity (eg \citep*{Kurzweil2005}).  I think the way to reach the RSI point with the least amount of efforts would be to build an automatic program synthesis tool that accepts natural-language commands or goal specifications.  From then on, we can use this tool to rewrite the tool itself and to evolve it (semi-automatically) into a full AGI system.
+
+\section{Chicken-and-egg problem}
+\label{sec:chicken-and-egg}
+
+\begin{figure}[H]
+\centering
+\includegraphics{chicken-and-egg1.eps}
+%\caption{chicken and egg problem}
+\end{figure}
+\vspace{-0.5cm}
+
+Anyone who has thought about AGI long enough will be aware of this problem:  The idea is to use a ``program evolver'' that takes an input program $\Pi_i$ and improves it to $\Pi_{i+1}$ according to some user-specifications.  We put the evolver through itself, thus building up its intelligence recursively without doing any programming (except for the initial evolver).
+
+This idea (at least naively) does not work because the initial evolver needs to have very good background knowledge about programming or else it cannot perform its job in reasonable time.  \S\ref{sec:self-programming-architecture} discusses how to make it feasible.
+
+\section{Natural reasoning}
+\label{sec:natural-reasoning}
+
+Other names for natural reasoning are: common-sense reasoning, human-like reasoning, informal reasoning.
+
+Natural reasoning is an extension of logical reasoning with:\\
+1.  ability to recognize natural concepts (which I posit requires fuzzy pattern recognition)\\
+2.  ability to use metaphors, similes, analogies, and similarity-based reasoning
+
+An example of natural reasoning is:
+
+\leftskip 1cm \textit{Suppose I need to write a program to ``break English sentences into words''.  I'd need to declare a function to do this.  What would be the input and output of this function?}
+
+\leftskip 0cm Note that in the above reasoning, I think of the function as a ``box'' with something that goes in and something out.
+
+Natural reasoning is required to turn informal, natural-language statements into formal statements.  This is especially important to formal program synthesis.
+
+\include{architecture}
+
+\chapter{Knowledge representation}
+\minitoc
+
+\section{Introduction}
+
+What would be a good knowledge representation scheme for AGI?  We need to understand that there is no single right answer to this question.  An AGI uses a KR structure to \textit{represent} the external world, and this KR structure is built with limited computational resources.  As such, it must be an approximation of the world.  This means we have much freedom in the choice of KR.
+
+My choice is based on predicate logic (in particular FOL, but we will also use HOL) because of its well-established status in AI research.  Also, FOL is easy for myself and others to understand.
+
+A common misconception is:  ``How can complex ideas such as `John loves Mary' be reduced to logic formulae like \textit{loves(john,mary)}?''  One school of thought (see eg \citep*{Johnson-Laird1983}) posits that human reasoning is based on ``mental models'', but it is unclear how exactly they can be constructed.  My view of logic-based AI is that of using logic (or ''relational structures'') as a \textit{computational structure} for \textit{constructing} mental models.  It does not mean that logical formulae in an AGI correspond to ``Truths'' in the real world.
+
+\{ TO-DO:  Sorted or unsorted logic? \}
+
+\section{Reification}
+\label{sec:reification}
+
+TO-DO:  explain what is reification, how it is represented.
+
+\section{Composition functor}
+\label{sec:CompositionFunctor}
+
+\section{Rus logical form}
+\label{sec:Rus-logical-form}
+
+\section{Representing time}
+
+As Einstein would have said, the representation scheme for space and time should be fundamentally the same.  As I have developed a vision theory (\S\ref{ch:vision}), I think temporal representations can follow a similar scheme.  OpenCog (http://www.opencog.org) is an AGI project more focused on embodiment, so we can also share their KR scheme.
+
+\section{Assumptions and counterfactuals}
+
+How to make assumptions during inference?  ``Assuming mom is at home, I call her phone number''.
+
+Example of a counterfactual conditional:  ``If Oswald did not kill kennedy, someone else would have''.
+
+\section{Contexts}
+
+An excellent survey of contexts in logic-based AI is \citep*{Akman1996}.  The book \citep*{Sowa2000}, Chapter 5, is also excellent and contains additional insights about contexts.  Also the book \citep*{Bonzon2000}.
+
+\include{logic}
+
+\include{vagueness}
+
+\include{probabilities}
+
+\include{confidence}
+
+\include{inference}
+
+\include{pattern-recognition}
+
+\include{belief-revision}
+
+\include{induction}
+
+\include{natural-language}
+
+\chapter{Memory systems}
+\begin{flushright}
+\emph{Computer science has only three ideas: cache, hash, trash}\\ --- Greg Ganger, CMU
+\end{flushright}
+\minitoc
+
+\section{Associative memory}
+\label{sec:associative-memory}
+
+Associative recall can greatly facilitate inductive learning.
+
+Sometimes fuzzy associations may be desirable.
+
+The KB being in first-order logic poses problems for fuzzy associations.  It is unlike associative neural networks which may be closer to propositional logic.
+
+\section{Efficient rule selection}
+\label{sec:EfficientRuleSelection}
+
+\{ TO-DO:  This idea is problematic.  It only works if the approximate oracle is correct a high percentage of the times;  but this is highly suspect.  \}
+
+Given:\\
+1. The goal (ie, the conclusion of the proof)\\
+2. The premises (ie, facts residing in Working Memory)\\
+Try to predict:\\
+3. The rules involved in the proof
+
+Each data point would be:\\
+1.  goal (a grounded fact)\\
+2.  premises (set of grounded facts)\\
+3.  a critical rule
+
+So it seems:\\
+\{ fact \} $\times$ \{ set of facts \} $\rightarrow$ rule
+
+Using multidimensional scaling, we can map a fact to its coordinates in a high-dimensional space.
+
+Then we can partition the high-dimensional space into grids, and to each grid assign a bucket of rules.  We need some way to partition the high-dimensional space.  But we can also partition the space of data points into many categories?
+
+\include{planning}
+
+\chapter{Program synthesis}
+\minitoc
+
+The most critical milestone of our project is to create a system that can perform simple automated programming.  Traditional program synthesis systems are hard to use because:\\
+\begin{compactenum}[1.]
+\item  They require \textit{formal specifications} of program requirements, which are often as hard to write as the programs themselves, sometimes even harder.
+
+\item  The proof search is \textit{too slow} for any problem of practical size, or the systems often require human interaction for guidance.\\
+\end{compactenum}
+
+My proposal to solve these two problems are, respectively:\\
+\begin{compactenum}[1.]
+\item  Allow \textbf{informal} specification of programming goals.  This means using (restricted) natural language, including vague / probabilistic language.
+
+\item  In order to speed up the program search, it seems that the only viable solution is to use knowledge to guide the search.  This is something that has been recognized in the AI community for a long time --- no clever search algorithm or heuristic can improve the search significantly, without domain-specific background knowledge.  Machine learning can be used to acquire such knowledge, but it is often an extremely difficult problem in itself; and we are also talking about a large body of background knowledge.  As I have argued in \S\ref{sec:learn-by-being-told}, the most efficient way to acquire knowledge is to give up machine learning and simply \textbf{learn by being told}.\\
+\end{compactenum}
+
+As with many AI problems, the program synthesis problem can be construed as a search, and we have the usual choice of top-down and bottom-up. % I think the more promising approach is top-down but is this really true?
+
+\section{Formal program synthesis}
+
+\chapter{Value judgments}
+\begin{flushright}
+\emph{The real question is not whether machines think but whether men do.}\\
+--- B F Skinner
+\end{flushright}
+\minitoc
+
+\section{My stance on AGI friendliness}
+
+I do not have a rigorous theory for AGI friendliness and I'd be very suspicious of any such theory.  But I believe that AGI technology should be made widely available to the general public, because the distribution of power is the best safeguard against abuses of AGI.
+
+Other than that, the AGI should be subject to certain laws that prevent exploitation (eg, unlimited growth or taking up of physical resources).  That would be the job of governments.
+
+
+\section{Sentient vs non-sentient AGI}
+
+\include{vision}
+
+\include{implementation}
+
+\include{business-aspects}
+
+\chapter*{A. Quick start guide to AGI}
+\addcontentsline{toc}{chapter}{Appendix A: quick start guide to AGI}
+
+This is the quickest way to get up to speed from 0 to AGI.  (Warning: These recommendations are subjective!)
+
+If you want to get a quick understanding of \textbf{neuroscience} (strictly speaking you may not even need to):\\
+Browse, but don't read:
+\begin{compactenum}[\textbullet ]
+\item a book about the human brain, such as: \href{http://www.amazon.com/Human-Brain-Introduction-Functional-Anatomy/dp/0323041310/ref=sr_1_2?ie=UTF8&s=books&qid=1268965281&sr=8-2}
+{The Human Brain}
+\item a textbook of neurochemistry, such as:
+\href{http://www.amazon.com/Basic-Neurochemistry-Seventh-Molecular-Cellular/dp/012088397X/ref=sr_1_1?ie=UTF8&s=books&qid=1268965399&sr=1-1}
+{Basic Neurochemistry}
+\item a textbook on the neuron, such as:
+\href{http://www.amazon.com/Neuron-Cell-Molecular-Biology/dp/0195145232/ref=sr_1_1?ie=UTF8&s=books&qid=1268965470&sr=1-1}
+{The Neuron}
+\item a book on modeling a single neuron, such as:
+\href{http://www.amazon.com/Biophysics-Computation-Information-Computational-Neuroscience/dp/0195181999/ref=sr_1_1?ie=UTF8&s=books&qid=1268967514&sr=1-1}
+{Biophysics of Computation: Information Processing in Single Neurons}
+\item a book on modeling the whole brain, such as:
+\href{http://www.amazon.com/Memory-Attention-Decision-Making-computational-neuroscience/dp/0199232709/ref=ntt_at_ep_dpt_2}
+{Memory, Attention, and Decision-Making: A unifying computational neuroscience approach}
+\end{compactenum}
+Then you will get an idea of the complexity of wetware and a general sense of how intractable it is to re-engineer the brain (except by brute force).  So we should give it up.  Note the analogy:  it is easier to engineer a flying machine with a novel design rather than exactly copying the bird.
+
+\includegraphics[0,0][40,40]{UnderConst.png}
+
+To learn the basics of AI (the status quo of current AI), get one of these AI bibles:
+\begin{compactenum}[\textbullet ]
+\item AIMA
+\item Luger
+\item Winston
+\item Nilsson
+\end{compactenum}
+
+To learn logic:
+\begin{compactenum}[\textbullet ]
+\item Chang $\&$ Lee
+\item Fitting
+\item higher-order logic:
+\item lambda calculus: ?
+\item combinatory logic: ?
+\item term rewriting: ?
+\end{compactenum}
+
+The best books to learn programming languages (in the context of AI):
+\begin{compactenum}[\textbullet ]
+\item Prolog: Ivan Bratko
+\item Lisp: PAIP or Winston
+\item ML: Paulson: ML for the Working Programmer
+\item Haskell: ``Algorithms'' by Rabhi $\&$ Lapalme
+\end{compactenum}
+
+The best books on:
+\begin{compactenum}[\textbullet ]
+\item Inductive logic programming: de Raedt
+\item Causality: Williamson
+\item Fuzzy logic: ?
+\item Bayesian networks: Pearl
+\item Knowledge representation: Levesque $\&$ Brachman
+\item Natural language understanding: Jurafsky $\&$ Martin
+\end{compactenum}
+
+\chapter*{Acknowledgments}
+
+In addition to the people listed on the title page, I'd like to thank the AGI mailing-list participants for years of discussions.
+
+%\glossary{name={},description={}}
+\glossary{name={ATMS},description={assumption-based truth maintenance system}}
+\glossary{name={ATP},description={automated theorem proving}}
+\glossary{name={backward chaining},description={a deduction algorithm that makes deduction steps backwards, starting with the goal to be proved}}
+\glossary{name={BDI},description={belief-desire-intention (architecture)}}
+\glossary{name={BN},description={Bayesian network}}
+\glossary{name={CDF},description={cumulative distribution function}}
+\glossary{name={CNF},description={conjunctive normal form}}
+\glossary{name={DNF},description={disjunctive normal form}}
+\glossary{name={DP},description={deductive planning}}
+\glossary{name={EA},description={evolutionary algorithm}}
+\glossary{name={FOL},description={first-order logic}}
+\glossary{name={forward chaining},description={a deduction algorithm that performs deduction steps starting from the premises}}
+\glossary{name={ground},description={(logic) a formula is ground if it does not contain variables}}
+\glossary{name={HO},description={higher-order}}
+\glossary{name={HOL},description={higher-order logic}}
+\glossary{name={ILP},description={inductive logic programming}}
+\glossary{name={JTMS},description={justification-based truth maintenance system}}
+\glossary{name={KB},description={knowledge base}}
+\glossary{name={KR},description={knowledge representation}}
+\glossary{name={LBAI},description={logic-based AI}}
+\glossary{name={LGG},description={least general generalization}}
+\glossary{name={literal},description={(logic) a literal is an atomic formula or its negation}}
+\glossary{name={LTM},description={Long-Term Memory}}
+\glossary{name={MDL},description={minimum description length}}
+\glossary{name={MEA},description={means-end analysis}}
+\glossary{name={NL},description={natural language}}
+\glossary{name={NP},description={noun phrase}}
+\glossary{name={NR},description={natural reasoning (= common-sense / human-like reasoning)}}
+\glossary{name={PCA},description={principal component analysis}}
+\glossary{name={PDF},description={probability density function}}
+\glossary{name={RL},description={reinforcement learning}}
+\glossary{name={RRL},description={relational reinforcement learning}}
+\glossary{name={RSI},description={recursive self-improvement}}
+\glossary{name={rule},description={a logic formula with variables (opposite of ground)}}
+\glossary{name={SAT},description={logical satisfiability}}
+\glossary{name={SLD},description={selective linear definite clause resolution}}
+\glossary{name={SLS},description={stochastic local search}}
+\glossary{name={SVM},description={support vector machines}}
+\glossary{name={term},description={in FOL, terms are the arguments of predicates;  a term can be a variable, a constant, or recursive applications of functions to terms}}
+\glossary{name={TV},description={truth value}}
+\glossary{name={VP},description={verb phrase}}
+\glossary{name={WM},description={Working Memory, part of the KB that has faster processing speed}}
+\glossary{name={ZOL},description={zeroth-order logic (= propositional logic)}}
+
+\printglossary
+\addcontentsline{toc}{chapter}{Glossary}
+
+\bibliographystyle{plainnat}
+\bibliography{AGI-book}
+
+%\printindex
+%\addcontentsline{toc}{chapter}{Index}
+
+\end{document}

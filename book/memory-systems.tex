@@ -1,0 +1,37 @@
+\chapter{Memory systems}
+\begin{flushright}
+\emph{Computer science has only three ideas: cache, hash, trash}\\ --- Greg Ganger, CMU
+\end{flushright}
+\minitoc
+
+\section{Associative memory}
+\label{sec:associative-memory}
+
+Associative recall can greatly facilitate inductive learning.
+
+Sometimes fuzzy associations may be desirable.
+
+The KB being in first-order logic poses problems for fuzzy associations.  It is unlike associative neural networks which may be closer to propositional logic.
+
+\section{Efficient rule selection}
+\label{sec:EfficientRuleSelection}
+
+\{ TO-DO:  This idea is problematic.  It only works if the approximate oracle is correct a high percentage of the times;  but this is highly suspect.  \}
+
+Given:\\
+1. The goal (ie, the conclusion of the proof)\\
+2. The premises (ie, facts residing in Working Memory)\\
+Try to predict:\\
+3. The rules involved in the proof
+
+Each data point would be:\\
+1.  goal (a grounded fact)\\
+2.  premises (set of grounded facts)\\
+3.  a critical rule
+
+So it seems:\\
+\{ fact \} $\times$ \{ set of facts \} $\rightarrow$ rule
+
+Using multidimensional scaling, we can map a fact to its coordinates in a high-dimensional space.
+
+Then we can partition the high-dimensional space into grids, and to each grid assign a bucket of rules.  We need some way to partition the high-dimensional space.  But we can also partition the space of data points into many categories?
