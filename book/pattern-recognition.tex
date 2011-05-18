@@ -1,0 +1,166 @@
+\chapter{Pattern recognition}
+\label{ch:pattern-recognition}
+\minitoc
+
+The diagram below is due to David Marr:
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7, bb=0 0 414 269]{Marr3DModel.PNG}
+\end{figure}
+
+A highly simplified example of pattern recognition is the visual recognition of a human body by a Prolog rule such as\footnote{
+Note that these concepts refer to \textit{visual features} rather than ideas  (The abstract concept of a human can be recognized via a larger set of rules that includes the visual rules).  The visual features should also be related to each other by some spatial predicates, but we ignore them here.  The details of visual recognition is explained in \S\ref{ch:vision}.
+}:\\
+\hspace*{1cm} \code{human :- head, torso, arm1, arm2, leg1, leg2.}\\
+and each body part can be further recognized by its components such as:\\
+\hspace*{1cm} \code{arm1 :- upper-arm, forearm, hand, fingers.}
+
+In general the mechanism for pattern recognition is \textbf{forward-chaining} because we start with the premises (sensory input) and we do not know the desired conclusions in advance.
+
+\section{The theory-based theory}
+
+Concept formation (or ``categorization'' in the cognitive science literature, \citep*{Murphy2002}, \citep*{Cohen2005}, \citep*{Margolis1999}, \citep*{Lakoff1987}) is the task of using machine learning to learn common-sense concepts (\citep*{Nakamura1993}, \citep*{Wrobel1994}).  \citep*{Wrobel1994} has summarized the following properties of human concepts:
+\begin{compactenum}[1.]
+\item concepts often have non-necessary features
+\item disjunctive concepts (there may not be any features that are shared by all members of a concept)
+\item relational information (seems to require first-order logic to represent)
+\item some features are themselves concepts
+\item typicality (people can often rank examples according to typicality, eg the most typical fruit is orange)
+\item basic levels (people are more adapt at categorization at certain basic levels, eg naming an object ``chair'' rather than ``office chair'' or ``a piece of furniture'')
+\item superordinate distance (eg ``chicken'' is rated more similar to ``animal'' than to ``bird'')
+\item unclear cases (eg ``is tomato a fruit?'')
+\item context-dependent effects
+\item goal-dependent effects
+\end{compactenum}
+
+There are two major theories of categorization:  In the \textbf{Classical view} a concept is defined by a set of defining features which are individually necessary and sufficient.  This view has very few adherents now.  The other major theory is the \textbf{Exemplar view}, which classifies instances based on their similarity (eg a distance metric) to a set of existing exemplars.
+
+In my opinion, also shared by \citep*{Murphy1985} and \citep*{Wrobel1994}, the most satisfactory solution (aka the \textbf{theory-based theory}) is to view categorization as an \textit{inference} process, where concept formation means constructing \textit{explanations} of why certain objects belong to a concept.
+
+\section{Similarity}
+\label{sec:similarity}
+
+Similarity is an essential component of commonsense reasoning.  For example, if we are told that "the whale is like a fish except that it is a mammal" we could draw the conclusion that the whale can swim (because fishes usually can swim) \footnote{But we would not conclude that the whale lays eggs because mammals don't lay eggs and we know that the whale \emph{is} a mammal, but it is only similar to a fish, and "is" is stronger than "similar to".}.
+  
+The similarity measure may also help in associative recall (\S\ref{sec:associative-memory}).
+
+Similarity can be defined as an equivalent relation $\approx$, analogous to the equality relation $=$.  For example we can write\\
+\tab $\mbox{whale} \approx \mbox{fish}$.
+
+Recall that equality ($=$) is defined by \textbf{Leibniz's axiom of extensionality} -- which states that 2 entities are the same if every property of one is also a property of the other.  In type theory it can be stated as:
+\begin{equation}
+\forall x [f x = g x] \Rightarrow f = g
+\label{eqn:Leibniz-extensionality}
+\end{equation}
+with $x : \beta$ and $f, g : \beta \rightarrow \alpha $.  This definition is given in Church's type theory in 1940.  It defines equality for any function / predicate / proposition.
+
+The similarity $\approx$ can be regarded as the probabilistic version of $=$.  We can simply replace the $\forall$ quantification in (\ref{eqn:Leibniz-extensionality}) with the probabilistic quantification $\#$ (\S\ref{sec:probabilistic-quantifier}), as in:
+\begin{equation}
+\# x [f x = g x] \Rightarrow f \approx g.
+\label{eqn:probabilistic-extensionality}
+\end{equation}
+
+But there is one problem.  In the whale $\approx$ fish example, the similarity is there not because the whale and fish predicates can apply to many common members (in fact, the 2 classes have no overlaps);  but because there are \textit{other} predicates that apply to both of them as objects.  For example:
+
+\tab \tab \tab
+\begin{tabular}{l|l}
+has-fins(whale)        & has-fins(fish)\\
+lives-in(whale, water) & lives-in(fish, water)\\
+vertebrate(whale)      & vertebrate(fish)\\
+\end{tabular}
+
+How to capture this?  The solution is to ``turn around'' Leibnez's definition thusly:
+\begin{eqnarray}
+\forall f [f x = f y] &\Rightarrow& x = y \\
+\# f [f x = f y]      &\Rightarrow& x \approx y.
+\label{eqn:inverted-extensionality}
+\end{eqnarray}
+Notice that if we use higher-order logic, $f$ can be unified with n-ary predicates with other arguments, eg
+ $$f(x) = \mbox{lives-in}(x, \mbox{water}).$$
+So this is a very powerful way of expressing all forms of similarities.
+
+\{ To-do:  I need to develop the above theory further.  Milner's Context Lemma in domain theory seems to have some semblance to what we're doing here.  \}
+
+We'd be interested in measuring similarities between entities with certain structures.  This has been considered, eg in \citep*{Schmid2003}, chapters 10-12, in an ILP setting.  A famous example is the similarity between the solar system and the atom:  the important point is that both systems have bodies revolving around a central body, but it does not matter what their size, mass, and temperature, etc, are.
+
+\{ The text that follows is outdated material... \}
+\underconst
+
+What we seek is a correspondence between 2 structured entities, and to quantitatively measure the strength of such a correspondence.  Perhaps we can count the number of relations common to both entities.
+
+\subsection{Motivating examples}
+
+(A) ``Marmite is similar to Vegemite''\\
+\hspace*{1cm} \begin{tabular}{l|l}
+salty(marmite)                   & salty(vegemite)\\
+dark-brown(marmite)              & dark-brown(vegemite)\\
+yeast-extract(marmite)           & yeast-extract(vegemite)\\
+rich-in(marmite, vitamin B)      & rich-in(vegemite, vitamin B)\\
+sub-string(name(marmite),"mite") & sub-string(name(vegemite),"mite")\\
+popular-in(england)              & popular-in(australia)
+\end{tabular}
+
+So I propose that the similarity between 2 objects can be calculated by considering all predicates that apply to both objects and obtaining the ratio between the number of identical and different predicates:
+\begin{equation}
+\mbox{similarity } \; \psi = \frac{N^{=}}{N^{=} + N^{\neq}}
+\end{equation}
+
+\{ TO-DO:  If the predicates have complex structure, we need to (recursively) compare the other arguments, and if the latter are different, adjust for their differences. \}
+
+The above calculation can also be weighted by \textbf{information utility}, yielding the \textbf{subjective similarity} measure.
+
+NOTE:  (B) is a bad example and should be replaced by something else.\\
+(B) ``Lincoln is similar to Kennedy''
+\footnote{In this example I have used my own knowledge representation scheme Geniform.  The example is based on a series of uncanny coincidences between the Lincoln and Kennedy assassinations that are often cited in trivia books.}
+\\
+\hspace*{1cm} \begin{tabular}{l|l}
+elected-to-congress(lincoln, 1846)        & elected-to-congress(kennedy, 1946)\\
+elected-president(lincoln, 1860)          & elected-president(kennedy, 1960)\\
+succeeded-by(lincoln, vice-president$_1$) & succeeded-by(kennedy, vice-president$_2$)\\
+\hspace*{1cm} name(vice-president$_1$, "johnson") &
+\hspace*{1cm} name(vice-president$_2$, "johnson")\\
+\hspace*{1cm} born(vice-president$_1$, 1808) &
+\hspace*{1cm} born(vice-president$_2$, 1908)\\
+assassinated$_1$(lincoln, friday)         & assassinated$_2$(kennedy, friday)\\
+in(assassinated$_1$, theater)             & in(assassinated$_2$, car)\\
+name(theater, "ford")                     & made(car, "ford")\\
+with$_1$(wife(lincoln), lincoln)          & with$_2$(wife(kennedy), kennedy)\\
+\hspace*{1cm} during(with$_1$, assassination$_1$) &
+\hspace*{1cm} during(with$_2$, assassination$_2$)\\
+\end{tabular}
+
+Additionally:\\
+\hspace*{1cm} name(car, "Lincoln")\\
+\hspace*{1cm} has(kennedy, secretary), name(secretary, "Lincoln")
+
+The additional facts do not increase the similarity, but they do make the 2 cases seem more ``connected''.
+
+\underconst
+
+(C) Some quantitative examples:\\
+\hspace*{1cm} \begin{tabular}{|l|l|l|}
+\hline
+\textbf{the thing} & \textbf{approximated as} & \textbf{reason}\\
+\hline
+orange T-shirt     & red T-shirt      & proximity in color space\\
+7 people           & several people   & $\mathcal{Z}$\\
+6'5 tall           & very tall        & $\mathcal{Z}$\\
+(John lies on several occasions) & John often lies & $\mathcal{P}$\\
+Stewart Shapiro    & Stuart Shapiro   & string edit distance\\
+\hline
+\end{tabular}
+
+These examples can be represented and approximated by $\mathcal{P/Z}$ values (eg with fuzzy pattern recognition).
+
+%orange(t-shirt) -> red(t-shirt)
+%7*people -> several*people
+%height(john,6.5) -> tall(john)
+%(multiple facts) -> lies1(john), often(lies1)
+%"Stewart Shapiro" -> "Stuart Shapiro"
+
+(D) Some qualitative examples:\\
+\hspace*{1cm} John is humorous $\approx$ John is witty\\
+\hspace*{1cm} junk food, smoking and drinking $\approx$ unhealthy lifestyle\\
+\hspace*{1cm} theft $\approx$ burglary\\
+\hspace*{1cm} (complex scene) $\approx$ a fighting in a bar
+

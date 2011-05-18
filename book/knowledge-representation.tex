@@ -1,0 +1,37 @@
+\chapter{Knowledge representation}
+\minitoc
+
+\section{Introduction}
+
+What would be a good knowledge representation scheme for AGI?  We need to understand that there is no single right answer to this question.  An AGI uses a KR structure to \textit{represent} the external world, and this KR structure is built with limited computational resources.  As such, it must be an approximation of the world.  This means we have much freedom in the choice of KR.
+
+My choice is based on predicate logic (in particular FOL, but we will also use HOL) because of its well-established status in AI research.  Also, FOL is easy for myself and others to understand.
+
+A common misconception is:  ``How can complex ideas such as `John loves Mary' be reduced to logic formulae like \textit{loves(john,mary)}?''  One school of thought (see eg \citep*{Johnson-Laird1983}) posits that human reasoning is based on ``mental models'', but it is unclear how exactly they can be constructed.  My view of logic-based AI is that of using logic (or ''relational structures'') as a \textit{computational structure} for \textit{constructing} mental models.  It does not mean that logical formulae in an AGI correspond to ``Truths'' in the real world.
+
+\{ TO-DO:  Sorted or unsorted logic? \}
+
+\section{Reification}
+\label{sec:reification}
+
+TO-DO:  explain what is reification, how it is represented.
+
+\section{Composition functor}
+\label{sec:CompositionFunctor}
+
+\section{Rus logical form}
+\label{sec:Rus-logical-form}
+
+\section{Representing time}
+
+As Einstein would have said, the representation scheme for space and time should be fundamentally the same.  As I have developed a vision theory (\S\ref{ch:vision}), I think temporal representations can follow a similar scheme.  OpenCog (http://www.opencog.org) is an AGI project more focused on embodiment, so we can also share their KR scheme.
+
+\section{Assumptions and counterfactuals}
+
+How to make assumptions during inference?  ``Assuming mom is at home, I call her phone number''.
+
+Example of a counterfactual conditional:  ``If Oswald did not kill kennedy, someone else would have''.
+
+\section{Contexts}
+
+An excellent survey of contexts in logic-based AI is \citep*{Akman1996}.  The book \citep*{Sowa2000}, Chapter 5, is also excellent and contains additional insights about contexts.  Also the book \citep*{Bonzon2000}.
