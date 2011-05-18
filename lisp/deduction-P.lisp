@@ -1,3 +1,7 @@
+;;;; =======================================================================
+;;;;      Deduction: backward-chaining, using P(B) logic, best-first search
+;;;; =======================================================================
+
 ;;;; Genifer/deduction.lisp
 ;;;;
 ;;;; Copyright (C) 2009 Genint
@@ -19,20 +23,21 @@
 ;;;; along with this program; if not, write to:
 ;;;; Free Software Foundation, Inc.,
 ;;;; 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-;;;; ==========================================================
-;;;; **** Deduction: backward-chaining, using P logic, best-first search
+;;;; ------------------------------------------------------------------------------
 
 ;;;; Abbreviations:
 ;;;;     sub           = substitution
 ;;;;     TV            = truth value
 
 ;;; ************************************* TO-DO *****************************************
+;;; 0. factor graph calculations are wrong;  Abram may fix it later
 ;;; 1. using rules in the abductive direction
 ;;; 2. abduction
-;;; 3. factor graph algorithm
+;;; 3. conjunctive head in rules
+;;; 4. junction nodes (for cycle resolution)
 
-;;; ************************************* intro *****************************************
+;;; ********************************** Introduction ***************************************
+;;;
 ;;; All truth values are formated as (P . confidence) where P is a point-valued probability
 ;;; All rules are all of the form:
 ;;;     ((head) (body))
@@ -40,21 +45,25 @@
 ;;;     (head) = (predicate arg1 arg2 ...)
 ;;; note:  the # of args can be 0
 ;;; and
-;;;     (body) = (op X1 X2)
-;;; where op is an operator such as 'P-AND (probabilistic AND)
-;;; and X1, X2, ... etc can invoke other operators recursively
+;;;     (body) = (theta c1 c2 ... X1 X2 ...)
+;;; where theta is the operator, represented as a number in [0,1] where
+;;;       theta = 0.0 or 1.0 corresponds to AND or OR
+;;;       X1, X2, ... are the literals
+;;;       c1, c2, ... are parameters associated with each literal
+;;; Each literal can invoke other operators recursively
 
 ;;; For example:
 ;;;     smart <- creative \/ humorous
 ;;;     smart(?X) <- creative(?X) \/ humorous(?X)
-;;; can be expressed as a Z rule as:
-;;;     ((smart ?X) ('Z-OR (creative ?X) (humorous ?X)))
+;;; can be expressed as a P(B) rule as:
+;;;     ((smart ?X) (1.0 0.9 0.9 (creative ?X) (humorous ?X)))
 
 ;;; The best-frist search algorithm can be implemented using call-by-continuations which
 ;;; allows remembering the search state, but we don't use that here.  We simply maintain
 ;;; the priority queue.
 
-;;; define some parameters:
+;;; ******************************* Define some parameters *******************************
+
 (defparameter max-depth 7)            ; maximum search depth
 (defparameter max-rule-length 10)     ; rule length = # of arguments it has
 (defparameter W0 50.0)                ; constant used in calculating confidence from w
@@ -63,6 +72,10 @@
 (defparameter args-decay        0.8)  ; < 1.0;  decreases the scores of consecutive args in a rule
 (defparameter testing-decay     0.98) ; < 1.0;  decreases scores of successive literal tests
 
+(setf *print-circle* t)               ; Lisp key that allows printing of circular objects
+
+;;; *********************************** Data structures **********************************
+;;;
 ;;; Proof tree is a tree with back-links so we can go from a child node to its parent node.
 ;;; This is to facilitate the bottom-up evaluation of expressions, with the goal at the root.
 ;;; A tree node can be either a sub-goal or a fact/rule.
@@ -97,14 +110,16 @@
 ;;; Each solution is a pair:  (sub, message)
 (defclass solution () (
   (sub      :initarg :sub      :accessor sub      :initform nil  :type list)
-  (message  :initarg :message  :accessor message  :initform nil  :type single-float)
+  (message  :initarg :message  :accessor message  :initform nil)
 ))
 
 ;;; Class for a rule data item within a proof tree node
 (defclass rule () (
-  (op         :accessor op         :initarg :op         :type symbol)
-  (confidence :accessor confidence :initarg :confidence :type single-float)
+; (op         :accessor op         :initarg :op         :type single-float)
   (literals   :accessor literals   :initarg :literals   :type list           :initform nil)
+  (parameters :accessor parameters :initarg :parameters :type (list single-float))
+  (goal-index :accessor goal-index :initarg :goal-index :type fixnum)
+  (confidence :accessor confidence :initarg :confidence :type single-float)
   (factor     :accessor factor     :initarg :factor     :type single-float)
 ))
 
@@ -127,8 +142,6 @@
 (defvar new-states-list nil)
 (defvar *explanation* nil)         ; the result of abduction
 (defvar *abduct-mode* nil)         ; true if abduction mode is ON
-
-(setf *print-circle* t)            ; Lisp key that allows printing of circular objects
 
 ;;; NOTE:  the abduction algorithm is embedded in this code.
 ;;; TO-DO: explain abduction algorithm here
@@ -214,8 +227,8 @@
   ;; store the sub-goal in the proof tree node
   (setf (node-data node) (list best-data))
   ;; Fetch rules that match the subgoal:
-  ;; 'fetch-clauses' is defined in memory.lisp
-  (multiple-value-bind (facts-list rules-list) (fetch-clauses (car best-data))
+  ;; 'fetch-rules' is defined in memory.lisp
+  (multiple-value-bind (facts-list rules-list) (fetch-rules (car best-data))
     (dolist (clause facts-list)
       ;; standardize apart head-of-subgoal and clause-to-be-added
       (setf subs (standardize-apart (head clause) nil)
@@ -248,7 +261,7 @@
       (setf new-node (make-instance 'tree-node
                        :parent     node
                        :node-data  (make-instance 'rule
-                                      :op         (car body)
+                                      :parameters (list (car body))      ; first element = theta
                                       :confidence (confidence clause)
                                       :literals   nil)))
       ;; Add node as current node's child
@@ -323,23 +336,23 @@
   ;;    and is not stored in the rule.
   ;; If the rule is body-less, we immediately have a solution that should be propagated up
   ;;    to the parent:
-  (if (equal (car body) '*bodyless*)
+  (if (numberp body)
     (progn
       (setf current-solution (make-instance 'solution
                                   :sub      sub
-                                  :message  1.0))
+                                  :message  body))          ; the TV is the body
       (propagate node (list current-solution))
       (return-from process-rule)))
-  ;; For each literal...
-  (dolist (lit (cdr body))
+  ;; For each parameter c or literal...
+  (dolist (arg (cdr body))
     ;; Auxiliary parameters?
-    (if (floatp lit)
-      ;; Yes, add them to the end of literals list
-      (setf (literals (node-data node)) (append (literals (node-data node)) (list lit)))
+    (if (floatp arg)
+      ;; Yes, add them to parameter list
+      (setf (parameters (node-data node)) (append (parameters (node-data node)) (list arg)))
       ;; For each literal:
       (progn
         ;; Apply substitutions to literal:
-        (setf lit (do-subst lit sub))
+        (setf lit (do-subst arg sub))
         ;; Create new nodes for the proof-tree, corresponding to arguments of the rule:
         ;; The operator and confidence are already in the proof-tree node
         (setf new-lit (make-instance 'tree-node :parent node))
@@ -387,7 +400,6 @@
 ;;; **** Propagate messages up the proof tree
 ;;; INPUT:   a new list of solutions arrives at the current node
 ;;; RETURN:  nothing (update solutions in proof tree)
-;;; **** TODO: algorithm will be revised by Abram's new approach
 ;;; Algorithm:
 ;;; 0.  IF  we have reached root of the proof tree:
 ;;; 1.      return a list of new solutions
@@ -402,20 +414,24 @@
 ;;;                                                        w1 f1 + w2 f2
 ;;;                  This is Pei Wang's formula:    f0 = -----------------
 ;;;                                                           w1 + w2
-;;;     **** Note:  In the current code, we don't do 3-6.
-;;;     **** We simply send multiple solutions to the parent, even if they are conflicting.
+;;; **** Note:  In the current code, we don't do 3-6.
+;;; **** We simply send multiple solutions to the parent, even if they are conflicting.
+;;; **** The message to be sent = [Product of] incoming messages
+;;; ****                          but the product usually has only 1 factor in it
+;;; ****                          this is because we treat multiple rules as independent.
 ;;; 7.  IF  parent is a rule:
 ;;;
-;;;                         O   parent node
-;;;                        /\    is a rule
-;;;                       /  \
-;;;             current  O    O    sibling  . . .
-;;;              node              node(s)
+;;;                         O    parent node
+;;;                        / \    is a rule
+;;;                       /   \
+;;;             current  O     O    sibling  . . .
+;;;              node               node(s)
 ;;;
 ;;; 8.      try to apply the rule if all required arguments in the conjunction are available;
 ;;;                          ie, match the newly added sub against the subs of sibling nodes
 ;;; 9.      IF  a consistent sub is found:
-;;; 10.         calculate TV;  send the resulting solution to parent node
+;;; 10.         calculate:  message = local factor * all incoming messages
+;;;             send the resulting message to parent node
 ;;;     [ it is impossible for the parent to be a fact ]
 ;;; 11. recurse to parent
 
@@ -433,92 +449,67 @@
   ;; Is parent a sub-goal?
   (if (listp parent-data)
     ;; 3-6. Simply send all solutions to parent
+    ;;      It seems that only the new solutions need to be sent up
     (propagate parent new-solutions)
     ;; ELSE parent is a rule:  try to apply the rule
     (let* ((rule     parent-data)
            (cR       (confidence rule))
-           (op       (op         rule))
+           (theta    (car (parameters rule)))
            (literals (literals   rule)))
-      (****DEBUG 1 "propagate: evaluating rule... op = ~a" op)
-      ;; Does operator require 2 or more arguments?
-      (if (member op (list 'Z-AND 'Z-OR))
-        (progn
-          (dolist (arg literals)          ; for each sibling...
-            ;; If some silbing has null TVs, that means the rule is not ready to fire yet
-            (if (null (solutions arg))
-              (return-from propagate))
-            ;; First, we abstract the numerical operation into a lambda expression,
-            ;;   so that it can be passed on to the merging procedure
-            (setf tv-operation (case op
-              ('Z-AND
-                (lambda (x1 x2)
-                  (calculate-Z-AND cR x1 x2)))
-              ('Z-OR
-                (lambda (x1 x2)
-                  (calculate-Z-OR  cR x1 x2)))))
-            ;; Merge with sibling's sequence:
-            (setf new-solutions
-              (merge-solutions new-solutions (solutions arg) tv-operation))
-          ;; Abduction mode?  **** TO-DO: abduction is unfinished
-          (if *abduct-mode*
-            ;; record the 2 arguments as parts of a potential explanation
-            (setf *current-explanation* (list op *current-explanation* arg)))))
-        ;; For 1-ary operators:
-        ;; There is no need to merge subs or check for consistency of subs
-        ;; Just simply send the calculated TV up to parent
-        (progn
-          (setf new-new-solutions nil)
-          (dolist (solution1 new-solutions)
-            (setf x1 (tv solution1))
-            ;; Apply the 1-ary operator:
-            (case op
-              ('ID                                    ; body format:  (ID x1)
-                (setf x0 (calculate-ID cR x1)))
-              ('Z-MOD1                                ; body format:  (Z-MOD1 x1 k c)
-                (let ((k (second literals))
-                      (c (third  literals)))
-                  (setf x0 (calculate-Z-G1 cR x1 k c))))
-              ('Z-MOD2                                ; body format:  (Z-MOD2 x1 d k)
-                (let ((d (second literals))
-                      (k (third  literals)))
-                  (setf x0 (calculate-Z-G2 cR x1 d k))))
-              ('Z-NOT                                 ; body format:  (Z-NOT x1)
-                (setf x0 (calculate-Z-NOT cR x1)))
-              ;; error:
-              (otherwise (progn
-                (format t "ERROR: unknown operator: ~a~%" op)
-                (setf x0 'fail))))
-            (setf solution0 (make-instance 'solution
-                                    :sub (sub solution1)   ; the arg's sub
-                                    :tv  x0))
-            (setf new-new-solutions (push solution0 new-new-solutions)))
-          (setf new-solutions new-new-solutions)
-          ;; Abduction mode?  **** TO-DO: abduction is unfinished
-          (if *abduct-mode*
-            ;; record the argument as part of a potential explanation
-            (setf *current-explanation* (list op *current-explanation*)))))
+      (****DEBUG 1 "propagate: evaluating rule... op = ~a" theta)
+      ;; The strategy is to apply the AND/OR *pairwise*, sequentially.
+      ;; First set up the left operand, X1
+      (setf c_list (cdr (parameters rule)))             ; List of parameters c1,c2,...
+      (setf c1 (car c_list))                            ; Set c1
+      (setf c_list (cdr c_list))                        ; Point to next element
+      (setf X1 (car literals))                          ; X1 = the first literal
+      (if (eql X1 node)                                 ; Is it the node with new solutions?
+          (setf X1-solutions new-solutions)             ; If so, process new-solutions *only*
+        (setf X1-solutions (solutions X1)))             ; If not, get the set of old solutions
+      (prepare-left-operand c1 X1-solutions)            ; Prepare X1
+      ;; For each of the rest of siblings, X2:
+      (dolist (X2 (cdr literals))
+        ;; If some silbing has null TV, that means the rule is not ready to fire yet
+        (if (null (solutions x2))
+          (return-from propagate))
+        (if (eql X2 node)                               ; Is it the node with new solutions?
+            (setf X2-solutions new-solutions)           ; If so, process new-solutions *only*
+          (setf X2-solutions (solutions X2)))           ; If not, get the set of old solutions
+        (setf c2 (car c_list))                          ; Set c2
+        (setf c_list (cdr c_list))                      ; Point to next element
+        ;; Merge with sibling's sequence:
+        (setf X1-solutions
+          (merge-solutions c2 X1-solutions X2-solutions))
+        ;; Abduction mode?  **** TO-DO: abduction is unfinished
+        (if *abduct-mode*
+          ;; record the 2 arguments as parts of a potential explanation
+          (setf *current-explanation* (list op *current-explanation* arg))))
       ;; If new-solutions is not empty
-      (if (not (null new-solutions))
+      (if (not (null X1-solutions))
+        (progn
+          ;; apply "theta":  result = (1 - theta) * AND-factor + theta * OR-factor
+          (apply-theta theta X1-solutions)
+          (****DEBUG 1 "propagate: got first TV = ~a" (message (car X1-solutions)))
           ;; send new-solutions to parent node;  recurse
-          (propagate parent new-solutions)))))
+          (propagate parent X1-solutions))))))
 
 ;;; Merge two lists of solutions
 ;;; INPUT:   two lists of solutions
-;;;          tv-operation = operation to be performed on truth values if merging is OK
+;;;          if merging is OK, perform sum-product operation
 ;;; OUTPUT:  new list of merged solutions
-(defun merge-solutions (soln-list1 soln-list2 tv-operation)
+(defun merge-solutions (c2 soln-list1 soln-list2)
   (setf result-solution-list nil)
   ;; Pick an element from list1
   (dolist (solution1 soln-list1)
     ;; Add the following results to the total results
     (setf result-solution-list (nconc result-solution-list
       ;; Try to merge element1 with list2 elements
-      (merge-single-solution solution1 soln-list2 tv-operation))))
+      (merge-single-solution c2 solution1 soln-list2))))
   ;; return the results
   result-solution-list)
 
 ;;; Merge a single solution against a list of solutions
-(defun merge-single-solution (solution1 soln-list2 tv-operation)
+(defun merge-single-solution (c2 solution1 soln-list2)
   (setf soln-list0 nil)
   (dolist (solution2 soln-list2)
     (block outer-loop
@@ -543,16 +534,70 @@
       ;; Then add the remaining elements in sub2 to sub0
       (setf sub0 (nconc sub0 sub2))
       ;; now sub0 has the new merged sub
-      ;; calculate:  TV0 = TV1 op TV2
-      (setf tv0 (funcall tv-operation (tv solution1) (tv solution2)))
-      ;; Create solution0 with the new TV
+      ;; calculate:  X0 = sum-product X1 X2
+      (setf x0 (sum-product c2 (message solution1) (message solution2)))
+      ;; Create solution0 with the new X0
       (setf solution0 (make-instance 'solution
-                              :sub sub0
-                              :tv  tv0))
+                              :sub     sub0
+                              :message x0))
       ;; add solution0 to soln-list0
       (push solution0 soln-list0)))
       ;; return the new list
       soln-list0)
+
+;;; Prepare leftmost operand to be used in sum-product calulation
+;;; INPUT:   list of solutions, each solution has a message equal to its TV = x1
+;;; OUTPUT:  each message in each solution is a triple:  (1 . (2 . 3))
+;;;  where   1 = x1  (unchanged)
+;;;          2 = AND-factor = c1 * x1 + ~c1 * ~x1
+;;;          3 = OR-factor  = same as AND-factor
+(defun prepare-left-operand (c1 soln-list)
+  (dolist (soln soln-list)
+    (if (numberp (message soln))
+      (let* ((x1         (message soln))
+             (AND-factor (+ (*      c1       x1)
+                            (* (- 1 c1) (- 1 x1)))))
+        (setf (message soln) `(,x1 ,AND-factor . ,AND-factor))))))
+
+;;; Calculate the sum-product message required by the factor graph algorithm
+;;; INPUT:   c2 msg1 msg2
+;;;          theta = number in [0,1]
+;;;          msg1  = the triple: (X1 . (AND-factor . OR-factor))
+;;;          msg2  = TV of X2
+;;; OUTPUT:  AND-factor = SUM[ c1 * c2 * x1 * x2 ]
+;;;          OR-factor  = SUM[ (c1 + c2 - c1 * c2) * x1 * x2 ]
+;;;          where each c1, c2, x1, x2 must be negated once during the sum, ie, ~c1 = (1 - c1)
+;;; Note:  The algorithm below is the "sequential" version;  see the book for an explanation.
+(defun sum-product (c2 msg1 msg2)
+  (let* ((x1          (car msg1))          ; x1 has been prepared so it must be a triple
+         (~x1         (- 1 x1))
+         (x2          (if (numberp msg2)   ; x2 may be a number or a triple
+                        msg2
+                        (car msg2)))
+         (~x2         (- 1 x2))
+         (~c2         (- 1 c2))
+         (AND-f1      (cadr msg1))
+         (OR-f1       (cddr msg1)))
+    ;; return the triple as CONS cells
+    `(,(* x1 x2)                           ; 1st component = product of x1 x2
+      ,(* AND-f1 (+ (*  c2  x2)            ; 2nd component = AND-factor
+                    (* ~c2 ~x2)))
+      .
+      ,(+ OR-f1                            ; 3rd component = OR-factor
+          (* (+ (*  c2   x2)
+                (* ~c2  ~x2))
+             (- 1 OR-f1))))))
+
+;;; Apply "theta" to a list of solutions
+;;; INPUT:   solution list
+;;;          each solution has an AND-factor and OR-factor stored in the message as a CONS cell
+;;; OUTPUT:  for each solution, its new message value is set to:
+;;;              (1 - theta) * AND-factor + theta * OR-factor
+(defun apply-theta (theta soln-list)
+  (dolist (soln soln-list)
+    (if (consp (message soln))
+      (setf (message soln) (+ (* (- 1 theta) (cadr (message soln)))
+                              (*      theta  (cddr (message soln))))))))
 
 ;;; ********************************* misc functions for printing ******************************
 
@@ -589,7 +634,8 @@
                 (print-tree-node (concatenate 'string spaces "___") item))))
           ;; rule?
           (progn
-            (****DEBUG 1 "~a_rule: op = ~a <~a>" spaces (op data) (print-solutions (solutions node)))
+            (setf op (car (parameters data)))
+            (****DEBUG 1 "~a_rule: op = ~a <~a>" spaces op (print-solutions (solutions node)))
             (dolist (arg (literals data))
               (if (floatp arg)
                 (return))
