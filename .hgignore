@@ -1,0 +1,5 @@
+syntax: glob
+*.tgz
+ayane.jar
+build
+private
