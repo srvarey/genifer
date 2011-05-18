@@ -30,6 +30,7 @@
 ;;;;     TV            = truth value
 
 ;;; ************************************* TO-DO *****************************************
+;;; 0. factor graph calculations are wrong;  Abram may fix it later
 ;;; 1. using rules in the abductive direction
 ;;; 2. abduction
 ;;; 3. conjunctive head in rules
@@ -117,6 +118,7 @@
 ; (op         :accessor op         :initarg :op         :type single-float)
   (literals   :accessor literals   :initarg :literals   :type list           :initform nil)
   (parameters :accessor parameters :initarg :parameters :type (list single-float))
+  (goal-index :accessor goal-index :initarg :goal-index :type fixnum)
   (confidence :accessor confidence :initarg :confidence :type single-float)
   (factor     :accessor factor     :initarg :factor     :type single-float)
 ))
@@ -225,8 +227,8 @@
   ;; store the sub-goal in the proof tree node
   (setf (node-data node) (list best-data))
   ;; Fetch rules that match the subgoal:
-  ;; 'fetch-clauses' is defined in memory.lisp
-  (multiple-value-bind (facts-list rules-list) (fetch-clauses (car best-data))
+  ;; 'fetch-rules' is defined in memory.lisp
+  (multiple-value-bind (facts-list rules-list) (fetch-rules (car best-data))
     (dolist (clause facts-list)
       ;; standardize apart head-of-subgoal and clause-to-be-added
       (setf subs (standardize-apart (head clause) nil)
@@ -334,11 +336,11 @@
   ;;    and is not stored in the rule.
   ;; If the rule is body-less, we immediately have a solution that should be propagated up
   ;;    to the parent:
-  (if (equal (car body) '*bodyless*)
+  (if (numberp body)
     (progn
       (setf current-solution (make-instance 'solution
                                   :sub      sub
-                                  :message  1.0))
+                                  :message  body))          ; the TV is the body
       (propagate node (list current-solution))
       (return-from process-rule)))
   ;; For each parameter c or literal...

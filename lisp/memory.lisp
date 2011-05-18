@@ -36,11 +36,12 @@
 ;;;     justified-by = a list of clauses that justify this fact
 ;;; timestamp -- we should not timestamp for every clause, use time-markers instead
 (defclass fact-item () (
-  (fact         :initarg :fact          :accessor fact)
-  (id           :initarg :id            :accessor id)
-  (tv           :initarg :tv            :accessor tv            :initform '(1.0 . 1.0))
-  (justifies    :initarg :justifies     :accessor justifies     :initform nil)
-  (justified-by :initarg :justified-by  :accessor justified-by  :initform nil)
+  (fact         :initarg :fact         :accessor fact         :type list)
+  (id           :initarg :id           :accessor id           :type fixnum)
+  (tv           :initarg :tv           :accessor tv           :type (list single-float single-float)
+                                                                         :initform '(1.0 . 1.0))
+  (justifies    :initarg :justifies    :accessor justifies    :type list :initform nil)
+  (justified-by :initarg :justified-by :accessor justified-by :type list :initform nil)
   ))
 
 ;;; **** Data structure for a Generic-Memory "rule" item
@@ -51,24 +52,30 @@
 ;;;     ancestors    = a list of ancestor rules of this rule
 ;;;     ancestors-to = a list of rules that this rule is ancestor to
 (defclass rule-item () (
-  (head        :initarg :head        :accessor head)
-  (body        :initarg :body        :accessor body)
-  (id          :initarg :id          :accessor id)
-  (w           :initarg :w           :accessor w            :initform 100)
-  (e+          :initarg :e+          :accessor e+           :initform nil)
-  (e-          :initarg :e-          :accessor e-           :initform nil)
-  (ancestors   :initarg :ancestors   :accessor ancestors    :initform nil)
-  (ancestor-to :initarg :ancestor-to :accessor ancestor-to  :initform nil)
+  (head        :initarg :head        :accessor head        :type list)
+  (body        :initarg :body        :accessor body        :type list)
+  (id          :initarg :id          :accessor id          :type fixnum)
+  (w           :initarg :w           :accessor w           :type fixnum :initform 100)
+  (e+          :initarg :e+          :accessor e+          :type list   :initform nil)
+  (e-          :initarg :e-          :accessor e-          :type list   :initform nil)
+  (ancestors   :initarg :ancestors   :accessor ancestors   :type list   :initform nil)
+  (ancestor-to :initarg :ancestor-to :accessor ancestor-to :type list   :initform nil)
 ))
 
 ;;; **** Data structure for a rule / fact
+;;; **** This is the data that is fetched by the inference engine
+;;; goal-index = index of goal literal as it appears in the body
+;;;              1st literal in body = 1
+;;;              if goal appears in the head, 1st head = 0, 2nd head = -1, and so on...
 ;;; If it is a fact, body = nil
+;;; If it is a body-less rule, body = TV (single-float)
 (defclass clause () (
-  (id          :initarg :id          :accessor id)
-  (confidence  :initarg :confidence  :accessor confidence)
-  (head        :initarg :head        :accessor head)
-  (body        :initarg :body        :accessor body        :initform nil)
-  (tv          :initarg :tv          :accessor tv          :initform nil)
+  (id         :initarg :id         :accessor id         :type fixnum)
+  (confidence :initarg :confidence :accessor confidence :type single-float)
+  (head       :initarg :head       :accessor head       :type list)
+  (body       :initarg :body       :accessor body       :type list   :initform nil)
+  (goal-index :initarg :goal-index :accessor goal-index :type fixnum :initform 0)
+  (tv         :initarg :tv         :accessor tv         :type list   :initform nil)
 ))
 
 ;;; Definition of the truth-value "T"
@@ -205,7 +212,6 @@
 (defun add-rule-to-mem (head &optional body w e+ e- ancestors ancestor-to)
   ;; Set default values:
   (****DEBUG 1 "adding rule to memory: ~a <- ~a" head body)
-  (if (null body) (setf body '(*bodyless*)))
   (if (null w )   (setf w    100))
   (if (null e+)   (setf e+   0))
   (if (null e-)   (setf e-   0))
@@ -238,31 +244,50 @@
   ;; Delete it
   (setf (cdr ptr) (cdr item)))
 
-;;; Fetch all clauses in KB with the given head-predicate
+;;; Fetch all rules in KB with the given predicate
 ;;; Return: a list of rules
-(defun fetch-clauses (head-predicate)
+(defun fetch-rules (given-predicate)
   (let ((facts-list (list nil))
         (rules-list (list nil)))
+    (setq goal-index 0)
     (dolist (item *generic-memory*)
       ;; is it a rule?
       (if (eql (type-of item) 'rule-item)
-        (let ((head (head item))
-              (body (body item)))
-          ;; Does head of rule match head-predicate?
-          (if (equal (car head) head-predicate)
-            (progn
-              ;; calculate the confidence c from w
-              ;; the function is defined in "PZ-calculus.lisp"
-              (setf confidence (convert-w-2-c (w item)))
-              ;; add it to list-to-be-returned
+        ;; calculate the confidence c from w
+        ;; the function is defined in "PZ-calculus.lisp"
+        (let ((confidence (convert-w-2-c (w item)))
+              (head       (head item))
+              (body       (body item)))
+          ;; For each head:
+          (dolist (head1 head)
+            ;; Does head of rule match predicate?
+            (if (equal (car head1) given-predicate)
+              ;; Add it to list-to-be-returned
               (nconc rules-list (list (make-instance 'clause
                                         :id         (id item)
                                         :confidence confidence
                                         :head       head
-                                        :body       body))))))
+                                        :body       body
+                                        :goal       goal-index))))
+            ; within heads, index grows negatively from 0
+            (decf goal-index))
+          ;; Now try to match with body of rule
+          (setf goal-index 1)                          ; within body, index starts from 1
+          (dolist (literal body)                       ; for each literal...
+            (if (listp literal)                        ; skip numerical parameters
+              ;; Does literal match predicate?
+              (if (equal (car literal) given-predicate)
+                ;; Add it to list-to-be-returned
+                (nconc rules-list (list (make-instance 'clause
+                                          :id         (id item)
+                                          :confidence confidence
+                                          :head       head
+                                          :body       body
+                                          :goal       goal-index))))
+            (incf goal-index))))
         ;; If it is a fact:
-        ;; Does fact match head-predicate?
-        (if (equal (car (fact item)) head-predicate)
+        ;; Does fact match predicate?
+        (if (equal (car (fact item)) given-predicate)
           (let ((tv (tv item)))
             ;; add it to list-to-be-returned
             (nconc facts-list (list (make-instance 'clause
@@ -270,10 +295,10 @@
                                       :confidence (cdr tv)
                                       :head       (fact item)
                                       :tv         tv)))))))
-    ;; return the 2 lists, discarding the leading 'nil' items
+    ;; return the 2 lists, discarding the leading 'nil' elements
     (values (cdr facts-list) (cdr rules-list))))
 
-;;; Comparison predicate for "sort" in function "fetch-clauses"
+;;; Comparison predicate for "sort" in function "fetch-rules"
 ;;; should return true iff x1 is strictly less than x2
 ;;; if x1 is greater than or equal to x2, return false
 ;;; sort seems to order from small to big -- we need to reverse this -- biggest confidence 1st

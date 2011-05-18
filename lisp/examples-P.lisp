@@ -25,6 +25,9 @@
 ;;;; 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ;;;; ---------------------------------------------------------------------
 
+;;; ************************************* TO-DO *****************************************
+;;; 1. we can use eg JavaBayes to calculate exact solutions to the tests
+
 ;;; ********************************* Introduction ****************************************
 
 ;;; each TV is a pair:  (probability . confidence)
@@ -60,25 +63,25 @@
 
 (add-fact-to-mem '(busy kellie) '(0.7 . 1.0))
 
-(add-rule-to-mem '(having-fun ?1) '(0.0 0.1 (busy ?1)))         ; c = 0.1 = approximate negation
-(add-rule-to-mem '(having-fun ?1) '(0.0 0.9 (at-bar ?1)))       ; c = 0.9 = approximate identity
+(add-rule-to-mem '((having-fun ?1)) '(0.0 0.1 (busy ?1)))         ; c = 0.1 = approximate negation
+(add-rule-to-mem '((having-fun ?1)) '(0.0 0.9 (at-bar ?1)))       ; c = 0.9 = approximate identity
 
 ;;; ************* Example 2
 ;;; Just a 6-layer-deep search problem with a distracting branch
 ;;; Query:  (goal robot) ?
 (add-fact-to-mem '(do-a robot) '(0.6 . 1.0))
 
-(add-rule-to-mem '(do-b ?1) '(0.0 0.9 (do-a ?1)))
-(add-rule-to-mem '(do-c ?1) '(0.0 0.9 (do-b ?1)))
-(add-rule-to-mem '(do-d ?1) '(0.0 0.9 (do-c ?1)))
-(add-rule-to-mem '(do-e ?1) '(0.0 0.9 (do-d ?1)))
-(add-rule-to-mem '(do-f ?1) '(0.0 0.9 (do-e ?1)))
-(add-rule-to-mem '(goal ?1) '(0.0 0.9 (do-f ?1)))
+(add-rule-to-mem '((do-b ?1)) '(0.0 0.9 (do-a ?1)))
+(add-rule-to-mem '((do-c ?1)) '(0.0 0.9 (do-b ?1)))
+(add-rule-to-mem '((do-d ?1)) '(0.0 0.9 (do-c ?1)))
+(add-rule-to-mem '((do-e ?1)) '(0.0 0.9 (do-d ?1)))
+(add-rule-to-mem '((do-f ?1)) '(0.0 0.9 (do-e ?1)))
+(add-rule-to-mem '((goal ?1)) '(0.0 0.9 (do-f ?1)))
 ; let's add a little distraction:
-(add-rule-to-mem '(do-x ?1) '(0.0 0.9 (do-w ?1)))
-(add-rule-to-mem '(do-y ?1) '(0.0 0.9 (do-x ?1)))
-(add-rule-to-mem '(do-z ?1) '(0.0 0.9 (do-y ?1)))
-(add-rule-to-mem '(goal ?1) '(0.0 0.9 (do-z ?1)))
+(add-rule-to-mem '((do-x ?1)) '(0.0 0.9 (do-w ?1)))
+(add-rule-to-mem '((do-y ?1)) '(0.0 0.9 (do-x ?1)))
+(add-rule-to-mem '((do-z ?1)) '(0.0 0.9 (do-y ?1)))
+(add-rule-to-mem '((goal ?1)) '(0.0 0.9 (do-z ?1)))
 
 ;;; ************* Example 3
 ;;; c is a chair:
@@ -91,7 +94,7 @@
 (add-fact-to-mem '(seat  c) '(0.7 . 1.0))
 (add-fact-to-mem '(back  c) '(0.9 . 1.0))
 
-(add-rule-to-mem '(chair ?1) '(0.0 0.9 0.9 0.9 0.9 0.9 0.9
+(add-rule-to-mem '((chair ?1)) '(0.0 0.9 0.9 0.9 0.9 0.9 0.9
                                    (seat  ?1)
                                    (back  ?1)
                                    (leg 1 ?1)
@@ -101,28 +104,28 @@
 
 ;;; A longer version using multiple intermediary predicates
 ;;; Query:  (chair2 c) ?
-(add-rule-to-mem '(chair2 ?1) '(0.0 0.9 0.9 (seat  ?1) (tmp4  ?1)))
-(add-rule-to-mem '(tmp4   ?1) '(0.0 0.9 0.9 (back  ?1) (tmp3  ?1)))
-(add-rule-to-mem '(tmp3   ?1) '(0.0 0.9 0.9 (leg 1 ?1) (tmp2  ?1)))
-(add-rule-to-mem '(tmp2   ?1) '(0.0 0.9 0.9 (leg 2 ?1) (tmp1  ?1)))
-(add-rule-to-mem '(tmp1   ?1) '(0.0 0.9 0.9 (leg 3 ?1) (leg 4 ?1)))
+(add-rule-to-mem '((chair2 ?1)) '(0.0 0.9 0.9 (seat  ?1) (tmp4  ?1)))
+(add-rule-to-mem '((tmp4   ?1)) '(0.0 0.9 0.9 (back  ?1) (tmp3  ?1)))
+(add-rule-to-mem '((tmp3   ?1)) '(0.0 0.9 0.9 (leg 1 ?1) (tmp2  ?1)))
+(add-rule-to-mem '((tmp2   ?1)) '(0.0 0.9 0.9 (leg 2 ?1) (tmp1  ?1)))
+(add-rule-to-mem '((tmp1   ?1)) '(0.0 0.9 0.9 (leg 3 ?1) (leg 4 ?1)))
 
 ;;; ************* Example 4
 ;;; From Luger's AI textbook, 2009
 ;;; Query:  (happy john) ?
 
 ;;; Anyone passing his history exams and winning the lottery is happy:
-(add-rule-to-mem '(happy ?1) '(0.0 0.9 0.9 (pass ?1 history) (win ?1 lottery)))
+(add-rule-to-mem '((happy ?1)) '(0.0 0.9 0.9 (pass ?1 history) (win ?1 lottery)))
 
 ;;; Anyone who studies or is lucky can pass all his exams:
-(add-rule-to-mem '(pass ?1 ?2) '(1.0 0.9 0.9 (study ?1) (lucky ?1)))
+(add-rule-to-mem '((pass ?1 ?2)) '(1.0 0.9 0.9 (study ?1) (lucky ?1)))
 
 ;;; John did not study but is lucky:
 (add-fact-to-mem '(study john) '(0.0 . 1.0))
 (add-fact-to-mem '(lucky john))
 
 ;;; Anyone who is lucky wins the lottery:
-(add-rule-to-mem '(win ?1 lottery) '(0.0 0.9 (lucky ?1)))
+(add-rule-to-mem '((win ?1 lottery)) '(0.0 0.9 (lucky ?1)))
 
 ;;; ************* Example 5
 ;;; Test handling of function symbols, ie unification.
@@ -130,10 +133,11 @@
 
 ;;; This is an example of a bodyless rule:
 ;;; parent(X, son-of(X)) <-
-(add-rule-to-mem '(parent ?1 (son-of ?1)))
+;;; The TV is inserted in place of the body
+(add-rule-to-mem '((parent ?1 (son-of ?1))) 0.9)
 
 ;;; ~parent(W,Y) \/ ~parent(Y,Z) \/ grandparent(W,Z)
-(add-rule-to-mem '(grandparent ?1 ?3) '(0.0 0.9 0.9 (parent ?1 ?2) (parent ?2 ?3)))
+(add-rule-to-mem '((grandparent ?1 ?3)) '(0.0 0.9 0.9 (parent ?1 ?2) (parent ?2 ?3)))
 
 ;;; ************* Example 6
 ;;; Test of variable binding across a conjunction.
@@ -148,8 +152,8 @@
 ;;; Query: grandpa(john,paul)?
 ;;; Query: grandpa(john,sam)?
 
-(add-rule-to-mem '(grandpa ?1 ?2) '(0.0 0.9 0.9 (pa ?1 ?3) (pa ?3 ?2)))
-(add-rule-to-mem '(grandpa ?1 ?2) '(0.0 0.9 0.9 (pa ?1 ?3) (ma ?3 ?2)))
+(add-rule-to-mem '((grandpa ?1 ?2)) '(0.0 0.9 0.9 (pa ?1 ?3) (pa ?3 ?2)))
+(add-rule-to-mem '((grandpa ?1 ?2)) '(0.0 0.9 0.9 (pa ?1 ?3) (ma ?3 ?2)))
 (add-fact-to-mem '(pa john pete) '(1.0 . 1.0))
 (add-fact-to-mem '(pa pete paul) '(1.0 . 1.0))
 (add-fact-to-mem '(ma mary sam)  '(1.0 . 1.0))
@@ -159,7 +163,7 @@
 ;;; This background knowledge is used for testing induction in "induction1.lisp"
 ;;; Query: (has-dau pam) ?   **** should return false
 
-;(add-rule-to-mem '(has-dau ?1) '(Z-AND (parent ?1 ?2) (female ?2)))
+;(add-rule-to-mem '((has-dau ?1) '(Z-AND (parent ?1 ?2) (female ?2)))
 
 (add-fact-to-mem '(parent pam bob))
 (add-fact-to-mem '(parent tom bob))

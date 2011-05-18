@@ -203,8 +203,8 @@
   ;; store the sub-goal in the proof tree node
   (setf (node-data node) (list best-data))
   ;; Fetch rules that match the subgoal:
-  ;; 'fetch-clauses' is defined in memory.lisp
-  (multiple-value-bind (facts-list rules-list) (fetch-clauses (car best-data))
+  ;; 'fetch-rules' is defined in memory.lisp
+  (multiple-value-bind (facts-list rules-list) (fetch-rules (car best-data))
     (dolist (clause facts-list)
       ;; standardize apart head-of-subgoal and clause-to-be-added
       (setf subs (standardize-apart (head clause) nil)
