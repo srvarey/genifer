@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -11,7 +12,7 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg2457"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
+   inkscape:version="0.48.1 "
    width="440.63965"
    height="203"
    version="1.0"
@@ -85,7 +86,8 @@
      inkscape:window-x="-4"
      inkscape:window-y="-4"
      inkscape:current-layer="svg2457"
-     inkscape:showpageshadow="false" />
+     inkscape:showpageshadow="false"
+     inkscape:window-maximized="0" />
   <text
      xml:space="preserve"
      style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial;-inkscape-font-specification:Arial"
@@ -152,44 +154,36 @@
        id="tspan2676"
        x="249.67969"
        y="200">0</tspan></text>
-  <g
-     id="g2511"
-     transform="translate(143.63965,-274)">
-    <image
-       xlink:href="tmp1.jpg"
-       sodipodi:absref="C:\SlowHell Documents\LEdProjects\G0\tmp1.jpg"
-       width="180"
-       height="180"
-       id="image2491"
-       x="-116"
-       y="275" />
-    <rect
-       y="274.49863"
-       x="-115.50137"
-       height="180.00275"
-       width="181.00275"
-       id="rect2507"
-       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.99724895;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-  </g>
-  <g
-     id="g2528"
-     transform="translate(119.63965,-274)">
-    <image
-       xlink:href="tmp2.jpg"
-       sodipodi:absref="C:\SlowHell Documents\LEdProjects\G0\tmp2.jpg"
-       width="180"
-       height="180"
-       id="image2524"
-       x="139"
-       y="276" />
-    <rect
-       y="275.49863"
-       x="139.49863"
-       height="180.00275"
-       width="181.00275"
-       id="rect2509"
-       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.99724895;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-  </g>
+  <image
+     sodipodi:absref="C:\LEdProjects\G0\Z-Gamma-logistic.jpg"
+     xlink:href="Z-Gamma-logistic.jpg"
+     width="180"
+     height="180"
+     id="image2491"
+     x="27.63965"
+     y="1" />
+  <rect
+     style="fill:none;stroke:#000000;stroke-width:0.99724895;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+     id="rect2507"
+     width="181.00275"
+     height="180.00275"
+     x="28.138277"
+     y="0.49862671" />
+  <image
+     sodipodi:absref="C:\LEdProjects\G0\Z-Gamma-Gaussian.jpg"
+     xlink:href="Z-Gamma-Gaussian.jpg"
+     width="180"
+     height="180"
+     id="image2524"
+     x="258.63965"
+     y="2" />
+  <rect
+     style="fill:none;stroke:#000000;stroke-width:0.99724895;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+     id="rect2509"
+     width="181.00275"
+     height="180.00275"
+     x="259.13828"
+     y="1.4986267" />
   <text
      xml:space="preserve"
      style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial;-inkscape-font-specification:Arial"

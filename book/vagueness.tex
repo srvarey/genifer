@@ -251,7 +251,7 @@ Z_1(x) = e^{-\ln 2 \; \cdot \; (x/\xi)^2} \quad \mbox{and} \quad Z_2(x) = 1-e^{-
 \end{equation}
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.9]{MappingFunctions.eps}
+\includegraphics[scale=0.9]{MappingFunctions.png}
 \caption{membership functions}
 \end{figure}
 
@@ -277,7 +277,7 @@ Negation can cause some confusion because ``not young'' can mean either ``middle
 The interpretation of the parameter $\xi$ in eqn (\ref{eqn:Z-squashing-fns}) is that it marks the \textit{point of neutrality} on the x-axis, for which z=0.5.  This is illustrated as follows:  we map the human age $x$ to the $\mathcal{Z}$-concept of ``young'', where I (subjectively) define ``40 years old'' as the neutral point of ``young'':
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7]{NeutralPoint.eps}
+\includegraphics{neutral-point.png}
 \caption{neutral point}
 \end{figure}
 This means, after 40, one gets more and more ``not young'' according to this definition.  
@@ -364,10 +364,14 @@ A simple way to define $\varodot$ is:
 X_1 \bigodot_\theta X_2 = (1-\theta) (X_1 \wedge X_2) + \theta (X_1 \vee X_2).
 \end{equation}
 
-This animation shows the graph of $X_1 \varodot X_2$ as $\theta$ varies (Sorry, animation is broken):
-\begin{figure}[H]
-\centering
-\includegraphics[width=6cm, height=6cm, bb = 0 0 300 300]{unified-AND-OR.eps}
+This animation shows the graph of $X_1 \varodot X_2$ as $\theta$ varies (requires Adobe Reader to trust this document):
+
+\begin{figure}[ht]
+\includemovie[
+  poster,
+  text={\small(** Click to play **)}
+]{300px}{300px}
+{unified-AND-OR.swf}
 \end{figure}
 
 \section{``Soft'' min-max and concept learning}
@@ -377,7 +381,7 @@ This animation shows the graph of $X_1 \varodot X_2$ as $\theta$ varies (Sorry, 
 As an example, these are 2 exemplars of ``chair'' that most people consider to be typical:
 \begin{figure}[H]
 \centering
-\includegraphics{2-chairs.ps}
+\includegraphics{2-chairs.png}
 \end{figure}
 Usually, the old-fashioned chair is 4-legged and is made of wood; and the office swivel chair can rotate and has wheels.  These are the \textbf{sfeatures} of the exemplars stored in memory.  It would be atypical for a wooden chair to have wheels and have a seat that can rotate above the 4 legs.  So, even though both chairs are very typical chairs, their features cannot be exchanged freely while maintaining the same level of typicality.
 
@@ -407,7 +411,7 @@ It can be verified that soft- min and max satisfy the boundary conditions of cla
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.9]{soft-max.eps}
+\includegraphics[scale=0.9]{soft-max.png}
 \caption{comparison of max and soft max}
 \end{figure}
 
@@ -431,7 +435,7 @@ z_0 := \Gamma(z_1; z^*) = \frac{1}{\sigma \sqrt{2 \pi}} e^{- (z_1-z^*)^2 / 2 \si
 For example, the $\Gamma$'s for ``slightly'' and ``very'' can be:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.9]{fuzzy-modifiers.eps}
+\includegraphics[scale=0.9]{fuzzy-modifiers.png}
 \caption{Fuzzy modifiers with $z^* = 0.6, 1.0$}
 \end{figure}
 
@@ -442,7 +446,7 @@ For example, we can define ``lukewarm'' as ``warm'' with $z \in [0.6,0.8]$, or:\
 using 2 $Gamma$'s with fixed variances.  The result is the blue curve on the left.  We get the interval [0.6,0.8] by taking $> 0.5$ as true, and thus ``lukewarm'' would be a binary predicate.
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.9]{Gamma-for-lukewarm.eps}
+\includegraphics[scale=0.9]{Gamma-for-lukewarm.png}
 \caption{Two representations of ``lukewarm''}
 \end{figure}
 On the other hand, if we use a tailored $\Gamma$ to represent ``lukewarm'' on the right, it would be a $\mathcal{Z}$-predicate with continuous values like ``slightly lukewarm'' and ``very lukewarm''.  This seems to be unnecessarily sophisticated.
@@ -495,7 +499,7 @@ How to combine $\mathcal{P}$ and $\mathcal{Z}$?  The answer is simple because th
 If a $\mathcal{Z}$ value is uncertain --- for example, we may not be sure how tall Mary is (the $\mathcal{Z}$-value of her tallness may be 0.6-0.8, say, so we can assume a uniform probability distribution over the interval [0.6,0.8] which is the green rectangle below) --- and we can approximate it by a Beta distribution over $\mathcal{Z}$ with a mean at 0.7 and the same variance:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.9]{P-over-Z-Marys-Tallness2.eps}
+\includegraphics[scale=0.9]{P-over-Z-Marys-Tallness2.png}
 \caption{an example $\mathcal{P}(\mathcal{Z})$ distribution}
 \end{figure}
 where the probability density should sum to 1: $ \int^1_0 P(z) dz = 1 $.
@@ -506,7 +510,7 @@ The following commutative diagram shows the relationship between $\mathcal{B}$, 
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.8]{P(Z)-commutative-diagram.eps}
+\includegraphics[scale=0.8]{P(Z)-commutative-diagram.png}
 \end{figure}
 
 The inner square contains the 4 types of truth values.  The outer square are the corresponding logics, showing their logical operators.  The radial arrows point to the ``underlying sets'' of TVs.
@@ -519,7 +523,7 @@ Note that this rule is inexact:  there are exceptions (where some rich people ar
 
 \begin{figure}[H]
 \centering
-\includegraphics{rich-vs-powerful.eps}
+\includegraphics{rich-vs-powerful.png}
 \end{figure}
 
 There are reasons to believe that the identity function (red line) represents the least-error regression function:  first, the $\mathcal{Z}$ values are in ``natural scale'' (ie, $z=1$ corresponds to $\infty$) so $(z_1,z_2)$ at $(1,1)$ is obvious if we accept the original statement;  secondly, when $z_1 = 0.5$, the person is neither rich nor poor, and we should have nothing to say whether the person is powerful or not, as far as the original statement is concerned.
@@ -549,7 +553,7 @@ I find that they can be unified to type $\mathcal{P(Z)}$, which can make things 
 Some variables have a strong ``binary flavor''.  For example, in common sense, a person is either dead or alive, although a more nuanced view will have grades of being dead.  If deadness is a $\mathcal{Z}$ variable, z = 0 would be ``definitely alive'', z = 1 would be ``definitely dead'' (eg reduced to ash), and z = 0.5 would correspond to a state that is difficult to classify as dead or alive, eg a brain-dead, vegetative state.  z = 0.7 may be a state that is more dead than brain-dead and yet more alive than ash, eg --- I have to pause for a while to think of an example --- a body under cryonic preservation.  And z = 0.4 may be some kind of near-death experience.  Anyway, one can expect the probability distribution of $z_{dead}$ to be polarized with a trough in the middle.  This can be represented by a Beta distribution with a large variance:
 \begin{figure}[H]
 \centering
-\includegraphics{deadness.ps}
+\includegraphics{deadness.png}
 %\caption{Z = deadness}
 \end{figure}
 When the polarization gets extreme (eg the toss of a coin is either head or tail), the distribution becomes a $\bigsqcup$ shape.  The degree of polarization (ie amount of variance) can be estimated statistically, if data is available.
@@ -559,7 +563,7 @@ It appears that all common-sensical $\mathcal{B}$ variables are actually \textbf
 Actually the Beta distribution (eqn \ref{eqn:beta-distro}) is capable of representing 3 types of characteristics (with $a = 1$ and $b = 1$ as points of transition separating the 3 regimes):
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.8]{binary-fuzzy-unary-characters.eps}
+\includegraphics[scale=0.8]{binary-fuzzy-unary-characters.png}
 \end{figure}
 The unary type represents concepts such as ``normal'', ``broken'', ``healthy'', or ``natural''.  In such concepts, the state at $z = 1$ can be clearly defined (eg, John was perfectly healthy when he was a kid), but as we approach $z = 0$ the cases become very improbable and inexhaustible (eg, it is impossible to find a person who is ``utmost unhealthy'' because it is always possible to think of more extreme and improbable unhealthy ways.  Also, committing suicide is not the limiting case --- suicide is not the same as unhealthy --- so the interval is open-ended.)
 
@@ -568,7 +572,7 @@ The unary type represents concepts such as ``normal'', ``broken'', ``healthy'', 
 %The transition occurs at $a = 1$ or $b = 1$:
 %\begin{figure}[H]
 %\centering
-%\includegraphics{Beta-distro-watershed.eps}
+%\includegraphics{Beta-distro-watershed.png}
 %\end{figure}
 
 %If we know the mean $\mu$, the variance at the transition point is given by:

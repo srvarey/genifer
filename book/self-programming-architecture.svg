@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -13,9 +14,10 @@
    height="1052.3622047"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="chicken-and-egg.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   inkscape:version="0.48.1 "
+   sodipodi:docname="self-programming-architecture.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.1">
   <defs
      id="defs4">
     <marker
@@ -92,7 +94,8 @@
      inkscape:window-width="999"
      inkscape:window-height="682"
      inkscape:window-x="21"
-     inkscape:window-y="457" />
+     inkscape:window-y="457"
+     inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -109,36 +112,32 @@
      inkscape:groupmode="layer"
      id="layer1">
     <image
-       y="524.36218"
-       x="232"
-       id="image2634"
-       height="50"
+       sodipodi:absref="C:\LEdProjects\G0\Egg.png"
+       xlink:href="Egg.png"
        width="50"
-       sodipodi:absref="E:\Documents and Settings\yky\My Documents\My Pictures\Egg.png"
-       xlink:href="E:\Documents and Settings\yky\My Documents\My Pictures\Egg.png" />
-    <g
-       id="g6819"
-       transform="translate(64,-6)">
-      <image
-         xlink:href="E:\Documents and Settings\yky\My Documents\My Pictures\chicken.PNG"
-         sodipodi:absref="E:\Documents and Settings\yky\My Documents\My Pictures\chicken.PNG"
-         width="50"
-         height="52"
-         id="image2567"
-         x="466"
-         y="526.36218" />
-      <text
-         sodipodi:linespacing="100%"
-         id="text2638"
-         y="601.36218"
-         x="474"
-         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial;-inkscape-font-specification:Arial"
-         xml:space="preserve"><tspan
-           y="601.36218"
-           x="474"
-           id="tspan2640"
-           sodipodi:role="line">AGI</tspan></text>
-    </g>
+       height="50"
+       id="image2634"
+       x="232"
+       y="524.36218" />
+    <image
+       sodipodi:absref="C:\LEdProjects\G0\chicken.PNG"
+       xlink:href="chicken.PNG"
+       width="50"
+       height="52"
+       id="image2567"
+       x="530"
+       y="520.36218" />
+    <text
+       xml:space="preserve"
+       style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="538"
+       y="595.36218"
+       id="text2638"
+       sodipodi:linespacing="100%"><tspan
+         sodipodi:role="line"
+         id="tspan2640"
+         x="538"
+         y="595.36218">AGI</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial;-inkscape-font-specification:Arial"

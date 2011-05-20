@@ -33,21 +33,21 @@ Sensory experience in its raw form is like a long movie:
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6, bb=0 0 272 155]{Movie.eps}
+\includegraphics[scale=0.6]{Movie.png}
 \end{figure}
 
 The Visual Module compresses this movie into a semi-symbolic representation. The Cognitive Module further compresses this information. 
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 122 207]{GI-Vision.PNG}
+\includegraphics[scale=0.7]{GI-Vision.PNG}
 \end{figure}
 
 Compression and achieved by (statistical) \emph{pattern recognition}. For example, in the "Lena" image
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7,bb=0 0 103 103]{Lena-Tiny.eps}
+\includegraphics[scale=0.7]{Lena-Tiny.png}
 \end{figure}
 
 the object in the center can be recognized as a "face".
@@ -76,7 +76,7 @@ Vision is basically the problem of compressing the sensory input stream in a mea
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7,bb=0 0 103 103]{Lena-Tiny.eps} = "young woman wearing a hat"
+\includegraphics[scale=0.7]{Lena-Tiny.png} = "young woman wearing a hat"
 \end{figure}
 
 But there may be several \emph{levels} of representation.
@@ -125,14 +125,14 @@ This is a diagram explaining Marr's general vision framework [from \hyperlink{re
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7,bb=0 0 653 267]{MarrVisionFramework.PNG}
+\includegraphics[scale=0.7]{MarrVisionFramework.PNG}
 \end{figure}
 
 Another famous diagram from [\hyperlink{ref}{Marr \& Nishihara 1978}] [redrawn by \hyperlink{ref}{Herman Gomes}]:
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7,bb=0 0 414 269]{Marr3DModel.PNG}
+\includegraphics[scale=0.7]{Marr3DModel.PNG}
 \end{figure}
 
  Marr \& Nishihara's theory is restricted  to describing objects using a set of \emph{generalized cones} (after [Binford 1971]).
@@ -143,14 +143,14 @@ Another famous diagram from [\hyperlink{ref}{Marr \& Nishihara 1978}] [redrawn b
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7,bb=0 0 653 322]{geons.PNG}
+\includegraphics[scale=0.7]{geons.PNG}
 \end{figure}
 
 In particular, [\hyperlink{ref}{Biederman \& Hummel 1992}] proposed a neural network system to recognize geon-based objects:
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6,bb=0 0 431 529]{BiedermanHummelNN.PNG}
+\includegraphics[scale=0.6]{BiedermanHummelNN.PNG}
 \end{figure}
 
 \subsection{Our approach}
@@ -165,24 +165,27 @@ The following examples may convince you that some shapes are not representable b
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7,bb=0 0 448 336]{HighHeelAnalysis.eps}
+%\includegraphics[scale=0.7,bb=0 0 448 336]{HighHeelAnalysis.png}
+\includegraphics[scale=0.7]{HighHeelAnalysis.png}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7,bb=0 0 448 336]{ToiletRollAnalysis.eps}
+%\includegraphics[scale=0.7,bb=0 0 448 336]{ToiletRollAnalysis.png}
+\includegraphics[scale=0.7]{ToiletRollAnalysis.png}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7,bb=0 0 448 336]{RabitAnalysis.eps}
+%\includegraphics[scale=0.7,bb=0 0 448 336]{RabitAnalysis.png}
+\includegraphics[scale=0.7]{RabitAnalysis.png}
 \end{figure}
 
 In all of the above cases, the objects have parts that are defined by some irregular surfaces. The geon theory may fail in such cases because Biederman et al use neural networks to learn the geons, and the geons are \emph{statistically} characterized by  vertices, blobs, and axes. This kind of learning may be slow and recognition may be erratic. What we need is a more robust theory that can represent \emph{any} 3D shape. The solution is to use \emph{logical rules} to define geons in terms of 2D lines and junctions:
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6, bb=0 0 346 228]{PolygonDecomposition.PNG}
+\includegraphics[scale=0.6]{PolygonDecomposition.PNG}
 \end{figure}
 
 This method is more robust and can recognize things other than common geons, such as the highheel.
@@ -197,7 +200,7 @@ For example, to recognize the  nose, one should first recognize the shades and h
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7,bb=0 0 336 448]{BeethovenAnalysis.eps}
+\includegraphics[scale=0.7]{BeethovenAnalysis.png}
 \end{figure}
 
 The conjunction of these 2D/1D elements allows us to recognize that the nose is a protrusion from the face, and its particular shape is jointly defined by the shapes of  2D/1D elements. It seems that a common mistake is to assume that the brain immediately recognizes the nose as a 3D shape  from pixel-level data, without going through the intermediate stages, because the brain is usually unconscious of those intermediate stages.
@@ -224,7 +227,7 @@ Recognizing shading as 2D features will require special algorithms (so does reco
 
 \section{Requirements of general vision}
 
-\includegraphics[bb=0 0 40 40]{UnderConst.png}
+\underconst
 
 \section{Basic vision scheme}
 
@@ -255,7 +258,7 @@ The premise is that any 3D object (or its "geon-like" components) can be defined
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6, bb=0 0 346 228]{PolygonDecomposition.PNG}
+\includegraphics[scale=0.6]{PolygonDecomposition.PNG}
 \end{figure}
 
 The image is first broken down into 0D/1D primitives (such as edgels and lines). Then 2D elements are recognized (such as regions and surfaces). Then 3D objects are recognized (blocks, 3D geons, etc).
@@ -272,7 +275,7 @@ The first step is to transform the image to a logical representation:
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.8, bb=0 0 568 326]{VisioLogicalTransform.eps}
+\includegraphics[scale=0.8]{VisioLogicalTransform.png}
 \end{figure}
 
 On the left hand side is the image; we have applied  Sobel edge detection. On the right hand side is the logical representation. L1,L2,L3... = lines, J1,J2,J3... = junctions. The blue lines represent how the elements are connected. Other details at the background have not been represented.
@@ -301,7 +304,7 @@ Define the predicate \texttt{Terminates(edge,vertex)}  to indicate when an edge 
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6, bb=0 0 608 340]{Quadrilateral.eps}
+\includegraphics[scale=0.6]{Quadrilateral.png}
 \end{figure}
 
 This results in the set of logical statements:
@@ -379,7 +382,7 @@ For example, in the image below, 2 edges and 1 vertex are almost invisible, yet 
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.8, bb=0 0 240 320]{CubeMissingEdge.eps}
+\includegraphics[scale=0.8]{CubeMissingEdge.png}
 \end{figure}
 
 The feedback mechanism should work this way: When the Recognizer finds that a concept is "almost" recognized (eg with the majority of conjuncts being true), it will select the remaining features that are not yet matched and send them to the lower-level Recognizer, which would then lower its \emph{threshold} for recognizing those features.
@@ -417,7 +420,7 @@ The "main loop" of the Recognizer would be using the searchlight to scan around 
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6, bb=0 0 726 380]{VisionArchitecture.PNG}
+\includegraphics[scale=0.6]{VisionArchitecture.PNG}
 \end{figure}
 
 The operation of the above module is typical of a rule-based system, except that there is a "loop" in the lower right corner that repeats the pattern matching process at multiple levels. What this means is that the raw sensory experience goes through multiple stages of memory consolidation via pattern matching. For details please refer to \href{GI-MemorySystems.htm}{Memory systems}. 
@@ -442,14 +445,14 @@ The following is a very tentative outline, the order of steps may be wrong and a
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6, bb=0 0 265 109]{GoodContinuation.eps}
+\includegraphics[scale=0.6]{GoodContinuation.png}
 \end{figure}
 
 4. Contour simplification --- the image is represented by both simple and detailed contours (allowing redundency in representation).
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6, bb=0 0 346 120]{ContourSimplification.eps}
+\includegraphics[scale=0.6]{ContourSimplification.png}
 \end{figure}
 
 Some things can be recognized at this stage: text, handwriting, 1D graphics.
@@ -466,7 +469,7 @@ Some things can be recognized at this stage: text, handwriting, 1D graphics.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6, bb=0 0 290 102]{GestaltContours.PNG}
+\includegraphics[scale=0.6]{GestaltContours.PNG}
 \end{figure}
 
 8. Deal with occlusion.
@@ -560,7 +563,7 @@ All 1D shapes can be decomposed into:
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 404 87]{1DClasses.PNG}
+\includegraphics[scale=0.7]{1DClasses.PNG}
 \end{figure}
 
 \textbf{Properties:} (thickness, color, texture)
@@ -579,7 +582,7 @@ Curves with no inflections:
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 325 42]{CurvesClasses.PNG}
+\includegraphics[scale=0.7]{CurvesClasses.PNG}
 \end{figure}
 
 \textbf{Properties:} (position, length, orientation, end points, curvature)
@@ -588,7 +591,7 @@ Curves with no inflections:
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 91 62]{EllipsesClasses.PNG}
+\includegraphics[scale=0.7]{EllipsesClasses.PNG}
 \end{figure}
 
 \textbf{Properties:} (position, orientation, size, axes ratio)
@@ -597,7 +600,7 @@ Curves with no inflections:
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 198 77]{ComplexCurves.PNG}
+\includegraphics[scale=0.7]{ComplexCurves.PNG}
 \end{figure}
 
 \textbf{Properties:} (position, length, end points, \# of inflections, curvatures) 
@@ -606,7 +609,7 @@ Curves with no inflections:
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.75, bb=0 0 197 108]{ComplexLoops.PNG}
+\includegraphics[scale=0.75]{ComplexLoops.PNG}
 \end{figure}
 
 \textbf{Properties:} (position, area, shape description, \# of inflections)
@@ -621,28 +624,28 @@ Curves with no inflections:
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 239 40]{Junctions-L.PNG}
+\includegraphics[scale=0.7]{Junctions-L.PNG}
 \end{figure}
 
 \subsubsection{2. T}
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 232 40]{Junctions-T.PNG}
+\includegraphics[scale=0.7]{Junctions-T.PNG}
 \end{figure}
 
 \subsubsection{3. Y }
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 220 118]{Junctions-Y.PNG}
+\includegraphics[scale=0.7]{Junctions-Y.PNG}
 \end{figure}
 
 \subsubsection{4. X}
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 230 110]{Junctions-X.PNG}
+\includegraphics[scale=0.7]{Junctions-X.PNG}
 \end{figure}
 
 May have $>$4 lines of convergence.
@@ -655,70 +658,70 @@ A line with a slight bend: (the bending is noticed even though it is very slight
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 260 39]{Line1.PNG}
+\includegraphics[scale=0.7]{Line1.PNG}
 \end{figure}
 
 This line has many bends but is still recognized as a continuous line: 
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 182 38]{Line2.PNG}
+\includegraphics[scale=0.7]{Line2.PNG}
 \end{figure}
 
 For the following line, a simple algorithm may classify it as a curve, but people will describe it as: two slightly curved lines A \& C, bending at a point B. This illustrates the context-dependent aspect of human vision.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 272 132]{Line3.PNG}
+\includegraphics[scale=0.7]{Line3.PNG}
 \end{figure}
 
 The following is yet another context-dependent example: we see 2 "shaky" but straight lines bending at an angle.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 170 66]{Line4.PNG}
+\includegraphics[scale=0.7]{Line4.PNG}
 \end{figure}
 
 What is a "straight" line is relative: B is straighter than A but in the above context A is also considered a straight line. 
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 219 32]{Line7.PNG}
+\includegraphics[scale=0.7]{Line7.PNG}
 \end{figure}
 
 People will describe the following as a regular "sine" curve:
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 199 35]{Line5.PNG}
+\includegraphics[scale=0.7]{Line5.PNG}
 \end{figure}
 
 This is also a simple curve that people can describe with basic features such as crest and trough and being smooth:
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 310 72]{Line6.PNG}
+\includegraphics[scale=0.7]{Line6.PNG}
 \end{figure}
 
 People can also characterize line junctions with special attributes, eg a "smooth" junction:
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 228 78]{Line8.PNG}
+\includegraphics[scale=0.7]{Line8.PNG}
 \end{figure}
 
 This can be considered as  1 line with 2 colors:
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 248 6]{Line9.eps}
+\includegraphics[scale=0.7]{Line9.png}
 \end{figure}
 
 This is also considered a simple curve with internal texture:
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 200 40]{Line10.PNG}
+\includegraphics[scale=0.7]{Line10.PNG}
 \end{figure}
 
 \underconst
@@ -739,7 +742,7 @@ We should work out the rules of arbitrary 3D object construction...
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 293 276]{3DContours.PNG}
+\includegraphics[scale=0.7]{3DContours.PNG}
 \end{figure}
 
 D = discontinuity of distance of object, discontinuity of normal of object surface
@@ -760,7 +763,7 @@ There are 16 topologically possible line junctions in the "trihedral blocks worl
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7, bb=0 0 499 357]{16Junctions.PNG}
+\includegraphics[scale=0.7]{16Junctions.PNG}
 \end{figure}
 
 + and - indicates whether a crease is convex or concave, respectively. An arrow indicates a "blade" formed by a discontinuity of distance (same as the D-type contour above). The direction of the arrow indicates which side is the \emph{occluding} surface, which by convention is to the right.
@@ -869,7 +872,7 @@ It is far easier to show the computer a number of examples of an object (eg "pin
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7,bb=0 0 628 218]{Fruits.eps}
+\includegraphics[scale=0.7]{Fruits.png}
 \end{figure}
 
 \subsubsection{Automatic discovery of useful concepts}
