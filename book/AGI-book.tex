@@ -1,8 +1,9 @@
 \documentclass[12pt, a4paper]{report}
 
-\usepackage[dvips, pdfauthor={Yan King Yin}, bookmarks, anchorcolor=blue, colorlinks, linkcolor=blue, citecolor=blue, urlcolor=blue, breaklinks]{hyperref}
+%dvips
+\usepackage[pdftex, pdfauthor={Yan King Yin}, bookmarks, anchorcolor=blue, colorlinks, linkcolor=blue, citecolor=blue, urlcolor=blue, breaklinks, plainpages=false, pdfpagelabels, hypertexnames=false]{hyperref}
 \usepackage{breakurl}
-\usepackage[dvips,final]{graphicx}
+\usepackage[final]{graphicx}
 \usepackage{float}
 \usepackage[square]{natbib}
 \usepackage{color}
@@ -18,6 +19,8 @@
 \usepackage[pointedenum]{paralist}
 \usepackage[sf,bf,big,raggedright,compact]{titlesec}
 \usepackage{fancyhdr}
+\usepackage{movie15}
+\usepackage{caption}
 
 \definecolor{DarkGreen}{rgb}{0.1,0.4,0.1}
 
@@ -27,7 +30,7 @@
 \newcommand{\app}{$\cdot \;$}
 \newcommand{\eg}{\textbf{Example:} }
 \newcommand{\tab}{\hspace*{1cm} }
-\newcommand{\underconst}{\includegraphics{UnderConst.eps}}
+\newcommand{\underconst}{\includegraphics{UnderConst.png}}
 \renewcommand{\vec}[1]{\mathbf{#1}}
 
 %%%%%%%%%%%%%%%%% Symbols defined by me %%%%%%%%%%%%%%%%%%%
