@@ -125,7 +125,7 @@ Currently I am using an extremely simplified approximation.
 %Case \#1:
 %\begin{figure}[H]
 %\centering
-%\includegraphics{BayesNet-alarm-John.eps}
+%\includegraphics{BayesNet-alarm-John.png}
 %\end{figure}
 %\textbf{Forward inference}: the answer is simply what is given: $P(J|A)$\\
 %\textbf{Backward inference (abduction)}: we seek $P(A|J)$ which is given by Bayes rule:\\
@@ -137,7 +137,7 @@ Currently I am using an extremely simplified approximation.
 %Case \#2:
 %\begin{figure}[H]
 %\centering
-%\includegraphics{BayesNet-successful-business.eps}
+%\includegraphics{BayesNet-successful-business.png}
 %\end{figure}
 %\textbf{Forward inference}: simply given by $P(S|P,B)$\\
 %\textbf{Abduction}: given S, we can infer P and B.  "P or B" is a problem. How to represent that?  
@@ -210,12 +210,12 @@ $$ f_0(z_0) = f_1(\pm \sigma \sqrt{-2 \ln z_0} + z^*) \left | \frac{\sigma}{z_0 
 but there is a glitch:  $\Gamma^{-1}()$ has 2 pieces, and their contributions must be summed up piecewise.  Sometimes the resulting distribution looks irregular, for example:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.9]{Z1-Gaussian-transform-to-Z0-ugly.ps}
+\includegraphics[scale=0.9]{Z1-Gaussian-transform-to-Z0-ugly.png}
 \end{figure}
 but we can approximate it with a Beta distribution by preserving the mean and variance.  The irregular appearance does not matter that much if we only care about the mean and variance.  I have obtained the approximation formula by numerical integration and nonlinear regression on randomly generated samples, as follows ($m_1$ = mean of input, $m_0$ = mean of result):
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7]{Gaussian-fuzzy-modifier-regression-result.ps}
+\includegraphics[scale=0.7]{Gaussian-fuzzy-modifier-regression-result.png}
 \caption{Gaussian fuzzy modifier:  empirical data and result of regression}
 \end{figure}
 
@@ -260,7 +260,7 @@ f_0(t) = f_1(t) F_2(t) + f_2(t) F_1(t)
 This function $f_0$ has an interesting property:  it appears to add up the distributions $f_1$ and $f_2$, \textit{with the one on the right being dominant}, ie, giving the biggest contribution of probability mass (or area under the curve).  Some examples are as follows:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.8]{A-ZOR-B-examples.ps}
+\includegraphics[scale=0.8]{A-ZOR-B-examples.png}
 \caption{$z_0 := z_1 \, \widetilde{\vee} \, z_2$}
 \end{figure}
 
@@ -292,7 +292,7 @@ This function $f_0$ has an interesting property:  it appears to add up the distr
 Once again, we approximate by preserving the mean and variance; The irregular appearance is not so important.  By looking at the following graph we can see that the mean of the result ($m_0$) is mostly dominated by $m_2$ which is the mean of the input further to the right (ie, $m_2 > m_1$).  There is sometimes a slight shift to the right relative to $m_2$ (the dots above the $x=y$ line), but it seems insignificant and may be ignored.  In other words, the fuzzy inference rule is very simple:  \textit{the mean of the result is just the greater mean of the 2 inputs}.  A similar graph shows that the variance of the result is also approximately equal to the variance of the rightmost input.
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.8]{z1-OR-z2-M-and-V-plots.ps}
+\includegraphics[scale=0.8]{z1-OR-z2-M-and-V-plots.png}
 \caption{Plots of mean and variance; output vs input}
 \end{figure}
 
@@ -502,7 +502,7 @@ evaluate the rule $R$\\
 The search space of this algorithm is a so-called \textbf{AND-OR graph} (or tree) that often appears in logic-based AI search.  Each AND is represented by a horizontal line (whose elements are the arguments of an operator and \textit{all} of them must be evaluated);  each OR is represented by a set of child branches (shown in red in the diagram) (whose elements are rules from the KB and only one needs to be selected).  Thus the search is basically a matter of selecting which rules to apply.
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.8]{and-or-graph.eps}
+\includegraphics[scale=0.8]{and-or-graph.png}
 % \caption{Plots of mean and variance; output vs input}
 \end{figure}
 
@@ -538,7 +538,7 @@ General case:\\
 (G|K) &=& \frac{(K|G)(G)}{(K)} \nonumber\\
       &=& \frac{(G)}{(K)} \sum_H (K|H)(H|G) \nonumber\\
       &=& (G) \sum_H \frac{(H|K)}{(H)} \sum_{B_i} (H|G,B_1,B_2,...)(B_i|G) \nonumber\\
-      &=& (G) \sum_H \frac{(H|K)}{(H)} \sum_{B_i} (H|G,B_1,B_2,...)(B_i)
+      &=& (G) \sum_H \frac{(H|K)}{(H)} \sum_{B_i} (H|G,B_1,B_2,...)(B_1)(B_2)...
 \end{eqnarray*}
 
 \subsection{Loopy inference}

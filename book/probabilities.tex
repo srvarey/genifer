@@ -29,7 +29,7 @@ Sandy Zabell \citep*{Zabell1982} proved that, if we make certain assumptions abo
 
 %\begin{figure}[H]
 %\centering
-%\includegraphics[scale=0.65]{BetaDistributions.eps}
+%\includegraphics[scale=0.65]{BetaDistributions.png}
 %\caption{some shapes of the Beta distribution}
 %\end{figure}
 
@@ -84,7 +84,7 @@ Early developments in Bayesian network are mainly propositional, which means tha
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7]{FirstOrderBayesNet.eps}
+\includegraphics[scale=0.75]{FirstOrderBayesNet.png}
 \caption{propositional vs first-order Bayesian networks}
 \end{figure}
 
@@ -161,7 +161,7 @@ Notice that the reference class of $x$ cannot be read from the formula above; it
 How can the computer know the sizes of these sets?  It seems that it has to keep a record of the sizes every time a new fact is encountered.  For example:\\
 When \formula{tall(john:human)} enters the sensory stream, we should note that \formula{john} belongs to the classes \formula{chinese}, \formula{male}, \formula{human}, \formula{organism}, etc.  Each of these reference classes remembers its average tallness (stored as a distribution with its mean and variance, and a confidence, which gives the size of its support).  These records will be updated according as John's tallness compares to the distributions.
 
-In other words, for each property (ie, predicate) we have to record the distributions for (at least) the \underline{typical classes that the predicate applies to}.
+In other words, for each property (ie, predicate) we have to record the distributions for (at least) the \textit{typical classes that the predicate applies to}.
 
 \section{Interval-valued probabilities}
 \label{sec:intervalP}
