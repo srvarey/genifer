@@ -89,6 +89,9 @@ Early developments in Bayesian network are mainly propositional, which means tha
 \end{figure}
 
 One key idea in first-order Bayesian networks is the method of Knowledge-Based Model Construction (KBMC), first developed by \citep*{Wellman1992} and \citep*{Haddawy1994}.  The idea is to store a knowledgebase of first-order rules that can be used to construct propositional Bayesian networks on demand.  When a query is asked, a Bayesian network is generated on-the-fly to answer the query.  This idea helps us think of the first-order case in terms of the propositional case (though it may not be the most efficient implementation in practice).
+\index{KBMC (knowledge-based model construction)}
+\index{Bayesian networks!first-order}
+\index{FOL (first-order logic)}
 
 Also, I have chosen the ``directed'' approach based on Bayesian networks, versus the ``undirected'' approach based on Markov networks (eg \citep*{Domingos2007}'s Markov Logic Network (MLN)).  It seems that the directed approach is more intuitive, in which probabilistic conditionals are used to represent \emph{causal} relations.
 
@@ -290,10 +293,11 @@ X_0 := \bigPor_i \; \bigPand_j \; X_{ij};c_{ij} \; = \bigPor \; \{ X_{11};c_{11}
 \end{equation}
 It can be verified that \emph{association} holds as in classical logic, ie:
 \begin{eqnarray}
-(A \Pand B) \Pand C & = & A \Pand (B \Pand C), \\
+(A \Pand B) \Pand C & = & A \Pand (B \Pand C), \nonumber\\
 (A \Por   B) \Por   C & = & A \Por   (B \Por   C),
+\label{eqn:P-and-or-associativity}
 \end{eqnarray}
-a fact that can be exploited for efficient calculation.  This is because the CPT (conditional probability table) has size $2^n$ where $n$ is the number of variables.  But when the operator is associative, we can calculate $\bigZand_i X_i$ as $((X_1 \Zand X_2) \Zand X_3) \Zand ...$, without having to generate the full CPT.  Thus the space complexity remains constant.
+a fact that can be exploited for efficient calculation.  This is because the CPT (conditional probability table) has size $2^n$ where $n$ is the number of variables.  But when the operator is associative, we can calculate $\bigZand X_i$ as $((X_1 \Zand X_2) \Zand X_3) \Zand ...$, without having to generate the full CPT.  Thus the space complexity remains constant.
 
 It is also possible to use the trick in \S\ref{sec:unifying-AND-and-OR} to combine AND and OR with the parameter $\theta$:
 \begin{equation}

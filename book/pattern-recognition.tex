@@ -71,8 +71,8 @@ vertebrate(whale)      & vertebrate(fish)\\
 
 How to capture this?  The solution is to ``turn around'' Leibnez's definition thusly:
 \begin{eqnarray}
-\mbox{(Leibnez)}                 & \forall z. [x z = y z] \Rightarrow& x = y \\
-\mbox{(inverted Leibnez)}     & \forall z. [z x = z y] \Rightarrow& x = y
+\mbox{(Leibnez)}           & \forall z. [x z = y z] \Rightarrow& x = y \\
+\mbox{(inverted Leibnez)}  & \forall z. [z x = z y] \Rightarrow& x = y
 \label{eqn:inverted-extensionality}
 \end{eqnarray}
 where I have renamed the variables to stress the symmetry.  And the probabilistic form is:
@@ -81,19 +81,19 @@ where I have renamed the variables to stress the symmetry.  And the probabilisti
 \end{equation}
 Notice that if we use higher-order logic, $z$ can be unified with n-ary predicates with other arguments, eg
  $$z(x) = \mbox{lives-in}(x, \mbox{water})$$
-so this is a very powerful way that can express all forms of similarities.
+so this is a very powerful way to express all possible forms of similarities.  This may be regarded as a logic-based, alternative formulation of Ulf Grenander's Pattern Theory \citep*{Grenander2007}.  One obvious complaint is that higher-order unification is highly intractable.  But this seems to be the correct formulation of the problem that we must use heuristics to deal with.
 
-\{ To-do:  I need to develop the above theory further.  Milner's Context Lemma in domain theory seems to have some semblance to what we're doing here.  Milner's Lemma states the equivalence of 2 orderings, $<_{\sigma}$ and $\sqsubset$.  They are defined by:
+\{ To-do:  I need to develop the above theory further.  Milner's Context Lemma in domain theory (see eg \citep*{Streicher2006}) seems to have some semblance to what we're doing here.  Milner's Lemma states the equivalence of 2 orderings, $<_{\sigma}$ and $\sqsubset$.  They are defined by:
 \begin{eqnarray}
-M \sqsubset N        \quad     & \mbox{iff} &    \quad \forall z \in \setN. \; M \Downarrow z \Rightarrow N \Downarrow z \\
-M <_{\sigma} N    \quad     & \mbox{iff} &    \quad \forall Z \in \mbox{programs.} \; Z(M) \sqsubset Z(N)
+M \sqsubset N  \quad  &\mbox{iff}& \quad \forall z \in \setN. \; M \Downarrow z \Rightarrow N \Downarrow z \\
+M <_{\sigma} N \quad  &\mbox{iff}& \quad \forall Z \in \mbox{programs.} \; Z(M) \sqsubset Z(N)
 \end{eqnarray}
-where $M \Downarrow z$ means $M$ evaluates to $z$.  The situation resembles Leibniz's definition and its ``inverted form''.
+where $M \Downarrow z$ means $M$ evaluates to $z$.  The situation kind of resembles Leibniz's definition and its inverted form.
 \}
 
 We'd be interested in measuring similarities between entities with certain structures.  This has been considered, eg in \citep*{Schmid2003}, chapters 10-12, in an ILP setting.  A famous example is the similarity between the solar system and the atom:  the important point is that both systems have bodies revolving around a central body, but it does not matter what their size, mass, and temperature, etc, are.
 
-\{ The text that follows is outdated material... \}
+\{ The text that follows is outdated... \}
 \underconst
 
 What we seek is a correspondence between 2 structured entities, and to quantitatively measure the strength of such a correspondence.  Perhaps we can count the number of relations common to both entities.
@@ -153,9 +153,9 @@ The additional facts do not increase the similarity, but they do make the 2 case
 \textbf{the thing} & \textbf{approximated as} & \textbf{reason}\\
 \hline
 orange T-shirt     & red T-shirt      & proximity in color space\\
-7 people           & several people   & $\mathcal{Z}$\\
-6'5 tall           & very tall        & $\mathcal{Z}$\\
-(John lies on several occasions) & John often lies & $\mathcal{P}$\\
+7 people           & several people   & $\catZ$\\
+6'5 tall           & very tall        & $\catZ$\\
+(John lies on several occasions) & John often lies & $\catP$\\
 Stewart Shapiro    & Stuart Shapiro   & string edit distance\\
 \hline
 \end{tabular}
