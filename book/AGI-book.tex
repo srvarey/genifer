@@ -45,11 +45,17 @@
 \newcommand{\bigZor}{\stackrel{Z}{\bigvee}}
 \newcommand{\bigPand}{\stackrel{P}{\bigwedge}}
 \newcommand{\bigPor}{\stackrel{P}{\bigvee}}
-\newcommand{\Pimp}{\rightarrowtriangle}
+\newcommand{\Pandor}{\stackrel{P}{\varodot}}
+\newcommand{\Zandor}{\stackrel{Z}{\varodot}}
+\newcommand{\bigPandor}{\stackrel{P}{\bigodot}}
+\newcommand{\bigZandor}{\stackrel{Z}{\bigodot}}
+\newcommand{\Pimp}{\rightarrowtriangle}       % probabilistic implication ->
+\newcommand{\PimpL}{\leftarrowtriangle}       % probabilistic implication <-
 % categories
 \newcommand{\catP}{\mathcal{P}}
 \newcommand{\catZ}{\mathcal{Z}}
 \newcommand{\catB}{\mathcal{B}}
+\newcommand{\catC}{\mathcal{C}}
 \newcommand{\catPB}{\mathcal{P(B)}}
 \newcommand{\catPZ}{\mathcal{P(Z)}}
 \newcommand{\setN}{\mathbb{N}}
@@ -100,11 +106,11 @@ Pei Wang
 
 \setlength{\headheight}{0cm}
 \setlength{\hoffset}{0cm}
-\setlength{\topmargin}{0cm}
+\setlength{\topmargin}{-2cm}
 \setlength{\oddsidemargin}{-2cm}
 \setlength{\evensidemargin}{-2cm}
 \setlength{\textwidth}{19.5cm}
-\setlength{\textheight}{26cm}
+\setlength{\textheight}{28cm}
 \setlength{\headsep}{0cm}
 \setlength{\topskip}{0cm}
 \setlength{\footskip}{0.9cm}  % between bottom of page and page number
@@ -171,7 +177,7 @@ I estimate my natural death would be around 2048, so for me AGI must happen befo
 \include{introduction}
 \include{architecture}
 \include{knowledge-representation}
-\chapter{Slideshow: logic}
+% \chapter{Slideshow: logic}
 \include{logic}
 \include{vagueness}
 \include{probabilities}
@@ -227,6 +233,7 @@ I estimate my natural death would be around 2048, so for me AGI must happen befo
 \glossary{name={NR},description={natural reasoning (= common-sense / human-like reasoning)}}
 \glossary{name={PCA},description={principal component analysis}}
 \glossary{name={PDF},description={probability density function}}
+\glossary{name={predicate logic},description={any logic of first-order or above, ie, not propositional logic}}
 \glossary{name={RL},description={reinforcement learning}}
 \glossary{name={RRL},description={relational reinforcement learning}}
 \glossary{name={RSI},description={recursive self-improvement}}

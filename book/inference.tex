@@ -23,6 +23,7 @@ In essence, the resolution rule is:\\
 Resolution is a popular deduction technique for binary logic;  we will not use it but it is helpful to know.
 
 \subsection{Horn clauses and Prolog}
+\label{sec:Prolog-Horn-intro}
 
 In essence, a Horn clause is a rule of the form:\\
 \hspace*{1cm} \begin{tabular}{l l}
@@ -79,7 +80,38 @@ If we have a rule saying that ``sex transmits certain diseases'', we may have to
 \section{Deduction}
 \label{sec:deduction}
 
-\subsection{$\mathcal{P}$ inference algorithm}
+\subsection{Predicate logic and substitution management}
+\label{sec:substitution-management}
+\index{substitution!management}
+
+We have argued that propositional (0th-order) logic is inadequate for AGI.  The situation is illustrated as follows:
+\begin{figure}[H]
+\centering
+\includegraphics{KBMC-illustrated.png}
+\end{figure}
+This is known as KBMC (knowledge-based model construction).  What it means is that we need to \textbf{fetch} logical rules from the KB and \textbf{instantiate} those rules to form the propositional Bayesian networks upon which probabilities are propagated.
+\index{KBMC (knowledge-based model construction)}
+
+Substitution management in first-order logic provers is quite complicated.  This is famously explained in classics such as SICP \citep*{Abelson1984}, where the authors advocated using \textbf{lazy sequences}, also known as \textbf{streams}.
+
+Think of a sequence of \textbf{solutions} attached to each variable node of the proof tree.  Each solution consists of a \textbf{substitution} and a \textbf{TV}.  When we carry out an operation between 2 variables, say $X^1 \varodot X^2$, we are not just dealing with 2 objects, but with 2 \textit{sequences} of possible solutions.  Let's denote the sequences as $X^1 = \{ x^1_1, x^1_2, ... \} $ and $X^2 = \{ x^2_1, x^2_2, ... \}$.  For each solution of each sequence, we need to:
+\begin{compactenum}[1.]
+\item  Match the 2 substitutions ($x^1_i.\mbox{sub}$ and $x^2_j.\mbox{sub}$), ie, see if they are compatible, and if so, merge the 2 substitutions.\\
+       Let's denote the matching operation as $(x^1_i.\mbox{sub} \bowtie x^2_j.\mbox{sub})$.
+\item  If the substitutions are compatible, perform the calculation of the CPT (conditional probability table).\\
+       Let's denote this operation as $(x^1_i.\mbox{TV} \varodot x^2_j.\mbox{TV})$.
+\end{compactenum}
+Now denote the combined action of $\bowtie(\cdot, \cdot)$ and $\varodot(\cdot, \cdot)$ as $\heartsuit(x^1_i, x^2_j)$.  Then what we need to calculate can be expressed as:
+\begin{equation}
+X^0 = \heartsuit( X^1 \times X^2 \times ... \times X^n)
+\end{equation}
+where $\times$ is Cartesian product, and $\heartsuit$ is extended as an n-ary operation.  Note that each $X^i$ is a (lazy) sequence, so this formula is very succinct.  Further, we can ``curry'' the function $\heartsuit$ so that:
+\begin{equation}
+\heartsuit \cdot ( X^1 \times X^2 \times ... \times X^n) = (((\heartsuit \cdot X^1) \cdot X^2) \cdot ... )
+\end{equation}
+where we have made use of the associativity of $\varodot$ (see eqn \ref{eqn:P-and-or-associativity}).  The final RHS is what we will be coding.  It is quite amazing to realize that the proof tree in our program is actually many propositional Bayes nets overlaid together.
+
+\subsection{Pure probabilistic inference}
 \label{sec:P-inference}
 
 %The $\mathcal{P}$ inference algorithm is similar to $\mathcal{Z}$ inference (Algorithm \ref{algorithm1}) except that probabilistic inference can be ``abductive'' --- a conditional probability can work in the reverse direction via Bayes theorem --- thus the branching factor of the search would be higher.
@@ -105,18 +137,13 @@ If we have a rule saying that ``sex transmits certain diseases'', we may have to
 %\end{algorithmic}
 %\end{algorithm}
 
-TO-DO: Deal with loops.
+Backward-chaining algorithms in binary logic are relatively familiar to us as they are explained in most AI textbooks.  One of the simplest backward-chaining algorithms is the SLDNF resolution\footnote{SLDNF stands for ``Linear Selection of Definite clauses, with Negation as Failure''.} used in Prolog (see \S\ref{sec:Prolog-Horn-intro}).  Originally I tried to adapt SLDNF resolution for probabilistic inference, but was doing a rather sloppy job of it.  Thanks to Abram Demski who pointed out that my ``Prolog trick'' could actually be replaced with exact Bayesian inference via a technique known as factor graphs, our inference algorithm is now on very good theoretical foundation.
+\index{factor graphs}
+\index{Bayesian networks!inference}
+\index{Bayesian networks!factor graphs}
+\index{SLDNF resolution}
 
 TO-DO: There should be a mechanism to prune low-probability (or should it be low-confidence?) branches early on in the search.
-
-TO-DO: Compare $\mathcal{P}$ inference with standard Bayesian network inference algorithms...?\\
-This algorithm merely outlines the rules involved in computing $P(X)$.
-
-Problems of Bayesian network inference:\\
-1.  Some inference steps analogous to classical logic cannot be performed because probabilities are not truth-functional (ie, the probability of a statement is not the function of the probabilities of its constituents; it may depend on other probabilities not appearing in the statement).\\
-2.  Bayesian network inference cannot be performed one-rule-per-step because of interdependence of variables that requires message passing.
-
-Currently I am using an extremely simplified approximation.
 
 %The solution to \#1 is to use 0.5 as the substitute for unknown probabilities.
 
@@ -142,6 +169,62 @@ Currently I am using an extremely simplified approximation.
 %\textbf{Forward inference}: simply given by $P(S|P,B)$\\
 %\textbf{Abduction}: given S, we can infer P and B.  "P or B" is a problem. How to represent that?  
 
+\subsubsection{Factor graph algorithm}
+
+Factor graphs are a way to unify probabilistic graphical models such as Bayesian networks and Markov networks.  The important thing to know is that factor graphs are isomorphic to the proof trees we construct during backward-chaining, and thus we can perform Bayesian belief propagation \textit{in situ} in the proof tree, very conveniently.  For example:
+\begin{figure}[H]
+\centering
+\includegraphics{simple-proof-tree.png}
+\caption{Simple proof tree / factor graph}
+\end{figure}
+In this example we can see that the factor node (black square) is located exactly as the ``rule node'' in the proof tree, therefore we might as well label the node with its operator (``$\wedge$'').
+
+\textbf{The algorithm:}  What we need to calculate, for a "goal" variable node $G$, is $P(G|K)$, where $K$ is the background knowledge.  $P(G)$ is called the prior distribution of $G$.
+
+When the graph has no loops, then it is a tree, and the factor graph algorithm begins from the leaves of the tree to the root which is the goal node.  The leaves pass messages up to their parents, with each factor node performing a \textbf{sum-product} operation, until the messages reach the root.
+
+Assume that we have a rule in the form:
+\begin{equation}
+H_1, H_2, ... \PimpL X_1 \varodot X_2 \varodot ...
+\end{equation}
+where the $H$'s stand for ``Heads''.  This is actually a compact way of stating more than 1 rule -- with each head corresponding to 1 rule\footnote{\{ To-do: explain why the multiple-head feature is desirable.\}}.  For simplicity's sake we assume number of $H$'s = 1.  For example:
+\begin{figure}[H]
+\centering
+\includegraphics{simple-proof-tree2.png}
+\caption{Simple factor graph in ``normal'' direction, with background knowledge}
+\end{figure}
+
+In the ``normal'' direction, our $G$ is $H$, so the calculation is pretty straightforward.  From now on we use the notational convention of omitting $P(\cdot)$ for probabilities; ie, $P(X)$ is written as $(X)$:
+\begin{equation}
+(G|K) = \sum_{X_i} (G|X_i)(X_i|K).
+\end{equation}
+The first factor on the RHS is the ``\textbf{factor}'' stored in the factor node.  The second factor is the \textbf{messages} coming from each $X_i$ node.  This is a simple sum-product operation.  The link to $K$ simply means that either the node's value is ``clamped'' or it is passing a message from further down the tree.
+
+Next case, the direction is reversed:
+\begin{figure}[H]
+\centering
+\includegraphics{simple-proof-tree3.png}
+\caption{Simple factor graph in backward direction}
+\end{figure}
+Notice how the rule is not pointing to the goal $G$, and $G$ is now taking the place of $X_1$.  We need to apply Bayes rule twice:
+
+First work out the 2-node case where $X_2, X_3, ...$ don't exist:\\
+\begin{eqnarray*}
+(G|K) &=& \frac{(K|G)(G)}{(K)} = \frac{(G)}{(K)} \sum_H (K|H)(H|G) \nonumber\\
+      &=& (G) \sum_H \frac{(H|K)}{(H)} (H|G)
+\end{eqnarray*}
+
+General case:\\
+\begin{eqnarray*}
+(G|K) &=& \frac{(K|G)(G)}{(K)} = \frac{(G)}{(K)} \sum_H (K|H)(H|G) \nonumber\\
+      &=& (G) \sum_H \frac{(H|K)}{(H)} \sum_{X_i} (H|G,X_1,X_2,...)(X_i|G) \nonumber\\
+      &=& (G) \sum_H \frac{(H|K)}{(H)} \sum_{X_i} (H|G,X_1,X_2,...)(X_1)(X_2)...
+\end{eqnarray*}
+
+\subsubsection{Loopy inference}
+
+\underconst
+
 \subsection{Hybrid $\mathcal{B,P,Z}$ inference}
 
 Rules, which are the building blocks of inference, can be of 4 types:
@@ -150,39 +233,37 @@ Rules, which are the building blocks of inference, can be of 4 types:
 \parbox{3cm}{\caption{}}
 \begin{tabular}{|l|l|} \hline
 \multicolumn{2}{|c|}{\textbf{rules}}\\ \hline
-mnemonic                   & meaning\\ \hline
-$\mathcal{B}$              & Prolog statements of the form\\
-                           & \qquad $L_0 \, \mbox{:--} \, L_1, L_2, L_3, ... $ \\
-$\mathcal{Z}$              & Fuzzy rules of the form\\
-                           & \qquad $z_0 := \widetilde{\bigvee} \; \widetilde{\bigwedge} \; z_{ij}$ \\
-$\mathcal{P(B)}$           & Bayesian network nodes specified by\\
-                           & \qquad $X_0 := \bigcurlyvee \bigcurlywedge X_{ij};c_{ij}$ \\
-$\mathcal{P(Z)}$           & Specifications of $\mathcal{P(Z)}$ distributions\\
-                           & \qquad $X_0 := Beta(\mu,\sigma^2)$ \\
+mnemonic             & meaning\\ \hline
+$\catB$              & Prolog statements of the form\\
+                     & \qquad $L_0 \, \mbox{:--} \, L_1, L_2, L_3, ... $ \\
+$\catZ$              & Fuzzy rules of the form\\
+                     & \qquad $z_0 := \bigZandor \Gamma(z_{ij})$ \\
+$\catPB$             & Bayesian network nodes specified by\\
+                     & \qquad $X_0 \PimpL \bigPandor X_{ij};c_{ij}$ \\
+$\catPZ$             & Specifications of $\catPZ$ distributions\\
+                     & \qquad $X_0 := Beta(\mu,\sigma^2)$ \\
 \hline
 \end{tabular}
 \end{table}
 
-In principle, a unified form of $\mathcal{P(Z)}$ rule is possible, but I have found it to be too complex and unwieldy to use.  So we will use a hybrid mixture of the above 4 types of rules.
-
-The type of a rule is determined by its ``head'' --- eg, if the head is a $\mathcal{B}$ variable then the rule is a $\mathcal{B}$ rule.  Using unified $\mathcal{P(Z)}$ truth values, we can plug variables of any TV type into any rule.  So, the rule type only affects how the rule is interpreted, which will be explained below.
+The type of a rule is determined by its ``head'' --- eg, if the head is a $\catB$ variable then the rule is a $\catB$ rule.  Using unified $\catPZ$ truth values, we can plug variables of any TV type into any rule.  So, the rule type only affects how the rule is interpreted, which will be explained below.
 
 An example of a rule is:  ``almost Q'' means ``close to Q, but not being Q''.\\
 The TV types of the predicates are:\\
-\hspace*{1cm} ``almost Q'' --- $\mathcal{B}$\\
-\hspace*{1cm} ``close to Q'' --- $\mathcal{Z}$\\
-\hspace*{1cm} ``not Q'' --- $\mathcal{B}$\\
-So we can represent it with a $\mathcal{B}$ rule:\\
+\hspace*{1cm} ``almost Q'' --- $\catB$\\
+\hspace*{1cm} ``close to Q'' --- $\catZ$\\
+\hspace*{1cm} ``not Q'' --- $\catB$\\
+So we can represent it with a $\catB$ rule:\\
 \hspace*{1cm} $\mbox{almost } Q \leftarrow \mbox{ close-to } Q \wedge \neg Q$
-Despite using a $\mathcal{B}$ rule, the result of inference will be a $\mathcal{P(Z)}$ truth value with binary character.  This is a good thing, because the idea of ``almost'' can be fuzzy in some cases, for example:\\
+Despite using a $\catB$ rule, the result of inference will be a $\catPZ$ truth value with binary character.  This is a good thing, because the idea of ``almost'' can be fuzzy in some cases, for example:\\
 \hspace*{1cm} ``I heard that John almost got killed by the assassination?''\\
 \hspace*{1cm} ``Not really, the bullet only hit his toe!''
 
 To simplify things, I consider single inference steps.  A complete proof involves a series of such steps.
 
-\subsubsection{$\mathcal{B}$ rule:}
+\subsubsection{$\catB$ rule:}
 
-The $\mathcal{B}$ rule can have 3 operators: $\wedge$, $\vee$, and $\neg$.  All we need to do is to show how to evaluate the operators for $\mathcal{P(Z)}$ values.  An example $\mathcal{B}$ rule is:\\
+The $\catB$ rule can have 3 operators: $\wedge$, $\vee$, and $\neg$.  All we need to do is to show how to evaluate the operators for $\mathcal{P(Z)}$ values.  An example $\catB$ rule is:\\
 \hspace*{1cm} \texttt{bachelor :- male $\wedge \; \neg$ married}
 
 Case $\neg$ :  We need to convert the $\mathcal{P(Z)}$ distribution to one with a binary character.  This is done by setting the variance to a fixed value in the binary regime (\S\ref{sec:unifying-P(Z)}).  Then the result is negated by transforming the mean:
@@ -197,9 +278,9 @@ The variance is assigned a fixed value so that the resulting variable has binary
 
 Case $\vee$ : Similar to above, with $P(A \vee B) = P(A) + P(B) - P(A)P(B)$, again assuming independence.
 
-\subsubsection{$\mathcal{Z}$ rule:}
+\subsubsection{$\catZ$ rule:}
 
-$\mathcal{Z}$ rules can have the operators $\widetilde{\wedge}$ (= min), $\widetilde{\vee}$ (= max), $\widetilde{\neg}$ ($= 1-z$) and the fuzzy modifier $\Gamma()$.  At this stage we ignore Soft min and max.  The $\Gamma()$'s are applied before the other operators.
+$\catZ$ rules can have the operators $\Zand$ (= min), $\Zor$ (= max), $\Zneg$ ($= 1-z$) and the fuzzy modifier $\Gamma()$.  At this stage we ignore Soft min and max.  The $\Gamma()$'s are applied before the other operators.
 
 Case $\Gamma$() : If $z_0 := \Gamma(z_1)$ and $z_1$ is given by the probability density function $f_1(z1)$, then the probability density of $z_0$ would be given by:
 \begin{equation}
@@ -219,11 +300,11 @@ but we can approximate it with a Beta distribution by preserving the mean and va
 \caption{Gaussian fuzzy modifier:  empirical data and result of regression}
 \end{figure}
 
-Case $\neg$ :  Simply negate the $\mathcal{P(Z)}$ distribution by eqn (\ref{eqn:1-minus-z-transform}) with variance unchanged.
+Case $\Zneg$ :  Simply negate the $\catPZ$ distribution by eqn (\ref{eqn:1-minus-z-transform}) with variance unchanged.
 
-Case $\widetilde{\vee}$ :  Given $z_0 := z_1 \widetilde{\vee} z_2$, ie $z_0 = max(z_1, z_2)$.  What we need to do here is to calculate the PDF of a random variable given as a function of two other random variables.  The procedure is given in many textbooks.
+Case $\Zor$ :  Given $z_0 := z_1 \Zor z_2$, ie $z_0 = max(z_1, z_2)$.  What we need to do here is to calculate the PDF of a random variable given as a function of two other random variables.  The procedure is given in many textbooks.
 
-Here $\mathbf{P}$ denotes probability measure which is a set function, $F(t)$ denotes CDF's, $f(t)$ denotes PDF's.
+Here $\catP$ denotes probability measure which is a set function, $F(t)$ denotes CDF's, $f(t)$ denotes PDF's.
 
 %Define the region $D_0 := \{ (z_1,z_2): \widetilde{\wedge}(z_1,z_2) \leq z_0 \}$.
 %\begin{eqnarray}
@@ -234,7 +315,7 @@ Here $\mathbf{P}$ denotes probability measure which is a set function, $F(t)$ de
 %If we assume $Z_1, Z_2$ independent then $f_{12}(z_1,z_2) = f_1(z_1) f_2(z_2)$.
 
 \hspace*{1.2cm} $ F_0(t) = \mathbf{P}(Z_0 \leq t)$\\
-\hspace*{2cm} $= \mathbf{P}(\widetilde{\vee}(Z_1,Z_2) \leq t)$\\
+\hspace*{2cm} $= \mathbf{P}(\Zor(Z_1,Z_2) \leq t)$\\
 \hspace*{2cm} $= \mathbf{P}(max(Z_1,Z_2) \leq t)$\\
 \hspace*{2cm} $= \mathbf{P}(Z_1 \leq t \wedge Z_2 \leq t)$\\
 \hspace*{2cm} $= \mathbf{P}(Z_1 \leq t) \, \mathbf{P}(Z_2 \leq t)$ \quad assuming $Z_1, Z_2$ independent\\
@@ -261,7 +342,7 @@ This function $f_0$ has an interesting property:  it appears to add up the distr
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.8]{A-ZOR-B-examples.png}
-\caption{$z_0 := z_1 \, \widetilde{\vee} \, z_2$}
+\caption{$z_0 := z_1 \, \Zor \, z_2$}
 \end{figure}
 
 %Some observations about the shapes:
@@ -296,7 +377,7 @@ Once again, we approximate by preserving the mean and variance; The irregular ap
 \caption{Plots of mean and variance; output vs input}
 \end{figure}
 
-Case $\widetilde{\wedge}$ : The result for $z_0 := z_1 \, \widetilde{\wedge} \, z_2$ is similar (again assuming $Z_1, Z_2$ independent):
+Case $\Zand$ : The result for $z_0 := z_1 \, \Zand \, z_2$ is similar (again assuming $Z_1, Z_2$ independent):
 \begin{equation}
 f_0(t) = f_1(t) + f_2(t) - f_1(t) F_2(t) + f_2(t) F_1(t)
 \end{equation}
@@ -325,14 +406,14 @@ $$ v_0 = \frac{k_3}{\sigma_2} e^{- (z^* - \sqrt{3} m_1 + k_4)^2 / \sigma_2^2 } $
 \hspace*{0.3cm} the $k$'s are regression parameters
 }}
 
-\subsubsection{$\mathcal{P(B)}$ rule:}
+\subsubsection{$\catPB$ rule:}
 
 A $\mathcal{P(B)}$ rule is of the form:\\
-\hspace*{1cm} $X_0 := \bigcurlyvee \bigcurlywedge X_{ij};c_{ij}$
+\hspace*{1cm} $X_0 := \bigPor \bigPand X_{ij};c_{ij}$
 
 To simplify things, we do not implement the Bayesian network algorithm, instead we only perform the calculation $X_0$ from $X_{ij}$ in one direction.  This is an extreme simplification of probability logic, but it may already be sufficient for common-sense reasoning.  We will try this first and see how far it can go.
 
-The $\mathcal{P}(\mathcal{Z})$ variables can be converted to $\mathcal{P}(\mathcal{B})$ variables via eqn (\ref{eqn:mean-and-p}).  Then the $\mathcal{P(B)}$ value of the consequent can be obtained via straightforward application of probabilities, eg:\\
+The $\catPZ$ variables can be converted to $\catPB$ variables via eqn (\ref{eqn:mean-and-p}).  Then the $\catPB$ value of the consequent can be obtained via straightforward application of probabilities, eg:\\
 %\hspace*{1cm} $P(X_1 \wedge X_2) = \sum_{i=1,2} P(X_1 \wedge X_2 \; | \; P(X_i)) \; P(X_i)$ \\
 \hspace*{1cm} $ P(X_1 \wedge X_2) = (1-p_1)(1-p_2)(1-c_1)(1-c_2) \; + $ \\
 \hspace*{3.5cm} $ (1-p_1)p_2(1-c_1)c_2 \; + $ \\
@@ -340,11 +421,11 @@ The $\mathcal{P}(\mathcal{Z})$ variables can be converted to $\mathcal{P}(\mathc
 \hspace*{3.5cm} $ p_1 p_2 c_1 c_2 $ \\
 where $p_i = P(X_i)$.  Note that it reduces to the binary case when $c_1 = c_2 = 1$.  The result is then converted back as a $\mathcal{P(Z)}$ distribution (with binary character).
 
-\subsubsection{$\mathcal{P(Z)}$ rule:}
+\subsubsection{$\catPZ$ rule:}
 
-We do not use truly $\mathcal{P(Z)}$ rules because they are too complex and not needed for common-sense reasoning.  The $\mathcal{P(Z)}$ rules we have are simpler operations that allow us to manipulate the $\mathcal{P(Z)}$ distributions of variables.
+We do not use truly $\catPZ$ rules because they are too complex and not needed for common-sense reasoning.  The $\catPZ$ rules we have are simpler operations that allow us to manipulate the $\catPZ$ distributions of variables.
 
-We can directly assign the mean and variance to a $\mathcal{P(Z)}$ variable:\\
+We can directly assign the mean and variance to a $\catPZ$ variable:\\
 \hspace*{1cm} $X_0 := Beta(z; a, b)$
 
 Or we can fix the probability at a particular point $z*$'s neighborhood.  For example, ``the probability of Mary being 0.9 fat is 0.1''.
@@ -413,7 +494,7 @@ Or we can fix the probability at a particular point $z*$'s neighborhood.  For ex
 %
 %One problem is that when we say a $\mathcal{P}$-rule degenerates into a $\mathcal{B}$-rule, it can remain to be a $\mathcal{Z}$-rule with $\Gamma_{ij} = I$.  The rule itself cannot tell us which type it is.
 
-\subsection{Inference of $\mathcal{C}$}
+\subsection{Inference of confidence}
 \label{sec:confidenceInference}
 
 Confidence was introduced in \S\ref{sec:confidence}.  There, I explained that:\\
@@ -515,34 +596,6 @@ The search space of this algorithm is a so-called \textbf{AND-OR graph} (or tree
 
 Solving this search problem is very important because inductive learning also depends on such a search.
 
-\subsection{Factor graph algorithm}
-
-Factor graphs are a way to unify probabilistic graphical models such as Bayesian networks and Markov networks.  \{ To-do:  I will explain it in more details \}
-
-\underconst
-
-Factor graph algorithm:\\
-In the following we use the notational convention of omitting $P(\cdot)$ for probabilities, eg $P(X)$ is written as $(X)$.
-
-If the direction is reversed:
-
-2 node case:\\
-\begin{eqnarray*}
-(G|K) &=& \frac{(K|G)(G)}{(K)} \nonumber\\
-      &=& \frac{(G)}{(K)} \sum_H (K|H)(H|G) \nonumber\\
-      &=& (G) \sum_H \frac{(H|K)}{(H)} (H|G)
-\end{eqnarray*}
-
-General case:\\
-\begin{eqnarray*}
-(G|K) &=& \frac{(K|G)(G)}{(K)} \nonumber\\
-      &=& \frac{(G)}{(K)} \sum_H (K|H)(H|G) \nonumber\\
-      &=& (G) \sum_H \frac{(H|K)}{(H)} \sum_{B_i} (H|G,B_1,B_2,...)(B_i|G) \nonumber\\
-      &=& (G) \sum_H \frac{(H|K)}{(H)} \sum_{B_i} (H|G,B_1,B_2,...)(B_1)(B_2)...
-\end{eqnarray*}
-
-\subsection{Loopy inference}
-
 \section{Abduction}
 \label{sec:abduction}
 
@@ -553,23 +606,6 @@ the only difference is that for abduction, $H$ is ground (ie, contains no variab
 In classical logic, the algorithm for abduction is identical to deduction (backward chaining) except that the termination criterion is different.  In deduction the leaves of the search tree should be ground facts in the KB (which are believed to be true).  For abduction, the leaves should be so-called \textbf{abducibles}, which are propositions that can be assumed to be true.  For example, ``rain'' is a common occurrence and thus can be assumed to be true in order to account for the grass being wet.
 
 Under probabilistic logic, we no longer need the notion of abducibles.  Interestingly, in this case the algorithm for abduction becomes almost identical to that of deduction, with the exception that deduction starts with an unknown fact whose truth is to be determined; whereas abduction starts with a known fact in need of explanations.  The 2 search spaces are exactly the same.
-
-\subsection{The ``Prolog trick''}
-
-Normally, a probabilistic inference engine needs to generate a propositional Bayesian network in order to evaluate the answer for a query.  What I call the Prolog trick is a way to calculate probabilities approximately without involving the complexity of Bayesian network belief propagation.  It works like SLD resolution in Prolog.
-
-We will illustrate the trick with 2 examples:
-
-\textbf{Single factor case.}  Given $A \leftarrow B$.
-
-We're seeking the value of $P(A)$ as the truth value of node ``A''.
-
-\textbf{2-factor case.}
-
-
-
-
-TO-DO:  unfinished.
 
 %Z abduction sometimes gives out-of-bounds Z values.\\
 %\hspace*{1cm} $ z_1 \widetilde \vee z_2 = high $\\
