@@ -1,10 +1,12 @@
 \chapter{Architecture}
+\index{architecture}
 \minitoc
 
 We will first look at various basic architectures and then try to decide on a final design.
 
 \section{Logical reasoner (blackboard architecture)}
 \label{sec:blackboard-architecture}
+\index{architecture!blackboard}
 
 This is an older design I explored around 2006, chiefly to put together several logic-based algorithms on a blackboard.  The following page is a schematic diagram showing various modules of the \textbf{logical sub-system}.
 
@@ -41,6 +43,7 @@ Invoke the \textbf{inductive learner} (\S\ref{sec:inductive-learner}), ie, try t
 The abduction algorithm is almost identical to the consistency-check algorithm, so they may be merged.  The abduction algorithm is also very similar to the induction algorithm (cf \S\ref{sec:abduction}), so all 3 may be merged.
 
 \section{BDI architecture}
+\index{architecture!BDI architecture}
 
 BDI (\textbf{belief-desire-intention}) is one of the most successful agent architectures ever proposed.  It was first investigated by Michael Bratman as a theory of human practical reasoning (\citep*{Bratman1987}), and later formulated as an agent architecture (\citep*{Bratman1988}).  The main concern of BDI is how to plan in the face of a \textit{dynamic environment} and with \textit{bounded resources}.
 
@@ -71,6 +74,7 @@ Figure \ref{fig:BDI-arch} is a schematic diagram of BDI.  The key processing ste
 \{ TO-DO:  Hayek is not the correct designation for this architecture \}
 
 Hayek is an artificial economy proposed by Eric Baum (\citep*{Baum2004}) as an AGI architecture.  A slight variant of Hayek can be described as follows:
+\index{architecture!Hayek architecture (economic model)}
 
 \begin{compactenum}
 \item The AGI is composed of a large number of small programs.
@@ -86,6 +90,7 @@ A high-level programming language (such as Lisp) seems to be more suitable for t
 Note that even very complex algorithms can be implemented in this architecture.  For example, a best-first search algorithm can remember its search state in an external memory store.  Then it just waits for its time-slice to resume searching.  Thus human programmers can seed the artificial economy with highly competent programs.
 
 \section{Decision-theoretic architecture}
+\index{architecture!decision-theoretic}
 
 This is mathematically more elegant than the BDI architecture.
 
@@ -112,6 +117,8 @@ Reinforcement learning \index{reinforcement learning} can be naturally included 
 
 \section{Self-programming architecture}
 \label{sec:self-programming-architecture}
+\index{architecture!self-programming}
+\index{programming!self-programming}
 
 Consider this variant of the chicken-and-egg problem (\S\ref{sec:chicken-and-egg}), where we distinguish between the \textbf{Synthesizer} and the AGI:
 \begin{figure}[H]
@@ -131,7 +138,7 @@ We will consider each paradigm in turn.
 
 A key question is how an initially-dumb AGI can \textit{improve} the performance of the Synthesizer, even slightly.
 
-\textbf{1. Human programming} (ie, brute-force software engineering without RSI)\\
+\textbf{1. Human programming} (ie, brute-force software engineering without RSI)\\ \index{programming!human}
 The problem with this approach is that it does not exploit the advantages of machine program synthesis, and thus is likely to be sub-optimal.
 
 \textbf{2. Natural reasoning} (cf \S\ref{sec:natural-reasoning})
@@ -143,14 +150,14 @@ The problem with this approach is that it does not exploit the advantages of mac
 \item  An NR agent can self-program (without invoking ATP), simply by \textbf{deductive planning} (\S\ref{sec:deductive-planning}).\\
 \end{compactenum}
 
-\textbf{3. ATP}
+\textbf{3. ATP} \index{programming!ATP (automated theorem proving)}
 \begin{compactenum}[(a)]
 \item  It requires \textit{formal} specifications of programs (or sub-routines), which are often very hard to write for humans.
 \item  Search in proof space can be very slow.
 \item  There already exists ATP-based program synthesis software, which can be used externally.\\
 \end{compactenum}
 
-\textbf{4. Stochastic local search}
+\textbf{4. Stochastic local search} \index{search!stochastic local search}
 \begin{compactenum}[(a)]
 \item  Is based on generate-and-test.
 \item  ``Generate'' is random and the program space is typically huge.
