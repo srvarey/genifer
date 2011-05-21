@@ -1,4 +1,4 @@
-\chapter{Vagueness ($\mathcal{Z}$)}
+\chapter{Vagueness ($\catZ$)}
 \label{ch:vagueness}
 \begin{flushright}
 \emph{An approximate answer to the right question is better than\\
@@ -16,7 +16,7 @@ I think the new formulation will be fairly unblemishable and uncontroversial, as
 \\
 
 \footnotesize
-I use $\mathcal{Z}$ instead of $\mathcal{F}$ to denote fuzziness partly in recognition of Lotfi Zadeh's contributions, and also because $F$ and $f$ are often used for the CDF and PDF in probability theory, which may cause confusion when probabilities and fuzziness are used together.
+I use $\catZ$ instead of $\mathcal{F}$ to denote fuzziness partly in recognition of Lotfi Zadeh's contributions, and also because $F$ and $f$ are often used for the CDF and PDF in probability theory, which may cause confusion when probabilities and fuzziness are used together.
 
 A note on the examples used in this book:  some of them are politically incorrect or somewhat embarrassing.  I prefer examples that are simple, realistic, and relevant to human emotions because they help us think more clearly (cf the Wason selection task).  Usually I just choose the most obvious examples that come to mind.
 \normalsize
@@ -50,7 +50,7 @@ There is no doubt that these predicates can be modified with degrees like ``very
 \hspace*{1cm} 3. susceptible to sorites paradox\footnote{A solution to the sorites paradox is given in \citep*{Bergmann2008} p268-282, using fuzzy logic and the notion of \textit{decaying validity}.}\\
 \hspace*{1cm} 4. open-texture (ie, if $x$ is a borderline case, one can assert either $Q(x)$ or $\neg Q(x)$ in different contexts)
 
-In philosophical logic, there are a number of theories of vagueness (see eg, \citep*{Graff2002}, \citep*{Keefe2000}, \citep*{Shapiro2006}).  $\mathcal{Z}$ logic is a kind of Degree Theory (\citep*{Edgington1992}, \citep*{Sainsbury1986}), that uses numerical truth values to represent vagueness.  There are other non-numerical theories such as Epistemicism (\citep*{Campbell1974}, \citep*{Williamson1994}), and Supervaluation (\citep*{Fine1975}, \citep*{Keefe2000}).
+In philosophical logic, there are a number of theories of vagueness (see eg, \citep*{Graff2002}, \citep*{Keefe2000}, \citep*{Shapiro2006}).  $\catZ$ logic is a kind of Degree Theory (\citep*{Edgington1992}, \citep*{Sainsbury1986}), that uses numerical truth values to represent vagueness.  There are other non-numerical theories such as Epistemicism (\citep*{Campbell1974}, \citep*{Williamson1994}), and Supervaluation (\citep*{Fine1975}, \citep*{Keefe2000}).
 
 \section{Why vagueness is needed for AGI}
 \label{sec:whyZ}
@@ -68,7 +68,7 @@ One of the critical capabilities of AGI is (self-)programming.  Also, it is impe
 
 \section{Why \textit{numerical} vagueness?}
 
-The controversy is whether vagueness should be managed \textbf{quantitatively} (such as $\mathcal{Z}$) or \textbf{qualitatively}.
+The controversy is whether vagueness should be managed \textbf{quantitatively} (such as $\catZ$) or \textbf{qualitatively}.
 
 One objection is that fuzzy logic can sometimes lead to unsound conclusions.  This problem is discussed in \S\ref{sec:exceptions} on nonmonotonic reasoning.
 
@@ -102,7 +102,7 @@ Lastly, what if we don't need the precision of numerical vagueness in some situa
 \hspace*{1cm} ``Is John really that smart?'' ``Not quite.'' (we don't know the exact degree of smartness)\\
 or\\
 \hspace*{1cm} ``John is slightly smarter than Peter.'' (but we don't know the exact difference)\\
-In my theory, these cases can be handled by combining $\mathcal{P}$ and $\mathcal{Z}$.
+In my theory, these cases can be handled by combining $\catP$ and $\catZ$.
 
 %One suggestion is that we can always use \textit{qualitative} binary statements in place of quantitative ones:\\
 %\hspace*{1cm} ``John is fairly intelligent''\\
@@ -163,15 +163,15 @@ In my theory, these cases can be handled by combining $\mathcal{P}$ and $\mathca
 
 There is some confusion about the interpretation of fuzziness, which I will try to clarify here.  I am influenced by Pei Wang's ideas \citep*{Wang2006}.
 
-$\mathcal{Z}$ is a measure of \textit{degree} or \textit{gradedness}.  Standard fuzzy theory employs the ``membership function'' to represent \textit{the degree to which an element belongs to a class}, but there is no consensus as to how the membership functions are defined.  Let's think of ``the degree to which a person is smart'', is it really arbitrary?
+$\catZ$ is a measure of \textit{degree} or \textit{gradedness}.  Standard fuzzy theory employs the ``membership function'' to represent \textit{the degree to which an element belongs to a class}, but there is no consensus as to how the membership functions are defined.  Let's think of ``the degree to which a person is smart'', is it really arbitrary?
 
 While there are no exact procedures to measure vague concepts (eg smartness), it is mandatory that a common-sense machine should possess some ways of assessing them, just like the human brain does.  In my AGI this is achieved by having a comprehensive knowledgebase of rules (acquired via machine learning) that compute numerical degrees of concepts.  Such rules are mini-algorithms (or ``\textbf{micro-theories}''\footnote{The term is used informally, not referring to Guha's notion of micro-theories in Cyc.}) that are \textbf{emergent properties} of intelligent learning systems.  They establish a \textit{distributed and approximate consensus} of how to measure vague concepts.
 
 From another perspective:  PCA (principal component analysis) can calculate the component of a dataset that represents its greatest variance.  For example, PCA may identify the male-female axis of a set of movie-goers, or the liberal-conservative axis of a group of politicians.  When we map this axis to [0,1], we can get a fuzzy value of the concept male/female or liberal/conservative.  This may answer the question ``where do fuzzy numbers come from?'' \footnote{Abram Demski suggested this to me in discussion.}
 
-If we regard $\mathcal{Z}$ as a measure of degrees, $\mathcal{Z}$ theory is mathematically as rigorous as probability theory.  $\mathcal{Z}$ is a measure of degrees just as the height $H$ is a measure of how tall an object is.  Also, the $\mathcal{Z}$-value can be inexact just as $H$ can be inexact, but this inexactitude is modeled separately by \textit{distributing probabilities over $\mathcal{Z}$} (\S\ref{sec:combinePZ}).
+If we regard $\catZ$ as a measure of degrees, $\catZ$ theory is mathematically as rigorous as probability theory.  $\catZ$ is a measure of degrees just as the height $H$ is a measure of how tall an object is.  Also, the $\catZ$-value can be inexact just as $H$ can be inexact, but this inexactitude is modeled separately by \textit{distributing probabilities over $\catZ$} (\S\ref{sec:combinePZ}).
 
-$\mathcal{Z}$ is not an approximation of probability; \S\ref{sec:probabilistic-interpretation} gives a probabilistic interpretation of vagueness, but in practice we can treat $\mathcal{P}$ and $\mathcal{Z}$ as \textbf{orthogonal} to each other.  Possibility theory defines fuzziness as a weaker form of probability (as non-additive probability), but this is not the approach of $\mathcal{Z}$ logic.
+$\catZ$ is not an approximation of probability; \S\ref{sec:probabilistic-interpretation} gives a probabilistic interpretation of vagueness, but in practice we can treat $\mathcal{P}$ and $\catZ$ as \textbf{orthogonal} to each other.  Possibility theory defines fuzziness as a weaker form of probability (as non-additive probability), but this is not the approach of $\catZ$ logic.
 
 Finally I want to dispel the myth that probability is mathematically more rigorously defined than fuzziness:
 
@@ -195,7 +195,7 @@ some fuzzy values in our mind have obscure origin, eg: which leader is more char
 
 Quantum mechanics or Heisenberg uncertainty does not prove that probabilities exist in the physical world.  On the other hand, studies in chaos and complex systems reveal that macroscopic descriptions are emergent and distinct from microscopic descriptions even though the former can be reduced to the latter.  Thus the recognition of fuzzy macroscopic patterns is every bit as real as the subjective use of probabilities to describe physical systems.  Vague concepts are also useful in thinking about pure mathematics -- for example, recognition of fuzzy similarities may assist mathematical reasoning.
 
-%Inference in $\mathcal{Z}$ is also different from traditional fuzzy logic because it does not use the implication operator $\rightarrow$ (\S\ref{sec:Z-conditionals}).
+%Inference in $\catZ$ is also different from traditional fuzzy logic because it does not use the implication operator $\rightarrow$ (\S\ref{sec:Z-conditionals}).
 
 \section{Probabilistic interpretation of vagueness?}
 \label{sec:probabilistic-interpretation}
@@ -214,15 +214,15 @@ Peter is very fat            & Peter is fatter in $80\%$ of comparisons (with ot
 Jane is very pretty          & Jane is judged pretty by $80\%$ of beholders\\ \hline
 \end{tabular}
 
-%Despite this interpretation, it is easier and more elegant to regard $\mathcal{P}$ and $\mathcal{Z}$ as orthogonal to each other.  For example, if we have a rule that says ``the fatter a person, the clumsier s/he is'', we can represent it with this Bayesian network:
+%Despite this interpretation, it is easier and more elegant to regard $\mathcal{P}$ and $\catZ$ as orthogonal to each other.  For example, if we have a rule that says ``the fatter a person, the clumsier s/he is'', we can represent it with this Bayesian network:
 %\begin{figure}[H]
 %\centering
 %\input{BayesNet-fat-clumsy.tex}
 %\caption{Bayesian network with Z-valued nodes}
 %\end{figure}
-%where the nodes are $\mathcal{Z}$-valued (continuously valued).  
+%where the nodes are $\catZ$-valued (continuously valued).  
 
-There seems to be two problems with this interpretation.  The first concerns the min-max calculus (\S\ref{sec:min-max-VS-sum-product}) -- if $\mathcal{Z}$ is really probability, why does it not obey the probabilistic sum-product calculus?
+There seems to be two problems with this interpretation.  The first concerns the min-max calculus (\S\ref{sec:min-max-VS-sum-product}) -- if $\catZ$ is really probability, why does it not obey the probabilistic sum-product calculus?
 
 The second problem is very subtle, and concerns the nature of matters of degree.  Consider these 2 statements:\\
 \hspace*{1cm} A: ``Mary is 0.8 probably ugly''  ($p = 0.8$; thus a 0.2 chance of NOT ugly)\\
@@ -235,16 +235,16 @@ In \S\ref{sec:P(Z)-defined} we will consider probability distributions over fuzz
 
 \section{Reference classes}
 
-The measure of a $\mathcal{Z}$ value is dependent upon its \textit{reference class}.  For example, if we want to say how ``young'' a person is, the reference class may be ``all people'' or ``all tenured professors''.  The measure of ``youngness'' thus varies depending on the reference class.
+The measure of a $\catZ$ value is dependent upon its \textit{reference class}.  For example, if we want to say how ``young'' a person is, the reference class may be ``all people'' or ``all tenured professors''.  The measure of ``youngness'' thus varies depending on the reference class.
 
-Once the reference class is fixed, it seems that $\mathcal{Z}$ is \textit{not} context-dependent.  For example, we can say ``John is a young man who owns an old dog''.  The dog is described as ``old'' using its own reference class (dogs), not John's reference class (humans).
+Once the reference class is fixed, it seems that $\catZ$ is \textit{not} context-dependent.  For example, we can say ``John is a young man who owns an old dog''.  The dog is described as ``old'' using its own reference class (dogs), not John's reference class (humans).
 
 \section{Numerical scale of Z}
 \label{sec:Z-numerical-scale}
 
 Many ``natural'' quantities occur in the range $[0,\infty)$.  For example, the height, weight, age, or ugliness of a person can theoretically range from 0 to $\infty$.  It is unnatural to set artificial upper limits to these measures.  However, it may be possible to extend these concepts to the range $(-\infty,\infty)$.  For example, the age of AGI may be $\sim-10$ because it is not yet born.  I reserve this possibility but will use $[0,\infty)$ for now.
 
-$\mathcal{Z}$ is defined in $[0,1]$.  So we need \textbf{membership functions} to map $[0,\infty)$ to $[0,1]$.  I choose a sigmoid function with parameter $\xi$ because it has some nice properties.  We need two orientations because some concepts get more and more positive as $x \rightarrow \infty$, while others the opposite.
+$\catZ$ is defined in $[0,1]$.  So we need \textbf{membership functions} to map $[0,\infty)$ to $[0,1]$.  I choose a sigmoid function with parameter $\xi$ because it has some nice properties.  We need two orientations because some concepts get more and more positive as $x \rightarrow \infty$, while others the opposite.
 \begin{equation}
 \label{eqn:Z-squashing-fns}
 Z_1(x) = e^{-\ln 2 \; \cdot \; (x/\xi)^2} \quad \mbox{and} \quad Z_2(x) = 1-e^{- \ln 2 \; \cdot \; (x/\xi)^2} 
@@ -274,7 +274,7 @@ Some concepts (such as ``chair'', ``absurd'') do not have natural opposites.  Fo
 
 Negation can cause some confusion because ``not young'' can mean either ``middle age'' or ``old''.  The only treatment of fuzzy negation that is entirely consistent with our common-sense is to distribute probabilities over fuzziness,  which will be developed after \S\ref{sec:P(Z)-defined}.
 
-The interpretation of the parameter $\xi$ in eqn (\ref{eqn:Z-squashing-fns}) is that it marks the \textit{point of neutrality} on the x-axis, for which z=0.5.  This is illustrated as follows:  we map the human age $x$ to the $\mathcal{Z}$-concept of ``young'', where I (subjectively) define ``40 years old'' as the neutral point of ``young'':
+The interpretation of the parameter $\xi$ in eqn (\ref{eqn:Z-squashing-fns}) is that it marks the \textit{point of neutrality} on the x-axis, for which z=0.5.  This is illustrated as follows:  we map the human age $x$ to the $\catZ$-concept of ``young'', where I (subjectively) define ``40 years old'' as the neutral point of ``young'':
 \begin{figure}[H]
 \centering
 \includegraphics{neutral-point.png}
@@ -282,7 +282,7 @@ The interpretation of the parameter $\xi$ in eqn (\ref{eqn:Z-squashing-fns}) is 
 \end{figure}
 This means, after 40, one gets more and more ``not young'' according to this definition.  
 
-Thus the numerical scale of $\mathcal{Z}$ is:\\
+Thus the numerical scale of $\catZ$ is:\\
 \begin{table}[H]
 \parbox{3cm}{\caption{}}
 \begin{tabular}{|l||l|}
@@ -305,7 +305,12 @@ Note:  A question has been raised whether we can define opposite concepts with 2
 \section{Why Z obeys min-max calculus}
 \label{sec:min-max-VS-sum-product}
 
-Probabilities obey sum-product calculus;  $\mathcal{Z}$ obeys \textbf{min-max calculus} \citep*{Zadeh1965}.  My justification for min-max is as follows:
+Probabilities obey sum-product calculus;  $\catZ$ obeys \textbf{min-max calculus} \citep*{Zadeh1965}, ie:
+\begin{eqnarray}
+z_1 \Zand z_2    & \defeq &  min(z_1, z_2) \\
+z_1 \Zor   z_2    & \defeq &  max(z_1, z_2).
+\end{eqnarray}
+My justification for min-max is as follows:
 
 As an example, consider the statement:\\
 \hspace*{1cm} S1: \textit{``John have had sex with 1000 women''}\\
@@ -328,49 +333,50 @@ My view is that the conjunction of 1000 vague events should have the same vaguen
 \section{Axiomatic description}
 \label{sec:fuzziness-axioms}
 
-In summary, $\mathcal{Z}$ is the relaxation of the classical-logic view that a statement is either true or false;  {true, false} is relaxed to [0,1].
+In summary, $\catZ$ is the relaxation of the classical-logic view that a statement is either true or false;  {true, false} is relaxed to [0,1].
 
-Here is a set of axioms that describes $\mathcal{Z}$:
+Here is a set of axioms that describes $\catZ$:
 
 Z1. $z \in [0,1]$ \\
 Z2. $z$ varies continuously within $(0,1)$ \\
 Z3. $z=0.5$ is the point of neutrality\\
-Z4. $\mathcal{Z}$ obeys min-max calculus when applied by logic conjunction and disjunction
+Z4. $\catZ$ obeys min-max calculus when applied by logic conjunction and disjunction
 
-The meaning of Z2 is yet to be clarified.  For now I'd just state it informally.  Also, it would be nice to formulate $\mathcal{Z}$ calculus in a way similar to Cox's postulates for probabilities, but that is not my current priority.
+The meaning of Z2 is yet to be clarified.  For now I'd just state it informally.  Also, it would be nice to formulate $\catZ$ calculus in a way similar to Cox's postulates for probabilities, but that is not my current priority.
 
 \section{A fuzzy paradox}
 
-A common problem in fuzzy logic is concerning the truth value of statements such as ``Q and not Q''.  It can be resolved using our understanding of $\mathcal{Z}$ negation:
+A common problem in fuzzy logic is concerning the truth value of statements such as ``Q and not Q''.  It can be resolved using our understanding of $\catZ$ negation:
 
 Suppose $Z(tall(john)) = 0.6$ (which means that John is slightly tall)\\
 then\\
-\hspace*{1cm} $ tall(john) \wedge \neg tall(john) = 0.4$ (which means this is slightly false)\\
-\hspace*{1cm} $ tall(john) \vee \neg tall(john) = 0.6$ (which means this is slightly true)
+\hspace*{1cm} $ tall(john) \Zand \neg tall(john) = 0.4$ (which means this is slightly false)\\
+\hspace*{1cm} $ tall(john) \Zor \neg tall(john) = 0.6$ (which means this is slightly true)
 
 On the other hand, if $Z(tall(john)) = 0.4$ (which means that John is slightly short)\\
 then\\
-\hspace*{1cm} $ tall(john) \wedge \neg tall(john) = 0.4$ (which means this is slightly false)\\
-\hspace*{1cm} $ tall(john) \vee \neg tall(john) = 0.6$ (which means this is slightly true)
+\hspace*{1cm} $ tall(john) \Zand \neg tall(john) = 0.4$ (which means this is slightly false)\\
+\hspace*{1cm} $ tall(john) \Zor \neg tall(john) = 0.6$ (which means this is slightly true)
 
 All these are reasonable conclusions.
 
 \section{Unifying AND and OR}
 \label{sec:unifying-AND-and-OR}
+
 We seek to unify AND and OR by using a single operator $\varodot$ with a parameter $\theta$ such that when $\theta = 0$ it reduces to AND and when $\theta = 1$ it becomes OR.
 
 A simple way to define $\varodot$ is:
 \begin{equation}
-X_1 \bigodot_\theta X_2 = (1-\theta) (X_1 \wedge X_2) + \theta (X_1 \vee X_2).
+X_1 \bigodot_\theta X_2 = (1-\theta) (X_1 \Zand X_2) + \theta (X_1 \Zor X_2).
 \end{equation}
 
 This animation shows the graph of $X_1 \varodot X_2$ as $\theta$ varies (requires Adobe Reader to trust this document):
 
-\begin{figure}[ht]
+\begin{figure}[H] %[ht]
 \includemovie[
   poster,
   text={\small(** Click to play **)}
-]{300px}{300px}
+]{354px}{523px}
 {unified-AND-OR.swf}
 \end{figure}
 
@@ -387,9 +393,9 @@ Usually, the old-fashioned chair is 4-legged and is made of wood; and the office
 
 \hspace*{1cm} \begin{tabular}{|l|l|l|} \hline
 \textbf{features}            & \textbf{degree} &\\ \hline
-wooden $\wedge$ 4-legged     & 1.0             & typical old-fashioned chair\\
-rotating $\wedge$ has wheels & 1.0             & typical office chair\\
-has wheels $\wedge$ 4-legged & 0.9             & atypical chair\\
+wooden $\Zand$ 4-legged     & 1.0             & typical old-fashioned chair\\
+rotating $\Zand$ has wheels & 1.0             & typical office chair\\
+has wheels $\Zand$ 4-legged & 0.9             & atypical chair\\
 \hline
 \end{tabular}
 
@@ -415,15 +421,16 @@ It can be verified that soft- min and max satisfy the boundary conditions of cla
 \caption{comparison of max and soft max}
 \end{figure}
 
-\section{$\mathcal{Z}$ modifiers}
+\section{$\catZ$ modifiers}
+\label{sec:Z-modifiers}
 
-To make $\mathcal{Z}$ logic more versatile, we need to augment it with \textbf{modifiers} which correspond to natural-language hedges like:\\
+To make $\catZ$ logic more versatile, we need to augment it with \textbf{modifiers} which correspond to natural-language hedges like:\\
 \hspace*{1cm} extremely \hspace*{1cm} very \hspace*{1cm} moderately \hspace*{1cm} slightly\\
 so we can express things like:\\
 \hspace*{1cm} $\mbox{lukewarm} \leftarrow \mbox{moderately(warm)}$\\
 \hspace*{1cm} $\mbox{obese} \leftarrow \mbox{very(fat)}$
 
-In general, we can define a $\mathcal{Z}$-modifier as a function $\Gamma: [0,1] \rightarrow [0,1]$,
+In general, we can define a $\catZ$-modifier as a function $\Gamma: [0,1] \rightarrow [0,1]$,
 \begin{equation}
 z_0 := \Gamma(z_1)
 \end{equation}
@@ -442,29 +449,29 @@ For example, the $\Gamma$'s for ``slightly'' and ``very'' can be:
 We can have better control over the shapes of $\Gamma$ by using other functions and having more parameters, but I suspect that such sophistication is not needed for common-sense reasoning.
 
 For example, we can define ``lukewarm'' as ``warm'' with $z \in [0.6,0.8]$, or:\\
-\hspace*{1cm} $\mbox{lukewarm} \leftarrow \Gamma_{0.6}(\mbox{warm}) \wedge \Gamma_{0.8}(\mbox{warm})$\\
+\hspace*{1cm} $\mbox{lukewarm} \leftarrow \Gamma_{0.6}(\mbox{warm}) \Zand \Gamma_{0.8}(\mbox{warm})$\\
 using 2 $Gamma$'s with fixed variances.  The result is the blue curve on the left.  We get the interval [0.6,0.8] by taking $> 0.5$ as true, and thus ``lukewarm'' would be a binary predicate.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.9]{Gamma-for-lukewarm.png}
 \caption{Two representations of ``lukewarm''}
 \end{figure}
-On the other hand, if we use a tailored $\Gamma$ to represent ``lukewarm'' on the right, it would be a $\mathcal{Z}$-predicate with continuous values like ``slightly lukewarm'' and ``very lukewarm''.  This seems to be unnecessarily sophisticated.
+On the other hand, if we use a tailored $\Gamma$ to represent ``lukewarm'' on the right, it would be a $\catZ$-predicate with continuous values like ``slightly lukewarm'' and ``very lukewarm''.  This seems to be unnecessarily sophisticated.
 
 \{ TO-DO:  One problem with this method is that the predicate ``lukewarm'' changes abruptly at the boundaries.  Another example is ``middle-aged''.  \}
 
-\{ TO-DO:  Prove that combinations of $\Gamma$ and $\widetilde{\vee} \; \widetilde{\wedge}$ can be universal approximators. \}
+\{ TO-DO:  Prove that combinations of $\Gamma$ and $\Zand ,\; \Zor$ can be universal approximators. \}
 
-\section{$\mathcal{Z}$-conditionals}
+\section{$\catZ$-conditionals}
 \label{sec:Z-conditionals}
 
-In general, inference is driven by rules.  In $\mathcal{Z}$ logic all rules take the form of $\mathcal{Z}$-conditionals.  A $\mathcal{Z}$-conditional is specified by a combination of min's and max's (similar to DNFs (disjunctive normal forms) in classical logic):
+In general, inference is driven by rules.  In $\catZ$ logic all rules take the form of $\catZ$-conditionals.  A $\catZ$-conditional is specified by a combination of min's and max's (similar to DNFs (disjunctive normal forms) in classical logic):
 \begin{equation}
-z_0 \; := \; \widetilde{\bigvee_i} \; \widetilde{\bigwedge_j} \; \Gamma(z_{ij})
+z_0 \; := \; \bigZor_i \; \bigZand_j \; \Gamma(z_{ij})
 %z_0 \; := \; \widetilde{\bigvee_i} \; \widetilde{\bigwedge_j} \; \Gamma(z_{ij}; z^*_{ij}, v_{ij}) \, = \; \widetilde{\bigvee} \; \{ z_{11} \, \widetilde{\wedge} \, z_{12} \, \widetilde{\wedge} \cdots, z_{21} \, \widetilde{\wedge} \, z_{22} \, \widetilde{\wedge} \cdots, \, \cdots \}
 \end{equation}
 
-Notice that a $\mathcal{Z}$ rule directly assigns a $\mathcal{Z}$ value to $z_0$ \textit{without the use of an implication operator}, which is very different from traditional fuzzy logics:
+Notice that a $\catZ$ rule directly assigns a $\catZ$ value to $z_0$ \textit{without the use of an implication operator}, which is very different from traditional fuzzy logics:
 
 \subsection{Traditional fuzzy logic}
 
@@ -475,8 +482,8 @@ $\Rightarrow$ & 0 & 1\\ \hline
 1             & 0 & 1\\ \hline
 \end{tabular}
 
-A fuzzy implication statement:  $(Z_1 \wedge Z_2) \Rightarrow Z_0$  means that the fuzzy values $z_0,z_1,z_2$ obey the equation:
-$$ ((z_1 \wedge z_2) \Rightarrow z_0) = z_c $$
+A fuzzy implication statement:  $(Z_1 \Zand Z_2) \Rightarrow Z_0$  means that the fuzzy values $z_0,z_1,z_2$ obey the equation:
+$$ ((z_1 \Zand z_2) \Rightarrow z_0) = z_c $$
 where $z_c$ is the truth value of the implication statement.  Compared to my approach, this has an extra level of indirectness.  Is it really necessary that we know the truth value of an implication statement?  (Cf \S\ref{sec:P-and-ClassicalLogic}: In probabilistic logic, the probability conditional $P(A|B)$ serves as the implication statement, but we usually do not ask about its own probability.)  One trouble with traditional fuzzy logic is that we cannot even perform \textit{modus ponens} unless we allow interval fuzzy values.\footnote{Suppose we define the operators for a very simple fuzzy logic: $a \Rightarrow b \equiv \neg a \vee b$, $\neg a \equiv 1-a $, and $a \vee b \equiv min(a,b)$.  \citep*{Kenevan1992} has given an inference algorithm for this logic, but it is very complicated and involves interval fuzzy values, and so is not very suitable for further complex development.}
 
 % Now given that $Z_1 = z_1$ and $Z_1 \Rightarrow Z_0$, ie $ (z_1 \Rightarrow z_0) = z_c $, ie $min(1-z_1,z_0)=z_c$ we still cannot determine $z_0$.}
@@ -488,25 +495,25 @@ where $z_c$ is the truth value of the implication statement.  Compared to my app
 %\hspace*{1cm} smart $\leftarrow$ articulate\\
 %\hspace*{1cm} smart $\leftarrow$ blah
 
-\section{Combining $\mathcal{B}$, $\mathcal{P}$, $\mathcal{Z}$}
+\section{Combining $\catB$, $\catP$, $\catZ$}
 \label{sec:combinePZ}
 
 \subsection{The truth value P(Z)}
 \label{sec:P(Z)-defined}
 
-How to combine $\mathcal{P}$ and $\mathcal{Z}$?  The answer is simple because there is no other choice:  the semantics of probabilities dictate that $\mathcal{P}$ must be \textit{distributed over events}.  In the current system, events are either $\mathcal{B}$ or $\mathcal{Z}$ (the latter are \textit{continuous} events).  So we \emph{distribute $\mathcal{P}$ over $\mathcal{B}$ and $\mathcal{Z}$}.  In this sense, fuzziness is more fundamental than probabilities.
+How to combine $\mathcal{P}$ and $\catZ$?  The answer is simple because there is no other choice:  the semantics of probabilities dictate that $\mathcal{P}$ must be \textit{distributed over events}.  In the current system, events are either $\mathcal{B}$ or $\catZ$ (the latter are \textit{continuous} events).  So we \emph{distribute $\mathcal{P}$ over $\mathcal{B}$ and $\catZ$}.  In this sense, fuzziness is more fundamental than probabilities.
 
-If a $\mathcal{Z}$ value is uncertain --- for example, we may not be sure how tall Mary is (the $\mathcal{Z}$-value of her tallness may be 0.6-0.8, say, so we can assume a uniform probability distribution over the interval [0.6,0.8] which is the green rectangle below) --- and we can approximate it by a Beta distribution over $\mathcal{Z}$ with a mean at 0.7 and the same variance:
+If a $\catZ$ value is uncertain --- for example, we may not be sure how tall Mary is (the $\catZ$-value of her tallness may be 0.6-0.8, say, so we can assume a uniform probability distribution over the interval [0.6,0.8] which is the green rectangle below) --- and we can approximate it by a Beta distribution over $\catZ$ with a mean at 0.7 and the same variance:
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.9]{P-over-Z-Marys-Tallness2.png}
-\caption{an example $\mathcal{P}(\mathcal{Z})$ distribution}
+\caption{an example $\mathcal{P}(\catZ)$ distribution}
 \end{figure}
 where the probability density should sum to 1: $ \int^1_0 P(z) dz = 1 $.
 
 On the other hand, if a $\mathcal{P}$ value is uncertain, we simply \textit{ignore} its error (eg, by choosing the mid-point of a P-interval).  \S\ref{sec:PointValued} tried to justify this.
 
-The following commutative diagram shows the relationship between $\mathcal{B}$, $\mathcal{P(B)}$, $\mathcal{Z}$, and $\mathcal{P(Z)}$:
+The following commutative diagram shows the relationship between $\mathcal{B}$, $\mathcal{P(B)}$, $\catZ$, and $\mathcal{P(Z)}$:
 
 \begin{figure}[H]
 \centering
@@ -526,11 +533,11 @@ Note that this rule is inexact:  there are exceptions (where some rich people ar
 \includegraphics{rich-vs-powerful.png}
 \end{figure}
 
-There are reasons to believe that the identity function (red line) represents the least-error regression function:  first, the $\mathcal{Z}$ values are in ``natural scale'' (ie, $z=1$ corresponds to $\infty$) so $(z_1,z_2)$ at $(1,1)$ is obvious if we accept the original statement;  secondly, when $z_1 = 0.5$, the person is neither rich nor poor, and we should have nothing to say whether the person is powerful or not, as far as the original statement is concerned.
+There are reasons to believe that the identity function (red line) represents the least-error regression function:  first, the $\catZ$ values are in ``natural scale'' (ie, $z=1$ corresponds to $\infty$) so $(z_1,z_2)$ at $(1,1)$ is obvious if we accept the original statement;  secondly, when $z_1 = 0.5$, the person is neither rich nor poor, and we should have nothing to say whether the person is powerful or not, as far as the original statement is concerned.
 
 \underconst
 
-\subsection{Unifying all truth values to $\mathcal{P(Z)}$}
+\subsection{Unifying all truth values to $\catPZ$}
 \label{sec:unifying-P(Z)}
 
 Up to now there are 4 possible TV types:
@@ -540,17 +547,17 @@ Up to now there are 4 possible TV types:
 \multicolumn{3}{|c|}{\textbf{truth values}}\\ \hline
 category                   & meaning                                      & definition \\ \hline
 $\mathcal{B}$              & binary                                       & $b \in \{true, false\} $\\
-$\mathcal{Z}$              & fuzzy                                        & $z \in [0,1] $\\
-$\mathcal{P}(\mathcal{B})$ & $\mathcal{P}$ distributed over $\mathcal{Z}$ & $ P(b=false) = p_0 $\\
+$\catZ$              & fuzzy                                        & $z \in [0,1] $\\
+$\mathcal{P}(\mathcal{B})$ & $\mathcal{P}$ distributed over $\catZ$ & $ P(b=false) = p_0 $\\
                            &                                              & $ P(b=true) = p_1 $\\
-$\mathcal{P}(\mathcal{Z})$ & $\mathcal{P}$ distributed over $\mathcal{Z}$ & $ P(z=z_1) \sim Beta(z_1) $\\ \hline
+$\mathcal{P}(\catZ)$ & $\mathcal{P}$ distributed over $\catZ$ & $ P(z=z_1) \sim Beta(z_1) $\\ \hline
 \end{tabular}
 \end{table}
 I find that they can be unified to type $\mathcal{P(Z)}$, which can make things simpler.  Below is how to represent the other 3 TV types as $\mathcal{P(Z)}$:
 
 \subsubsection{Type $\mathcal{B}$}
 
-Some variables have a strong ``binary flavor''.  For example, in common sense, a person is either dead or alive, although a more nuanced view will have grades of being dead.  If deadness is a $\mathcal{Z}$ variable, z = 0 would be ``definitely alive'', z = 1 would be ``definitely dead'' (eg reduced to ash), and z = 0.5 would correspond to a state that is difficult to classify as dead or alive, eg a brain-dead, vegetative state.  z = 0.7 may be a state that is more dead than brain-dead and yet more alive than ash, eg --- I have to pause for a while to think of an example --- a body under cryonic preservation.  And z = 0.4 may be some kind of near-death experience.  Anyway, one can expect the probability distribution of $z_{dead}$ to be polarized with a trough in the middle.  This can be represented by a Beta distribution with a large variance:
+Some variables have a strong ``binary flavor''.  For example, in common sense, a person is either dead or alive, although a more nuanced view will have grades of being dead.  If deadness is a $\catZ$ variable, z = 0 would be ``definitely alive'', z = 1 would be ``definitely dead'' (eg reduced to ash), and z = 0.5 would correspond to a state that is difficult to classify as dead or alive, eg a brain-dead, vegetative state.  z = 0.7 may be a state that is more dead than brain-dead and yet more alive than ash, eg --- I have to pause for a while to think of an example --- a body under cryonic preservation.  And z = 0.4 may be some kind of near-death experience.  Anyway, one can expect the probability distribution of $z_{dead}$ to be polarized with a trough in the middle.  This can be represented by a Beta distribution with a large variance:
 \begin{figure}[H]
 \centering
 \includegraphics{deadness.png}
@@ -558,7 +565,7 @@ Some variables have a strong ``binary flavor''.  For example, in common sense, a
 \end{figure}
 When the polarization gets extreme (eg the toss of a coin is either head or tail), the distribution becomes a $\bigsqcup$ shape.  The degree of polarization (ie amount of variance) can be estimated statistically, if data is available.
 
-It appears that all common-sensical $\mathcal{B}$ variables are actually \textbf{polarized} $\mathcal{Z}$ variables.  Another example is a person being either married or not married, and there are grey areas like gay marriage or marriage for the green card, etc.
+It appears that all common-sensical $\mathcal{B}$ variables are actually \textbf{polarized} $\catZ$ variables.  Another example is a person being either married or not married, and there are grey areas like gay marriage or marriage for the green card, etc.
 
 Actually the Beta distribution (eqn \ref{eqn:beta-distro}) is capable of representing 3 types of characteristics (with $a = 1$ and $b = 1$ as points of transition separating the 3 regimes):
 \begin{figure}[H]
@@ -567,7 +574,7 @@ Actually the Beta distribution (eqn \ref{eqn:beta-distro}) is capable of represe
 \end{figure}
 The unary type represents concepts such as ``normal'', ``broken'', ``healthy'', or ``natural''.  In such concepts, the state at $z = 1$ can be clearly defined (eg, John was perfectly healthy when he was a kid), but as we approach $z = 0$ the cases become very improbable and inexhaustible (eg, it is impossible to find a person who is ``utmost unhealthy'' because it is always possible to think of more extreme and improbable unhealthy ways.  Also, committing suicide is not the limiting case --- suicide is not the same as unhealthy --- so the interval is open-ended.)
 
-\textbf{About the mean and variance.}  In the fuzzy regime, the smaller the variance, the shaper the peak and thus the more confident we are about the $\mathcal{Z}$ value;  The variance is a measure of confidence in this regime.  In the binary regime, the greater the variance, the more \textit{polarized} the distribution becomes;  The variance is a measure of binary character.  In the unary regime, the meaning of the variance is unclear.
+\textbf{About the mean and variance.}  In the fuzzy regime, the smaller the variance, the shaper the peak and thus the more confident we are about the $\catZ$ value;  The variance is a measure of confidence in this regime.  In the binary regime, the greater the variance, the more \textit{polarized} the distribution becomes;  The variance is a measure of binary character.  In the unary regime, the meaning of the variance is unclear.
 
 %The transition occurs at $a = 1$ or $b = 1$:
 %\begin{figure}[H]
@@ -591,11 +598,11 @@ To illustrate this with an example:  In the fuzzy regime, I can say ``John is 0.
 
 %Once we established that a variable is polarized, what if we then assert its probability?  Eg P(dead) = 0.7?  This is interesting.  Equally interesting, is when we know P(dead) = 0.7, and then assert its polarity.
 
-\subsubsection{Type $\mathcal{Z}$}
+\subsubsection{Type $\catZ$}
 
 We can create a $\mathcal{P(Z)}$ distribution with a peak around $z$.  The variance depends on how confident we are of the $z$ value.  If unspecified, we can assign a typical variance to it.
 
-\subsubsection{Type $\mathcal{P(B)}$}
+\subsubsection{Type $\catPB$}
 
 For example, ``Mary is probably married'', with p = 0.8.\\
 ie \hspace*{1cm} $P(married) = 0.8, \quad \quad P(\neg married) = 0.2$.\\
@@ -605,7 +612,7 @@ $$ F(x; a, b) = \frac{ B(x; a, b) }{ B(a, b) } = I_x(x; a, b) $$
 where $B(x)$ is the incomplete Beta function:
 $$ B(x; a, b) = \int^x_0 t^{a-1} (1-t)^{b-1} dt \mbox{.}$$
 Thus
-$$ P(Z) = 1 - P(\neg Z) = 1 - I_x(1/2; a, b) $$
+$$ P(Z = \mbox{true}) = P(z \ge \frac{1}{2}) = 1 - P(\Zneg Z) = 1 - P(z < \frac{1}{2}) = 1 - I_x(1/2; a, b) $$
 
 The desired mean $\mu$ can be solved from:
 \begin{eqnarray}

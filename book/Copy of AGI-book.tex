@@ -1,17 +1,17 @@
 \documentclass[12pt, a4paper]{report}
 
-%dvips OR pdftex
-\usepackage[pdftex, pdfauthor={Yan King Yin}, bookmarks, anchorcolor=blue, colorlinks, linkcolor=blue, citecolor=blue, urlcolor=blue, breaklinks, plainpages=false, pdfpagelabels, hypertexnames=false]{hyperref}
+%dvips
+\usepackage[pdflatex, pdfauthor={Yan King Yin}, bookmarks, anchorcolor=blue, colorlinks, linkcolor=blue, citecolor=blue, urlcolor=blue, breaklinks, plainpages=false, pdfpagelabels, hypertexnames=false]{hyperref}
 \usepackage{breakurl}
 \usepackage[final]{graphicx}
 \usepackage{float}
 \usepackage[square]{natbib}
 \usepackage{color}
-\usepackage{amsmath}     % for {equation} {cases} {xleftarrow}
+\usepackage{amsmath}   % for {equation} {cases} {xleftarrow}
 \usepackage{bbm}         % for math fonts with double lines
-\usepackage{amssymb}     % for \curlyvee
-\usepackage{stmaryrd}    % for \bigcurlyvee, \widetilde{\bigwedge}
-\usepackage{wasysym}     % for \iint (double integral)
+\usepackage{amssymb}   % for \curlyvee
+\usepackage{stmaryrd}   % for \bigcurlyvee, \widetilde{\bigwedge}
+\usepackage{wasysym}   % for \iint (double integral)
 \usepackage{makeidx}
 \usepackage[style=list,acronym=true,number=none]{glossary}
 \usepackage{alg}
@@ -34,11 +34,9 @@
 \renewcommand{\vec}[1]{\mathbf{#1}}
 
 %%%%%%%%%%%%%%%%% Symbols defined by me %%%%%%%%%%%%%%%%%%%
-\newcommand{\defeq}{\stackrel{def}{=}}
 % fuzzy and probabilistic logic operators
 \newcommand{\Zand}{\stackrel{Z}{\wedge}}
 \newcommand{\Zor}{\stackrel{Z}{\vee}}
-\newcommand{\Zneg}{\stackrel{Z}{\neg}}
 \newcommand{\Pand}{\stackrel{P}{\wedge}}
 \newcommand{\Por}{\stackrel{P}{\vee}}
 \newcommand{\bigZand}{\stackrel{Z}{\bigwedge}}
@@ -52,9 +50,6 @@
 \newcommand{\catB}{\mathcal{B}}
 \newcommand{\catPB}{\mathcal{P(B)}}
 \newcommand{\catPZ}{\mathcal{P(Z)}}
-\newcommand{\setN}{\mathbb{N}}
-\newcommand{\setR}{\mathbb{R}}
-\newcommand{\Hyp}{\mathbbm{Hyp}}
 
 \fontsize{13pt}{15pt} \selectfont
 \renewcommand{\familydefault}{\sfdefault}
@@ -190,6 +185,12 @@ I estimate my natural death would be around 2048, so for me AGI must happen befo
 \include{business-aspects}
 \include{quick-start}
 
+\phantomsection
+\addcontentsline{toc}{chapter}{Acknowledgements}
+\chapter*{Acknowledgements}
+
+In addition to the people listed on the title page, I'd like to thank the AGI mailing-list participants for years of discussions.
+
 \clearpage
 \phantomsection
 \addcontentsline{toc}{chapter}{Symbols}
@@ -258,11 +259,5 @@ I estimate my natural death would be around 2048, so for me AGI must happen befo
 \phantomsection
 \addcontentsline{toc}{chapter}{Index}
 \printindex
-
-\phantomsection
-\addcontentsline{toc}{chapter}{Acknowledgements}
-\chapter*{Acknowledgements}
-
-In addition to the people listed on the title page, I'd like to thank the AGI mailing-list participants for years of discussions.
 
 \end{document}
