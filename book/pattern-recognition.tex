@@ -52,7 +52,7 @@ Recall that equality ($=$) is defined by \textbf{Leibniz's axiom of extensionali
 \forall x [f x = g x] \Rightarrow f = g
 \label{eqn:Leibniz-extensionality}
 \end{equation}
-with $x : \beta$ and $f, g : \beta \rightarrow \alpha $.  This definition is given in Church's type theory in 1940.  It defines equality for any function / predicate / proposition.
+with $x : \beta$ and $f, g : \beta \rightarrow \alpha $.  This definition of $=$ is given by Church's type theory in 1940.  It defines equality for any function / predicate / proposition.
 
 The similarity $\approx$ can be regarded as the probabilistic version of $=$.  We can simply replace the $\forall$ quantification in (\ref{eqn:Leibniz-extensionality}) with the probabilistic quantification $\#$ (\S\ref{sec:probabilistic-quantifier}), as in:
 \begin{equation}
@@ -71,15 +71,25 @@ vertebrate(whale)      & vertebrate(fish)\\
 
 How to capture this?  The solution is to ``turn around'' Leibnez's definition thusly:
 \begin{eqnarray}
-\forall f [f x = f y] &\Rightarrow& x = y \\
-\# f [f x = f y]      &\Rightarrow& x \approx y.
+\mbox{(Leibnez)}                 & \forall z. [x z = y z] \Rightarrow& x = y \\
+\mbox{(inverted Leibnez)}     & \forall z. [z x = z y] \Rightarrow& x = y
 \label{eqn:inverted-extensionality}
 \end{eqnarray}
-Notice that if we use higher-order logic, $f$ can be unified with n-ary predicates with other arguments, eg
- $$f(x) = \mbox{lives-in}(x, \mbox{water}).$$
-So this is a very powerful way of expressing all forms of similarities.
+where I have renamed the variables to stress the symmetry.  And the probabilistic form is:
+\begin{equation}
+\# z [z x = z y]  \Rightarrow x \approx y.
+\end{equation}
+Notice that if we use higher-order logic, $z$ can be unified with n-ary predicates with other arguments, eg
+ $$z(x) = \mbox{lives-in}(x, \mbox{water})$$
+so this is a very powerful way that can express all forms of similarities.
 
-\{ To-do:  I need to develop the above theory further.  Milner's Context Lemma in domain theory seems to have some semblance to what we're doing here.  \}
+\{ To-do:  I need to develop the above theory further.  Milner's Context Lemma in domain theory seems to have some semblance to what we're doing here.  Milner's Lemma states the equivalence of 2 orderings, $<_{\sigma}$ and $\sqsubset$.  They are defined by:
+\begin{eqnarray}
+M \sqsubset N        \quad     & \mbox{iff} &    \quad \forall z \in \setN. \; M \Downarrow z \Rightarrow N \Downarrow z \\
+M <_{\sigma} N    \quad     & \mbox{iff} &    \quad \forall Z \in \mbox{programs.} \; Z(M) \sqsubset Z(N)
+\end{eqnarray}
+where $M \Downarrow z$ means $M$ evaluates to $z$.  The situation resembles Leibniz's definition and its ``inverted form''.
+\}
 
 We'd be interested in measuring similarities between entities with certain structures.  This has been considered, eg in \citep*{Schmid2003}, chapters 10-12, in an ILP setting.  A famous example is the similarity between the solar system and the atom:  the important point is that both systems have bodies revolving around a central body, but it does not matter what their size, mass, and temperature, etc, are.
 
