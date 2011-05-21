@@ -1,4 +1,4 @@
-\chapter{Probabilities ($\mathcal{P}$)}
+\chapter{Probabilities ($\catP$)}
 \label{ch:probabilities}
 %\begin{flushright}
 %[TO-DO: quote]
@@ -236,13 +236,13 @@ with a point-valued probability:\\
 If fuzziness is a more fundamental phenomenon in our knowledge representation, we should be making more fuss about fuzziness than probabilities.  It seems that we ascribe more ``prestige'' to probability theory merely because of psychological reasons.
 
 \section{Probabilistic AND and OR}
-\label{sec:probabilistic-AND-OR}
+\label{sec:P-and-or}
 
 Specifying the CPT (conditional probability table) of a single node of a Bayesian network, if the node has $n$ parents, would require $2^n$ entries.  The ``noisy'' AND and OR gates are designed to simplify this by reducing the number of independent entries to $n$.  The interpretation of the noisy OR gate is that each parent variable $X$ is associated with an ``inhibition probability'', $q$ (\citep*{Pearl1988} p184-187 or \citep*{Russell2003} p500-501).  This is the textbook definition of noisy OR (and I created noisy AND by applying DeMorgan's law\footnote{That is, to require $\overline{X_1 \curlyvee X_2} \equiv \overline{X_1} \curlywedge \overline{X_2}$ and $\overline{X_1 \curlywedge X_2} \equiv \overline{X_1} \curlyvee \overline{X_2}$ }):
 
 \hspace*{1cm} \begin{tabular}{|l|l||l||l|} \hline
 \multicolumn{2}{|c||}{} & {\textbf{noisy AND}}           & {\textbf{noisy OR}}\\ \hline
-$X_1$ & $X_2$           & $X_1 \curlywedge X_2$          & $ X_1 \curlyvee X_2 $\\ \hline
+$X_1$ & $X_2$           & $X_1 \Pand X_2$          & $ X_1 \Por X_2 $\\ \hline
 0     & 0               & $ 1 ? $                        & $ 0 $\\
 0     & 1               & $ 1 - q_1 ? $                  & $ 1 - q_1 $\\
 1     & 0               & $ 1 - q_2 ? $                  & $ 1 - q_2 $\\
@@ -257,8 +257,8 @@ Anyway, I defined my version of ``probabilistic'' AND and OR so that they obey D
 
 It is better to write the complement $(1 - c)$ as superscript.  So the pair $c_l, (1 - c_l)$ is written as $\vec{c}^i = c_i^0, c_i^1$.  In this notation my definitions can be expressed simply as:
 \begin{eqnarray}
- X_1 \curlywedge X_2 & = & \sum_{i j} \; ( \vec{c}^i_1 \, \vec{c}^j_2 \, \vec{x}^i_1 \, \vec{x}^j_2 ) \\
- X_1 \curlyvee   X_2 & = & \sum_{i j} \; ( ( \vec{c}^i_1 + \vec{c}^j_2 - \vec{c}^i_1 \, \vec{c}^j_2 ) \; \vec{x}^i_1 \, \vec{x}^j_2 )
+ X_1 \Pand X_2 & = & \sum_{i j} \; ( \vec{c}^i_1 \, \vec{c}^j_2 \, \vec{x}^i_1 \, \vec{x}^j_2 ) \\
+ X_1 \Por  X_2 & = & \sum_{i j} \; ( ( \vec{c}^i_1 + \vec{c}^j_2 - \vec{c}^i_1 \, \vec{c}^j_2 ) \; \vec{x}^i_1 \, \vec{x}^j_2 )
 \end{eqnarray}
 which can be easily generalized to $n > 2$.  When expanded, they yield the following table:
 
@@ -267,11 +267,11 @@ which can be easily generalized to $n > 2$.  When expanded, they yield the follo
 \multicolumn{2}{|c||}{} & {\textbf{probabilistic AND}} & {\textbf{probabilistic OR}}\\
 \hline
 %\rule[-3mm]{0mm}{8mm}
-$X_1$ & $X_2$ & $X_1 \curlywedge X_2$          & $X_1 \curlyvee X_2$\\ \hline
-0     & 0     & $(1-c_1) (1-c_2)$              & $1 - c_1 c_2$\\
-0     & 1     & $(1-c_1) \; c_2$               & $1 - c_1 + c_1 c_2$\\
-1     & 0     & $c_1 \; (1-c_2)$               & $1 - c_2 + c_1 c_2$\\
-1     & 1     & $c_1 \; c_2$                   & $c_1 + c_2 - c_1 c_2$\\
+$X_1$ & $X_2$ & $X_1 \Pand X_2$          & $X_1 \Por X_2$\\ \hline
+0     & 0     & $(1-c_1) (1-c_2)$        & $1 - c_1 c_2$\\
+0     & 1     & $(1-c_1) \; c_2$         & $1 - c_1 + c_1 c_2$\\
+1     & 0     & $c_1 \; (1-c_2)$         & $1 - c_2 + c_1 c_2$\\
+1     & 1     & $c_1 \; c_2$             & $c_1 + c_2 - c_1 c_2$\\
 \hline
 \end{tabular}
 \parbox{8cm}{\begin{equation}
@@ -280,24 +280,24 @@ $X_1$ & $X_2$ & $X_1 \curlywedge X_2$          & $X_1 \curlyvee X_2$\\ \hline
 
 A CPT can be defined by a combination of probabilistic AND-OR's:
 \begin{equation}
-X_0 := \bigcurlyvee_i \; \bigcurlywedge_j \; X_{ij}
+X_0 := \bigPor_i \; \bigPand_j \; X_{ij}
 \end{equation}
 where the $X_{ij}$'s are parents of the node $X_0$ in the Bayesian network.
 
 Notice that in the above equation, each connective is associated with a pair of c parameters, so the actual equation is:
 \begin{equation}
-X_0 := \bigcurlyvee_i \; \bigcurlywedge_j \; X_{ij};c_{ij} \; = \bigcurlyvee \; \{ X_{11};c_{11} \curlywedge X_{12};c_{12} \curlywedge \cdots, X_{21};c_{21} \curlywedge X_{22};c_{22} \curlywedge \cdots, \; \cdots \}
+X_0 := \bigPor_i \; \bigPand_j \; X_{ij};c_{ij} \; = \bigPor \; \{ X_{11};c_{11} \Pand X_{12};c_{12} \Pand \cdots, X_{21};c_{21} \Pand X_{22};c_{22} \Pand \cdots, \; \cdots \}
 \end{equation}
 It can be verified that \emph{association} holds as in classical logic, ie:
 \begin{eqnarray}
-(A \curlywedge B) \curlywedge C & = & A \curlywedge (B \curlywedge C), \\
-(A \curlyvee   B) \curlyvee   C & = & A \curlyvee   (B \curlyvee   C),
+(A \Pand B) \Pand C & = & A \Pand (B \Pand C), \\
+(A \Por   B) \Por   C & = & A \Por   (B \Por   C),
 \end{eqnarray}
-a fact that can be exploited for efficient calculation.
+a fact that can be exploited for efficient calculation.  This is because the CPT (conditional probability table) has size $2^n$ where $n$ is the number of variables.  But when the operator is associative, we can calculate $\bigZand_i X_i$ as $((X_1 \Zand X_2) \Zand X_3) \Zand ...$, without having to generate the full CPT.  Thus the space complexity remains constant.
 
 It is also possible to use the trick in \S\ref{sec:unifying-AND-and-OR} to combine AND and OR with the parameter $\theta$:
 \begin{equation}
-X_1 \varodot X_2 = (1-\theta) (X_1 \curlywedge X_2) + \theta (X_1 \curlyvee X_2)
+X_1 \varodot X_2 = (1-\theta) (X_1 \Pand X_2) + \theta (X_1 \Por X_2)
 \end{equation}
 
 % TO-DO:  weighted noisy AND-OR may not be needed, because the weights are absorbed into the c's

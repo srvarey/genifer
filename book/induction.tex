@@ -99,7 +99,7 @@ To learn:\\
 
 \subsection{Inducing one hypothesis}
 
-The main task of ILP is to search in the hypothesis space $\mathbb{H} \;$ specified partly by the logical syntax (such as P(Z) logic) and partly by background knowledge (eg what kind of predicates are present).  The hypothesis space is structured into a lattice with a partial order (usually denoted $ \preceq $).  The partial order can be one of \textbf{$\theta$-subsumption}, LGG (\textbf{least general generalization}), or \textbf{logical entailment}.  These have subtle differences, with logical entailment being the most rigorous.  The searcher can traverse up and down the lattice, corresponding to \textbf{generalization} and \textbf{specialization} of the hypothesis.  These 2 are known as \textbf{refinement operators}.  Because there are so many ways to generate hypotheses in FOL (with many predicates to choose from, and the possibility of introducing variables as desired), the branching factor is extraordinarily high.  Also, the lattice can be infinite, so we need to limit its depth.
+The main task of ILP is to search in the hypothesis space $\Hyp$ specified partly by the logical syntax (such as $\catPZ$ logic) and partly by background knowledge (eg what kind of predicates are present).  The hypothesis space is structured into a lattice with a partial order (usually denoted $ \preceq $).  The partial order can be one of \textbf{$\theta$-subsumption}, LGG (\textbf{least general generalization}), or \textbf{logical entailment}.  These have subtle differences, with logical entailment being the most rigorous.  The searcher can traverse up and down the lattice, corresponding to \textbf{generalization} and \textbf{specialization} of the hypothesis.  These 2 are known as \textbf{refinement operators}.  Because there are so many ways to generate hypotheses in FOL (with many predicates to choose from, and the possibility of introducing variables as desired), the branching factor is extraordinarily high.  Also, the lattice can be infinite, so we need to limit its depth.
 
 Another problem is that, once a hypothesis has been generated, it must be tested against the rest of the KB for \textbf{consistency}.  The consistency check must also be limited in depth, but even then it is very time-consuming.
 
@@ -108,9 +108,10 @@ Much of the complexity of induction occurs in the ``inventive step'', whereby a 
 Another promising idea is that some of the more intensive processing can be performed during \textbf{sleep}.
 
 \subsection{Inducing a whole theory}
+\label{sec:complexity-of-hypothesis-space}
 
-Let $\mathbb{H} \;$  denote the hypothesis space (ie, space of all logic formulae).  The size of $\mathbb{H} \;$ is huge (see above).\\
-A logical theory $T$ is a set of hypotheses, $ \{ h_i | h_i \in \mathbb{H} \; \} $.  Note that $ T \in 2^{\mathbb{H}} \;$ which is a hugely huge space.\\
+Let $\Hyp$  denote the hypothesis space (ie, space of all logic formulae).  The size of $\Hyp$ is huge (see above).\\
+A logical theory $T$ is a set of hypotheses, $ \{ h_i | h_i \in \Hyp \} $.  Note that $ T \in 2^{\Hyp} \;$ which is a hugely huge space.\\
 Let $E$ denote the set of examples $\{ e_1, ... \}$ that should be covered by the target theory.\\
 So we're seeking an optimal theory $T^*$ such that it covers all examples and is succinct, ie:\\
 \hspace*{1cm} $ T^* \vdash \{ e_i \} $ \quad and \quad $ |T^*| $ is minimal.
@@ -161,9 +162,9 @@ even though the right hand sides were entailed by 3 different reasons.
 
 Having a large number of general rules enables better \textbf{reconstruction} of past memories.  Better reconstruction is clearly an advantage from a utilitarian perspective as we often do not know in advance what memories may be useful later.  (Overlapping coverage may be a by-product of having a large number of rules.)
 
-We can define \textbf{information utility} as the utility of information items ($U: \{ infon \} \rightarrow \mathbb{R}$)
+We can define \textbf{information utility} as the utility of information items ($U: \{ \mbox{infon} \} \rightarrow \setR$)
 \footnote{An infon is informally defined as a discrete information item.  In practice it can be any proposition in the KB.}
-, as a generalization of utility over states ($U: \{ state \} \rightarrow \mathbb{R}$).  Then the goal of compression is to \textit{minimize reconstruction errors (weighted by information utility) with the smallest theory}.  This is in keeping with the MDL principle.
+, as a generalization of utility over states ($U: \{ \mbox{state} \} \rightarrow \setR$).  Then the goal of compression is to \textit{minimize reconstruction errors (weighted by information utility) with the smallest theory}.  This is in keeping with the MDL principle.
 
 %Note:  $T$ may contain ground facts that are absent in $E$.  For example, we may remember that many women in the choir have long hair (a ground fact in $T$) but we may not remember exactly who has long hair (ground facts in $E$).
 
