@@ -102,7 +102,7 @@
 (defvar proof-tree nil)
 
 ;;; An item of the priority list.
-;;;     "data" = either a clause or a sub-goal;  a clause can be a fact/rule
+;;;     "data" = either a sub-goal or a fact/rule
 ;;;     "ptr"  = pointer to proof-tree node
 (defclass p-list-item () (
   (score        :initarg :score        :accessor score          :type single-float)
@@ -171,7 +171,7 @@
     ;; Is it a sub-goal?
     (if (listp (list-data best))
       (process-subgoal node best)
-      ;; Else... it is either a fact/rule clause
+      ;; Else... it is either a fact/rule
       (let ((clause (list-data best)))
         ;; Is it a fact?
         (if (null (body clause))
@@ -202,9 +202,9 @@
   (****DEBUG 1 "process-subgoal: sub-goal ~a" best-data)
   ;; store the sub-goal in the proof tree node
   (setf (node-data node) (list best-data))
-  ;; Fetch rules that match the subgoal:
-  ;; 'fetch-rules' is defined in memory.lisp
-  (multiple-value-bind (facts-list rules-list) (fetch-rules (car best-data))
+  ;; Fetch facts/rules that match the subgoal:
+  ;; 'fetch' is defined in memory.lisp
+  (multiple-value-bind (facts-list rules-list) (fetch (car best-data))
     (dolist (clause facts-list)
       ;; standardize apart head-of-subgoal and clause-to-be-added
       (setf subs (standardize-apart (head clause) nil)

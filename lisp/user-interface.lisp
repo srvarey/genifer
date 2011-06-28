@@ -134,6 +134,7 @@
     (format t "    d = set debug level, current = ~a (1 = most verbose) ~%" *debug-level*)
     (format t "    i = induce ~%")
     (format t "    m = dump memory ~%")
+    (format t "    n = system test #n ~%")
     (format t "    t = system test ~%")
     (format t "    T = system test with debug off ~%")
     (format t "    x = quit ~%?")
@@ -187,10 +188,20 @@
         (dump-memory)
         (setf command nil)))
 
+    ;; Run test #n
+    (if (equal command #\n)
+      (progn
+        (setf *test-number* (get-input "test number:"))
+        (system-test)
+        (setf command nil)))
+
     ;; System test
     (if (equal command #\t)
       (progn
+        (setf *debug-level*
+          (get-input "new debug-level:"))
         (format t "~% ************ system test ************* ~%")
+        (setf *test-number* nil)
         (system-test)
         (setf command nil)))
 
@@ -199,6 +210,7 @@
       (progn
         (format t "~% ************ system test ************* ~%")
         (setf *debug-level* 100)
+        (setf *test-number* nil)
         (system-test)
         (setf command nil)))
 
