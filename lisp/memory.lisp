@@ -32,9 +32,9 @@
 ;;; **** Data structure for a Generic-Memory "fact" item
 ;;; Entries:
 ;;;     tv           = truth value and confidence
-;;;     justifies    = a list of clauses that this fact justifies
-;;;     justified-by = a list of clauses that justify this fact
-;;; timestamp -- we should not timestamp for every clause, use time-markers instead
+;;;     justifies    = a list of formulas that this fact justifies
+;;;     justified-by = a list of formulas that justify this fact
+;;; timestamp -- we should not timestamp every formula, use time-markers instead
 (defclass fact-item () (
   (fact         :initarg :fact         :accessor fact         :type list)
   (id           :initarg :id           :accessor id           :type fixnum)
@@ -62,19 +62,19 @@
   (ancestor-to :initarg :ancestor-to :accessor ancestor-to :type list   :initform nil)
 ))
 
-;;; **** Data structure for a rule / fact
-;;; **** This is the data that is fetched by the inference engine
-;;; goal-index = index of goal literal as it appears in the body
+;;; **** Data structure for both facts and rules
+;;; **** This is the data returned to the inference engine by "fetch"
+;;; top-index = index of goal literal as it appears in the body
 ;;;              1st literal in body = 1
 ;;;              if goal appears in the head, 1st head = 0, 2nd head = -1, and so on...
 ;;; If it is a fact, body = nil
 ;;; If it is a body-less rule, body = TV (single-float)
-(defclass clause () (
+(defclass mem-item () (
   (id         :initarg :id         :accessor id         :type fixnum)
   (confidence :initarg :confidence :accessor confidence :type single-float)
   (head       :initarg :head       :accessor head       :type list)
   (body       :initarg :body       :accessor body       :type list   :initform nil)
-  (goal-index :initarg :goal-index :accessor goal-index :type fixnum :initform 0)
+  (top-index  :initarg :top-index  :accessor top-index  :type fixnum :initform 0)
   (tv         :initarg :tv         :accessor tv         :type list   :initform nil)
 ))
 
@@ -84,6 +84,7 @@
 (defvar *generic-memory*)
 (defvar *memory-size*)
 (defvar *newly-added*)
+(defvar *test-number*)
 (defvar new-rule)
 
 ;;; **** Initialize memories
@@ -108,30 +109,29 @@
   (format t ";; Working Memory initialized... ~%"))
 
 (defun system-test ()
-  (setf *abduce* nil)
   ; (setf *debug-level* 10)
   (format t "# ~1,5@T t elapsed: ~1,18@T expected TV ~1,32@T confidence ~1,48@T substitutions~%")
   (format t "---------------------------------------------------------------------~%")
   ; format:  query expected-tv expected-sub
-  (test-1-query 1 "Is Kellie having fun?"
-    '(having-fun kellie) '(0.3 . 0.9) nil)         ; example 1
-  (test-1-query 2 "Is Kellie at the bar?"
-    '(at-bar kellie) '(0.3 . 0.9) nil)             ; example 1 **** not yet ready
-  (test-1-query 3 "Can robot reach the goal?"
-    '(goal robot) '(0.9 . 0.9) nil)                ; example 2
-  (test-1-query 4 "Can robot2 reach the goal?"
-    '(goal robot2) 'fail nil)                      ; example 2
-  (test-1-query 5 "Is C  a chair?"
-    '(chair c) '(0.7 . 0.9) nil)                   ; example 3
-  (test-1-query 6 "Is C2 a chair?"
-    '(chair c2) 'fail nil)                         ; example 3
-  (test-1-query 7 "Is C  a chair? (longer version)"
-    '(chair2 c) '(0.7 . 0.9) nil)                  ; example 3b
-  (test-1-query 8 "Is C2 a chair? (longer version)"
-    '(chair2 c2) 'fail nil)                        ; 3b
-  (test-1-query 9 "Is John happy?"
-    '(happy john) '(1.0 . 0.9) nil)                ; example 4
-  ; example 5
+  (test-1-query 1 "Is Kellie having fun?"            ; example 1
+    '(having-fun kellie) '(0.3 . 0.9) nil)
+  (test-1-query 2 "Is Kellie at the bar?"            ; example 1
+    '(at-bar kellie) '(0.3 . 0.9) nil)
+  (test-1-query 3 "Can robot reach the goal?"        ; example 2
+    '(goal robot) '(0.5262144 . 1.0) nil)
+  (test-1-query 4 "Can robot2 reach the goal?"       ; example 2
+    '(goal robot2) 'fail nil)
+  (test-1-query 5 "Is C  a chair?"                   ; example 3
+    '(chair c) '(0.7 . 0.9) nil)
+  (test-1-query 6 "Is C2 a chair?"                   ; example 3
+    '(chair c2) 'fail nil)
+  (test-1-query 7 "Is C  a chair? (longer version)"  ; example 3b
+    '(chair2 c) '(0.7 . 0.9) nil)
+  (test-1-query 8 "Is C2 a chair? (longer version)"  ; 3b
+    '(chair2 c2) 'fail nil)
+  (test-1-query 9 "Is John happy?"                   ; example 4
+    '(happy john) '(1.0 . 0.9) nil)
+                                                     ; example 5
   (test-1-query 10 "Who is John's grandson?"
     '(grandparent john ?99) '(1.0 . 0.9) '(?99 . (son-of (son-of john))))
   (test-1-query 11 "Who is John's grandson? (with possible variable crash)"
@@ -140,7 +140,7 @@
     '(grandparent ?1 ?2) '(1.0 . 0.9) '())
   (test-1-query 13 "Does John has a grandparent?"
     '(grandparent ?1 john) 'fail nil)
-  ; example 6
+                                                     ; example 6
   (test-1-query 14 "Is John Paul's grandpa?"
     '(grandpa john paul) '(1.0 . 0.9) '(?a . pete))
   (test-1-query 15 "Is John  Sam's grandpa?"
@@ -150,6 +150,9 @@
 )
 
 (defun test-1-query (test-number text query &optional expected-tv expected-sub)
+  (if (and (numberp *test-number*)
+           (not (equal *test-number* test-number)))
+    (return-from test-1-query))
   (setf timer (get-internal-run-time))
   (backward-chain query)
   (setf solutions (solutions proof-tree))
@@ -176,17 +179,18 @@
                      (- (get-internal-run-time) timer)
                      tv-accuracy confidence-accuracy))
 
-;;; **** Add a clause to memory
+;;; **** Add an item to memory, checking for redundancy
+;;; NOTE:  this function is currently unused
 ;;; TODO:  label, and the stack from abduction
-(defun add-to-memory (clause label)
-  ;; check if the clause is already in memory -- this may be time-consuming.
-  (dolist (item *generic-memory*)
-    (if (equal clause (slot-value item 'clause))
+(defun add-to-memory (item label)
+  ;; check if the item is already in memory -- this may be time-consuming.
+  (dolist (item1 *generic-memory*)
+    (if (equal item (slot-value item1 'clause))             ; 'clause' is obsolete
       (return-from add-to-memory)))     ; if so, exit
   ;; if not in memory, add it
-  (if (is-ground clause)
-    (add-fact-to-mem clause)
-    (add-rule-to-mem clause)))
+  (if (is-ground item)
+    (add-fact-to-mem item)
+    (add-rule-to-mem item)))
 
 (defvar new-fact)
 
@@ -244,57 +248,62 @@
   ;; Delete it
   (setf (cdr ptr) (cdr item)))
 
-;;; Fetch all rules in KB with the given predicate
+;;; Fetch all facts / rules in KB with the given predicate
 ;;; Return: a list of rules
-(defun fetch-rules (given-predicate)
+(defun fetch (given-predicate)
   (let ((facts-list (list nil))
         (rules-list (list nil)))
-    (setq goal-index 0)
     (dolist (item *generic-memory*)
       ;; is it a rule?
       (if (eql (type-of item) 'rule-item)
-        ;; calculate the confidence c from w
-        ;; the function is defined in "PZ-calculus.lisp"
+        ;; It's a rule:
+        ;; calculate the confidence c from w;  the function is defined in "PZ-calculus.lisp"
         (let ((confidence (convert-w-2-c (w item)))
               (head       (head item))
               (body       (body item)))
+          (setf top-index 0)
           ;; For each head:
           (dolist (head1 head)
             ;; Does head of rule match predicate?
             (if (equal (car head1) given-predicate)
               ;; Add it to list-to-be-returned
-              (nconc rules-list (list (make-instance 'clause
-                                        :id         (id item)
-                                        :confidence confidence
-                                        :head       head
-                                        :body       body
-                                        :goal       goal-index))))
+              (nconc rules-list (list (make-instance 'mem-item
+                                              :id         (id item)
+                                              :confidence confidence
+                                              :head       head
+                                              :body       body
+                                              :top-index  top-index))))
             ; within heads, index grows negatively from 0
-            (decf goal-index))
+            (decf top-index))
           ;; Now try to match with body of rule
-          (setf goal-index 1)                          ; within body, index starts from 1
-          (dolist (literal body)                       ; for each literal...
-            (if (listp literal)                        ; skip numerical parameters
-              ;; Does literal match predicate?
-              (if (equal (car literal) given-predicate)
-                ;; Add it to list-to-be-returned
-                (nconc rules-list (list (make-instance 'clause
-                                          :id         (id item)
-                                          :confidence confidence
-                                          :head       head
-                                          :body       body
-                                          :goal       goal-index))))
-            (incf goal-index))))
+          (setf top-index 1)                            ; within body, index starts from 1
+          ;; Is it a bodyless rule?
+          (if (listp body)
+            ;; If the rule has a body, process the body.
+            ;;    Otherwise the rule is bodyless, matching has failed so try next item
+            (dolist (literal body)                       ; for each literal...
+              (if (listp literal)                        ; skip numerical parameters
+                (progn
+                  ;; Does literal match predicate?
+                  (if (equal (car literal) given-predicate)
+                    ;; Add it to list-to-be-returned
+                    (nconc rules-list (list (make-instance 'mem-item
+                                              :id         (id item)
+                                              :confidence confidence
+                                              :head       head
+                                              :body       body
+                                              :top-index  top-index))))
+                  (incf top-index))))))
         ;; If it is a fact:
         ;; Does fact match predicate?
         (if (equal (car (fact item)) given-predicate)
           (let ((tv (tv item)))
             ;; add it to list-to-be-returned
-            (nconc facts-list (list (make-instance 'clause
-                                      :id         (id item)
-                                      :confidence (cdr tv)
-                                      :head       (fact item)
-                                      :tv         tv)))))))
+            (nconc facts-list (list (make-instance 'mem-item
+                                              :id         (id item)
+                                              :confidence (cdr tv)
+                                              :head       (fact item)
+                                              :tv         tv)))))))
     ;; return the 2 lists, discarding the leading 'nil' elements
     (values (cdr facts-list) (cdr rules-list))))
 

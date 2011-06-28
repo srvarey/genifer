@@ -39,8 +39,8 @@
 ;;;   the parameters after (TV) can be omitted.
 
 ;;; the format for rules is:
-;;;   (add-rule-to-mem (head) (body) w+ w e+ e- ancestors ancestors-to)
-;;;                                  ^^^^^ these latter parameters can be omitted
+;;;   (add-rule-to-mem (head1 head2 ...) (body) w+ w e+ e- ancestors ancestors-to)
+;;;                                             ^^^^^ these latter parameters can be omitted
 
 ;;; the body of a rule has the form:
 ;;;   (theta c1 c2 ... literal1 literal2 ...)
@@ -61,6 +61,7 @@
 ;;;   (at-bar kellie) ?
 ;;; And the answer would be false (or its equivalent numerical truth value)
 
+;(add-fact-to-mem '(having-fun kellie) '(0.7 . 1.0))
 (add-fact-to-mem '(busy kellie) '(0.7 . 1.0))
 
 (add-rule-to-mem '((having-fun ?1)) '(0.0 0.1 (busy ?1)))         ; c = 0.1 = approximate negation
