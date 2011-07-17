@@ -1,3 +1,7 @@
+;;;; =======================================================================
+;;;;      Deduction: backward-chaining, using pure Z logic, best-first search
+;;;; =======================================================================
+
 ;;;; Genifer/deduction.lisp
 ;;;;
 ;;;; Copyright (C) 2009 Genint
@@ -20,20 +24,19 @@
 ;;;; Free Software Foundation, Inc.,
 ;;;; 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-;;;; ==========================================================
-;;;; **** Deduction: backward-chaining, using P logic, best-first search
-
 ;;;; Abbreviations:
 ;;;;     sub           = substitution
 ;;;;     TV            = truth value
 
 ;;; ************************************* TO-DO *****************************************
-;;; 1. using rules in the abductive direction
+;;; 1. Factor graph method as proposed by Abram
+;;;    a. construct the proof tree correctly
+;;;       upon getting a new rule
+;;;    b. call Abram's code to evaluate factor nodes
 ;;; 2. abduction
-;;; 3. factor graph algorithm
 
 ;;; ************************************* intro *****************************************
-;;; All truth values are formated as (P . confidence) where P is a point-valued probability
+;;; All truth values are formated as (Z . confidence)
 ;;; All rules are all of the form:
 ;;;     ((head) (body))
 ;;; where
@@ -41,7 +44,7 @@
 ;;; note:  the # of args can be 0
 ;;; and
 ;;;     (body) = (op X1 X2)
-;;; where op is an operator such as 'P-AND (probabilistic AND)
+;;; where op is an operator such as 'Z-AND (fuzzy AND)
 ;;; and X1, X2, ... etc can invoke other operators recursively
 
 ;;; For example:
@@ -67,37 +70,25 @@
 ;;; This is to facilitate the bottom-up evaluation of expressions, with the goal at the root.
 ;;; A tree node can be either a sub-goal or a fact/rule.
 ;;; Each tree node has a pointer to its parent.
-
 ;;; A sub-goal node contains a list in its "node-data" slot:
 ;;;     (sub-goal (child node1) (child node2) ...)
-
 ;;; A rule node contains a rule class item (see below) in the "node-data" slot;
 ;;; It has the following elements:
 ;;;     operator confidence literal1 [literal2...] [params...]
 ;;; where literal1,2,... are proof tree nodes and each has a pointer pointing to _this_ node.
-;;; The parameters of the rule create a CPT (conditional probability table) which is then
-;;;   represented as a factor (as in factor graph).
-
 ;;; A fact node contains the fact (as a list) in its "data" slot;
-
-;;; solutions = probabilistic messages that pass from node to node in the factor graph algorithm
-;;;   The idea originated from Judea Pearl's message-passing algorithm for Bayes nets
-;;;   Each solution is also associated with a substitution (because each substitution instantiates
-;;;       a distinct propositional sub-tree in the factor graph, and we use only one sub-tree to
-;;;       represent all those instances)
-;;;   So we can potentially have a list of solutions for each node, not just one solution per node
-;;;   (In a more advanced version, such a list can be implemented as a lazy sequence)
-
+;;; Solutions = a list of substitutions & truth-value pairs that satisfy the node
+;;;             (In a more advanced version, it can be implemented as a lazy sequence)
 (defclass tree-node () (
-  (parent     :initarg :parent     :accessor parent                    :type symbol)
-  (solutions  :initarg :solutions  :accessor solutions  :initform nil  :type (list solution))
-  (node-data  :initarg :node-data  :accessor node-data  :initform nil  :type list)
+  (parent       :initarg :parent       :accessor parent                      :type symbol)
+  (solutions    :initarg :solutions    :accessor solutions    :initform nil  :type (list solution))
+  (node-data    :initarg :node-data    :accessor node-data    :initform nil  :type list)
 ))
 
-;;; Each solution is a pair:  (sub, message)
+;;; A solution is just a pair:  (sub, TV)
 (defclass solution () (
-  (sub      :initarg :sub      :accessor sub      :initform nil  :type list)
-  (message  :initarg :message  :accessor message  :initform nil  :type single-float)
+  (sub  :initarg :sub  :accessor sub  :initform nil  :type list)
+  (tv   :initarg :tv   :accessor tv   :initform nil  :type (cons single-float single-float))
 ))
 
 ;;; Class for a rule data item within a proof tree node
@@ -105,14 +96,13 @@
   (op         :accessor op         :initarg :op         :type symbol)
   (confidence :accessor confidence :initarg :confidence :type single-float)
   (literals   :accessor literals   :initarg :literals   :type list           :initform nil)
-  (factor     :accessor factor     :initarg :factor     :type single-float)
 ))
 
 ;;; The initial proof-tree
 (defvar proof-tree nil)
 
 ;;; An item of the priority list.
-;;;     "data" = either a clause or a sub-goal;  a clause can be a fact/rule
+;;;     "data" = either a sub-goal or a fact/rule
 ;;;     "ptr"  = pointer to proof-tree node
 (defclass p-list-item () (
   (score        :initarg :score        :accessor score          :type single-float)
@@ -122,13 +112,12 @@
 ))
 
 (defvar timer 0)
-
 (defvar priority-list nil)
 (defvar new-states-list nil)
 (defvar *explanation* nil)         ; the result of abduction
 (defvar *abduct-mode* nil)         ; true if abduction mode is ON
 
-(setf *print-circle* t)            ; Lisp key that allows printing of circular objects
+(setf *print-circle* t)            ; this allows printing of circular objects
 
 ;;; NOTE:  the abduction algorithm is embedded in this code.
 ;;; TO-DO: explain abduction algorithm here
@@ -182,7 +171,7 @@
     ;; Is it a sub-goal?
     (if (listp (list-data best))
       (process-subgoal node best)
-      ;; Else... it is either a fact/rule clause
+      ;; Else... it is either a fact/rule
       (let ((clause (list-data best)))
         ;; Is it a fact?
         (if (null (body clause))
@@ -213,9 +202,9 @@
   (****DEBUG 1 "process-subgoal: sub-goal ~a" best-data)
   ;; store the sub-goal in the proof tree node
   (setf (node-data node) (list best-data))
-  ;; Fetch rules that match the subgoal:
-  ;; 'fetch-clauses' is defined in memory.lisp
-  (multiple-value-bind (facts-list rules-list) (fetch-clauses (car best-data))
+  ;; Fetch facts/rules that match the subgoal:
+  ;; 'fetch' is defined in memory.lisp
+  (multiple-value-bind (facts-list rules-list) (fetch (car best-data))
     (dolist (clause facts-list)
       ;; standardize apart head-of-subgoal and clause-to-be-added
       (setf subs (standardize-apart (head clause) nil)
@@ -271,7 +260,7 @@
 ;;; 2.     add the sub to the node;
 ;;; 3.     send the resulting sub up to parent node
 ;;; 5.     update the entire proof tree in a bottom-up manner (by calling propagate)
-;;; 6. ELSE              ; unify() fails
+;;; 6. ELSE              ; if unify() fails
 ;;; 7.     no substitution is added
 ;;; 8.     the node can be deleted
 (defun process-fact (node clause best)
@@ -285,13 +274,10 @@
       (return-from process-fact)))
   ;; If unify succeeds:
   (****DEBUG 1 "process-fact: substitution = ~a" sub)
-  ;; Store the (sub, message) pair in the list of solutions in the current node
-  ;; Here we pass the first message from a leaf node
-  ;; Note that there is an implicit factor node below this leaf, but it simply passes the
-  ;;    probability of the variable to its parent.  (first TV) = probability value
+  ;; Store the (TV,sub) pair in the list of solutions in the current node
   (setf current-solution (make-instance 'solution
-                             :sub     sub
-                             :message (first (tv clause))))
+                             :sub sub
+                             :tv  (tv clause)))
   ;; The current node is filled with the literal (this is useful for abduction; see below)
   (setf (node-data node) (list 'fact (head clause)))
   ;; Record the node for abduction
@@ -326,8 +312,8 @@
   (if (equal (car body) '*bodyless*)
     (progn
       (setf current-solution (make-instance 'solution
-                                  :sub      sub
-                                  :message  1.0))
+                                  :sub sub
+                                  :tv  *true*))
       (propagate node (list current-solution))
       (return-from process-rule)))
   ;; For each literal...
@@ -384,7 +370,7 @@
     ;; If parent is a rule: delete parent
     (retract parent best)))
 
-;;; **** Propagate messages up the proof tree
+;;; **** Propagate TVs up the proof tree
 ;;; INPUT:   a new list of solutions arrives at the current node
 ;;; RETURN:  nothing (update solutions in proof tree)
 ;;; **** TODO: algorithm will be revised by Abram's new approach
@@ -399,9 +385,9 @@
 ;;;         ELSE IF  current solution has causal primacy over competing ones:
 ;;; 5.               current solution wins;  send to parent and kill the other solutions
 ;;; 6.      ELSE apply mixture rule, such as NARS' rule or Ben's rule;  send result to parent
-;;;                                                        w1 f1 + w2 f2
-;;;                  This is Pei Wang's formula:    f0 = -----------------
-;;;                                                           w1 + w2
+;;;                                                   w1 f1 + w2 f2
+;;;                  This is Wang's formula:    f0 = ---------------
+;;;                                                      w1 + w2
 ;;;     **** Note:  In the current code, we don't do 3-6.
 ;;;     **** We simply send multiple solutions to the parent, even if they are conflicting.
 ;;; 7.  IF  parent is a rule:
@@ -443,33 +429,48 @@
       ;; Does operator require 2 or more arguments?
       (if (member op (list 'Z-AND 'Z-OR))
         (progn
-          (dolist (arg literals)          ; for each sibling...
+          ;; Set up left operand = first literal in the rule's body
+          ;;   but if it is the same as the current node,
+          ;;   then only the new-solutions need be considered
+          (setf X1 (car literals))                  ; uppercase X represents literals
+          (if (eql X1 node)
+            (progn
+              (****DEBUG "propagate: self node detected!!")
+              (setf X1-solutions new-solutions))
+            (setf X1-solutions (solutions x1)))
+          (dolist (X2 (cdr literals))               ; for each sibling...
             ;; If some silbing has null TVs, that means the rule is not ready to fire yet
-            (if (null (solutions arg))
+            (if (null (solutions X2))
               (return-from propagate))
+            (if (eql X2 node)
+            (progn
+              (****DEBUG "propagate: self node detected!!")
+              (setf X2-solutions new-solutions))
+            (setf X2-solutions (solutions X2)))
             ;; First, we abstract the numerical operation into a lambda expression,
             ;;   so that it can be passed on to the merging procedure
             (setf tv-operation (case op
               ('Z-AND
-                (lambda (x1 x2)
+                (lambda (x1 x2)                     ; lowercase x represents truth values
                   (calculate-Z-AND cR x1 x2)))
               ('Z-OR
                 (lambda (x1 x2)
                   (calculate-Z-OR  cR x1 x2)))))
             ;; Merge with sibling's sequence:
-            (setf new-solutions
-              (merge-solutions new-solutions (solutions arg) tv-operation))
-          ;; Abduction mode?  **** TO-DO: abduction is unfinished
-          (if *abduct-mode*
-            ;; record the 2 arguments as parts of a potential explanation
-            (setf *current-explanation* (list op *current-explanation* arg)))))
+            (setf X1-solutions
+              (merge-solutions X1-solutions X2-solutions tv-operation))
+            ;; Abduction mode?  **** TO-DO: abduction is unfinished
+            (if *abduct-mode*
+              ;; record the 2 arguments as parts of a potential explanation
+              (setf *current-explanation* (list op *current-explanation* arg))))
+          (setf new-new-solutions X1-solutions))
         ;; For 1-ary operators:
         ;; There is no need to merge subs or check for consistency of subs
         ;; Just simply send the calculated TV up to parent
         (progn
           (setf new-new-solutions nil)
           (dolist (solution1 new-solutions)
-            (setf x1 (tv solution1))
+            (setf x1 (tv solution1))                  ; lowercase x represents truth values
             ;; Apply the 1-ary operator:
             (case op
               ('ID                                    ; body format:  (ID x1)
@@ -489,21 +490,20 @@
                 (format t "ERROR: unknown operator: ~a~%" op)
                 (setf x0 'fail))))
             (setf solution0 (make-instance 'solution
-                                    :sub (sub solution1)   ; the arg's sub
+                                    :sub (sub solution1)   ; the literal's sub
                                     :tv  x0))
             (setf new-new-solutions (push solution0 new-new-solutions)))
-          (setf new-solutions new-new-solutions)
           ;; Abduction mode?  **** TO-DO: abduction is unfinished
           (if *abduct-mode*
             ;; record the argument as part of a potential explanation
             (setf *current-explanation* (list op *current-explanation*)))))
       ;; If new-solutions is not empty
-      (if (not (null new-solutions))
+      (if (not (null new-new-solutions))
           ;; send new-solutions to parent node;  recurse
-          (propagate parent new-solutions)))))
+          (propagate parent new-new-solutions)))))
 
-;;; Merge two lists of solutions
-;;; INPUT:   two lists of solutions
+;;; Merge 2 lists of solutions
+;;; INPUT:   2 lists of solutions
 ;;;          tv-operation = operation to be performed on truth values if merging is OK
 ;;; OUTPUT:  new list of merged solutions
 (defun merge-solutions (soln-list1 soln-list2 tv-operation)
@@ -648,6 +648,6 @@
     (setf str
       (concatenate 'string str
            ;(format nil "~C[31m~a~C[0m " *Esc* (tv solution) *Esc*)     ; print in color
-           (format nil "~a " (message solution))))
+           (format nil "~a " (tv solution))))
   )
   str)              ; return the string
