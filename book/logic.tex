@@ -93,8 +93,6 @@ NL should be translated into logic because logic is closer to NL than pre-logic.
 
 The problem with the above configuration is, if the pre-logic is fixed and the logic is allowed to be dynamically learned, then it may be difficult to work with such a dynamically changing logic, in particular to assign fuzzy-probabilistic truth values to it, or to translate NL to it.
 
-
-
 \section{Uncertainty}
 
 Reasoning under uncertainty is a vast and nightmarishly complex topic in AI.  Simon Parsons's book \citep*{Parsons2001} contains a very good survey of uncertain reasoning, but even that is not exhaustive.  We may look at the following taxonomy of ``ignorance'' proposed by \citep*{Bosc1997}:
@@ -110,23 +108,82 @@ At first blush, classical logic appears to be sufficient for AGI.  Some AGI desi
 
 There are other theories of uncertainty, such as possibility, belief functions, and rough sets.  The reason I chose $\mathcal{P}$ and $\mathcal{Z}$ is because they are simple and best understood.  There has been attempts to create systems where the user can create a flexible number of uncertainty measures, but one problem of such systems has been pointed out in \citep*{Parsons2001}:  If we have 3 uncertainty measures, say ``cloud'', ``mist'', and ``fog'', there would be a need to provide mixed inference rules for ``cloud-mist'', ``cloud-fog'' etc, a total of $n^2$ possibilities.  I have worked out the combination of $\mathcal{B}$, $\mathcal{P}$ and $\mathcal{Z}$ and found that it involved considerable efforts.
 
+\section{Nonmonotonicity and defeasible reasoning}
+\label{sec:exceptions}
+
+One can create defeasible logics from classical logic, for example Reiter's \textbf{default logic} and McCarthy's \textbf{circumscription}.  But the classical approaches seem to require enumerating all possible exceptions, which is impractical.
+
+\textbf{2 examples:}
+
+\textbf{A.}\\
+\textit{
+1. John is usually very punctual.\\
+2. Therefore, John will arrive at the airport on time.\\
+3. John has an accident en route to the airport, and dies.\\
+4. Therefore, John will NOT arrive on time.\\}
+Will John arrive on time?
+
+\textbf{B.}\\
+\textit{
+1. Mary has cybersex with many partners.\\
+2. Cybersex is a kind of sex.\\
+3. Therefore, Mary has many sex partners.\\
+4. A person who has many sex partners has a high chance of STDs.\\
+5. Therefore, Mary has a high chance of STDs.}
+
+What's wrong with example B?  On the one hand, we should admit that cybersex is sex (it is a borderline case), but it lacks certain prominent features of sex, such as physical contact (which is not necessarily a \textit{defining} feature of sex).  Thus, if we carry on reasoning with the idea that cybersex is sex, we may get unsound conclusions.  The key to resolving this problem is to recognize ``cybersex is sex'' with \textbf{qualifications} such as ``it is sex without physical contact''.
+
+If we have a rule that ``sex transmits certain diseases'', we may have to attach the exception ``only if the sex involves physical contact''.  In the end, our rules may be inundated with possibly infinitely many exceptions.  How can we get out of this problem?
+
+\citep*{Wang1994}, \citep*{Wang2006} in NARS provided a solution.  His idea is not to store the exceptions to rules, but instead allow a \textit{multitude} of rules to fire, calculate the ``confidence'' (\S\ref{sec:confidence}) of each conclusion, and pick the conclusion with the highest confidence.  This allows us to handle exceptions relatively easily.
+
+For the example:
+\begin{eqnarray}
+X \PimpL A \nonumber \\
+X \PimpL B \nonumber
+\end{eqnarray}
+Pei Wang's idea is to calculate the combined conditional probability by weighing each individual conditional probability with their associated \textbf{confidences} (\S\ref{sec:confidence}):
+$$ P(X|A,B) = \frac{ P(X|A)c_A + P(X|B)c_B }{ c_A + c_B } $$
+which is a nice idea\footnote{Except that NARS truth values do not conform to probability theory.}, but Abram Demski came up with an alternative idea that is more in accord with Bayesianism.  The idea is to reconstruct $P(X|A,B)$ from the marginal conditionals $P(X|A)$ and $P(X|B)$ and priors $P(A)$ and $P(B)$.  This is achieved by applying Bayes' rule twice:
+\begin{eqnarray}
+P(X|A,B) &=& \frac{P(A,B|X)P(X)}{normalization} \nonumber \\
+         &=& \frac{P(A|X)P(B|X)P(X)}{normalization} \nonumber \\
+         &=& \frac{P(X|A)P(A)P(X|B)P(B)}{P(X) \; normalization}
+\end{eqnarray}
+
+\{ To-do:  Abram's solution seems problematic, I'm discussing it with him... \}
+
+\section{Equality}
+\index{equality}  \index{identity|see{equality}}
+\label{sec:equality}
+
+A problem with equality is illustrated by the classic example ``Morning Star / Evening Star''.  This is a similar example and its rendition in logic:\\
+\tab
+\begin{tabular}{l|l}
+\textit{``Clark Kent is Superman.''}               & \formula{clark-kent = superman} \\
+\textit{``Superman can fly.''}                     & \formula{can-fly(superman)} \\
+\textit{``Mary does not know that Clark Kent is Superman.''} & $\neg$ \formula{know(mary, "clark-kent = superman")} \\
+\textit{``Mary knows that Superman can fly.''}     & \formula{know(mary, can-fly(superman))} \\
+\textit{``Mary does not know that Clark Kent can fly.''} & $\neg$ \formula{know(mary, "can-fly(clark-kent)")}
+\end{tabular}
+
+Perhaps the solution is that \formula{"clark-kent"} (in quotes, ie, the Clark Kent that Mary knows) is not equal to \formula{clark-kent} (without quotes, ie, the real Clark Kent).
+
 \section{Modal logic}
 \begin{flushright}
 \emph{Modality, si! Modal logic, no!}\\
---- John McCarthy \citep*{McCarthy1997}
+--- John McCarthy
 \end{flushright}
 
-One argument for the use of modal logic arises from the following example:\\
-\begin{tabular}{l l}
-\hspace*{1cm} \textit{``John believes Superman is dead.''} & \formula{believe(john, dead(superman))}\\
+My view is to use predicates to represent modality instead of using modal logics.  This view was first advocated by \citep*{McCarthy1997}.
+
+One argument for the use of modal logic arises from the previous example:\\
+\begin{tabular}{l|l}
+\hspace*{1cm} \textit{``Mary believes Superman is dead.''} & \formula{believe(mary, dead(superman))}\\
 \hspace*{1cm} \textit{``Superman is Clark Kent.''} & \formula{superman = clark-ken}\\
-\hspace*{0.7cm} * \textit{``John believes Clark Kent is dead.''} & \formula{believe(john, dead(clark-ken))}
+\hspace*{0.7cm} * \textit{``Mary believes Clark Kent is dead.''} & \formula{believe(mary, dead(clark-ken))}
 \end{tabular}\\
-The problem is that John may not know that Superman is Clark Kent.
-
-But another way to see it is that the problem arises from the use of the equality ``=''.  We may abandon \textbf{Leibniz extensionality}.  In other words, just because $A = B$ doesn't mean that everything about A automatically applies to B.
-
-\underconst
+but Mary may not know that Superman is Clark Kent.  This problem can be resolved as in the last section (\S\ref{sec:equality}).
 
 \section{Shortcomings of the current logic}
 
