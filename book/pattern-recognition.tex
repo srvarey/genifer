@@ -59,6 +59,11 @@ The similarity $\approx$ can be regarded as the probabilistic version of $=$.  W
 \# x [f x = g x] \Rightarrow f \approx g.
 \label{eqn:probabilistic-extensionality}
 \end{equation}
+And because we can use fuzzy truth values, the $=$ on the LHS can also be replaced with a fuzzy version and we might denote it as $\approx$ as well:
+\begin{equation}
+\# x [f x \approx g x] \Rightarrow f \approx g.
+\label{eqn:probabilistic-extensionality}
+\end{equation}
 
 But there is one problem.  In the whale $\approx$ fish example, the similarity is there not because the whale and fish predicates can apply to many common members (in fact, the 2 classes have no overlaps);  but because there are \textit{other} predicates that apply to both of them as objects.  For example:
 
@@ -77,9 +82,9 @@ How to capture this?  The solution is to ``turn around'' Leibnez's definition th
 \end{eqnarray}
 where I have renamed the variables to stress the symmetry.  And the probabilistic form is:
 \begin{equation}
-\# z [z x = z y]  \Rightarrow x \approx y.
+\# z [z x \approx z y]  \Rightarrow x \approx y.
 \end{equation}
-Notice that if we use higher-order logic, $z$ can be unified with n-ary predicates with other arguments, eg
+Notice that if we use higher-order logic, $z$ can be \textit{instantiated} as n-ary predicates with other arguments, eg
  $$z(x) = \mbox{lives-in}(x, \mbox{water})$$
 so this is a very powerful way to express all possible forms of similarities.  This may be regarded as a logic-based, alternative formulation of Ulf Grenander's Pattern Theory \citep*{Grenander2007}.  One obvious complaint is that higher-order unification is highly intractable.  But this seems to be the correct formulation of the problem that we must use heuristics to deal with.
 

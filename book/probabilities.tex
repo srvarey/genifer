@@ -77,7 +77,7 @@ It seems that causal relations cannot be captured simply by probabilistic relati
 
 \underconst
 
-\section{First order logic and Bayesian networks}
+\section{Predicate logic and Bayesian networks}
 \label{sec:FOL-BN}
 
 Early developments in Bayesian network are mainly propositional, which means that each node in a network represents a proposition without variables, such as ``the fact that the alarm sounded''.  It has long been recognized that ``lifting'' Bayesian networks to first order is necessary for AI to be able to deal with open domains where \emph{relations} can be defined over many \emph{objects}.
@@ -146,7 +146,7 @@ Adding probabilities to binary logic in a direct way (ie, using the binary mater
 \hspace*{1cm} \texttt{A :- B, C, D, ...}\\
 would corresponds to:\\
 \hspace*{1cm} $ P(A | B, C, D, ...) = p $\\
-in a Bayesian network.  This approach is also adopted by BLP, MEBN, BLOG, and PRM (see \S\ref{sec:FOL-BN}).
+in a Bayesian network.  This approach is the same one adopted by BLP, MEBN, BLOG, and PRM (see \S\ref{sec:FOL-BN}).
 
 \subsection{The probabilistic quantifier ``$\#$''}
 \label{sec:probabilistic-quantifier}

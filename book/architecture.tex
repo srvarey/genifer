@@ -188,4 +188,35 @@ Maybe the most cost-effective method (from the human labor perspective) is to co
 
 \section{AIXI}
 
+\underconst
+
 \section{Distributive architecture}
+
+This is a monolithic view of the inference engine.  For simplicity's sake, only the deduction part is shown, since deduction is the most essential core of the engine.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{breakdown-IE-1.png}
+% \vspace{-0.5cm}
+\end{figure}
+
+This is a distributive architecture for deduction:
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{breakdown-IE-2.png}
+% \vspace{-0.5cm}
+\end{figure}
+
+Each agent responds to queries and spits out solutions. For example, an agent may have a rule in its (local) KB that "professors who wear sandals are nice to students".  The agent listens to queries, trying to find something it can answer.  A query such as "who is nice to students?" would be a hit.  Then the agent either:
+
+\begin{compactenum}
+\item returns an answer, if it knows as a \textit{fact} that XYZ is nice to students.
+\item applys a rule and returns one of more sub-goals;  In this case, the sub-goal is "does XYZ wear sandals?"  Wait for other agents to answer that.
+\end{compactenum}
+
+In case \#2, if another agent provides an answer "Professor Matt Mahoney wears sandals", say with TV = 0.9, and sends it back to the first agent, then the first agent decides how to calculate the TV of the conclusion given that TV of premise = 0.9.  The only calculation it needs to perform is for the rule that it owns.  Then it returns the answer to the asker.
+
+This architecture is so wonderful because there is no need to construct the proof tree anymore. The proof tree seems to have disappeared but it is really implicitly constructed among the network of agents and the messages!
+
+Thanks to Matt Mahoney for proposing the CMR (competitive message routing) architecture.

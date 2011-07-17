@@ -59,24 +59,6 @@ Some facts:
 
 7.  SAT for the \textbf{propositional Horn} subclass of binary logic, can be performed in linear time.  My very simple algorithm for Bayesian inference is analogous to Horn deduction\footnote{The term Horn can only be used to describe binary logic:  a Horn clause is a clause with exactly one positive literal.  $\mathcal{PZ}$ logic has a Horn-like form, but the distinction between positive and negative literals disappears in logics with numerical truth values.}.  Prolog owes its efficiency to SLD resolution which is also Horn-based.
 
-\section{Nonmonotonicity and redundancy}
-
-\subsection{Handling exceptions (nonmonotonic reasoning)}
-\label{sec:exceptions}
-
-Fuzzy reasoning can sometimes lead to unsound conclusions, for example:\\
-\textit{1. Mary has cybersex with many partners.\\
-2. Cybersex is a kind of sex.\\
-3. Therefore, Mary has many sex partners.\\
-4. A person who has many sex partners has a high chance of STDs.\\
-5. Therefore, Mary has a high chance of STDs.}
-
-What's wrong with this example?  On the one hand, we should admit that cybersex is sex (it is a borderline case), but it lacks certain prominent features of sex, such as physical contact (which is not necessarily a \textit{defining} feature of sex).  Thus, if we carry on reasoning with the idea that cybersex is sex, we may get unsound conclusions.  The key to resolving this problem is to recognize ``cybersex is sex'' with \textbf{qualifications} such as ``but it is sex without physical contact''.
-
-If we have a rule saying that ``sex transmits certain diseases'', we may have to attach the exception ``only if the sex involves physical contact''.  In the end, our rules may be inundated with possibly infinitely many exceptions.  How can we get out of this problem?
-
-\citep*{Wang1994}, \citep*{Wang2006} provided a solution, which I essentially adopt.  His idea is not to store the exceptions to rules, but instead allow a \textit{multitude} of rules to fire, calculate the ``confidence'' (\S\ref{sec:confidence}) of each conclusion, and pick the conclusion with the highest confidence.  This allows us to handle exceptions relatively easily.
-
 \section{Deduction}
 \label{sec:deduction}
 
@@ -193,12 +175,13 @@ where the $H$'s stand for ``Heads''.  This is actually a compact way of stating 
 \includegraphics{simple-proof-tree2.png}
 \caption{Simple factor graph in ``normal'' direction, with background knowledge}
 \end{figure}
+The link to $K$ simply means that either the node's value is ``clamped'' or it is passing a message from further down the tree.
 
 In the ``normal'' direction, our $G$ is $H$, so the calculation is pretty straightforward.  From now on we use the notational convention of omitting $P(\cdot)$ for probabilities; ie, $P(X)$ is written as $(X)$:
 \begin{equation}
 (G|K) = \sum_{X_i} (G|X_i)(X_i|K).
 \end{equation}
-The first factor on the RHS is the ``\textbf{factor}'' stored in the factor node.  The second factor is the \textbf{messages} coming from each $X_i$ node.  This is a simple sum-product operation.  The link to $K$ simply means that either the node's value is ``clamped'' or it is passing a message from further down the tree.
+The first factor on the RHS is the ``\textbf{factor}'' stored in the factor node.  The second factor is the \textbf{messages} coming from each $X_i$ node.  This is a simple sum-product operation.
 
 Next case, the direction is reversed:
 \begin{figure}[H]
@@ -220,6 +203,25 @@ General case:\\
       &=& (G) \sum_H \frac{(H|K)}{(H)} \sum_{X_i} (H|G,X_1,X_2,...)(X_i|G) \nonumber\\
       &=& (G) \sum_H \frac{(H|K)}{(H)} \sum_{X_i} (H|G,X_1,X_2,...)(X_1)(X_2)...
 \end{eqnarray*}
+
+\subsubsection{Higher-order Bayesian logic}
+
+Note:  here ``higher-order'' refers to the predicate logic aspect, not higher-order probabilities.
+
+Essentially, what we need to do is to instantiate all possible propositional Bayesian networks with a given goal at the root, when given a set of higher-order formulas in the KB.  (I'm not sure if it is enumerable, but assume that it is.)
+
+In first-order Horn logic, the instantiation procedure seems pretty easy as it follows the SLDNF resolution algorithm (\S\ref{sec:Prolog-Horn-intro}).  With higher-order logic the task is complicated by the fact that variables can instantiate as other formulas.
+
+Our slogan is:  ``One formula -- one Bayesian network link -- one factor graph node.''  Or in symbols:
+
+\vspace{0.1cm} \tab \tab
+\fbox{ \parbox{4cm}{
+$ 1 \; \mbox{formula}, \; 1 \, \Pimp, \; 1 \; \blacksquare $
+}}
+
+\{ To-do:  Higher-order unification seems to work fine with such formulas... but I need to work out the details...  \}
+
+\underconst
 
 \subsubsection{Loopy inference}
 
