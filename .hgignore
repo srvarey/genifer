@@ -3,3 +3,17 @@ syntax: glob
 ayane.jar
 build
 private
+haskell\*.aux
+haskell\*.exe
+haskell\*.hi
+haskell\*.log
+haskell\*.o
+haskell\*.ptb
+haskell\*.pdf
+haskell\*.mtc
+haskell\*.mtc*
+haskell\*.maf
+haskell\*.out
+haskell\*.toc
+haskell\*.bat
+haskell\*.tex
