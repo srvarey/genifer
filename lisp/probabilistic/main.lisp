@@ -75,5 +75,6 @@
 ;(load "coherence.lisp")
 ;(load "natural-language.lisp")
 ;(load "GUI.lisp")
+(load "pretty-printing.lisp")
 (load "user-interface.lisp")    ; this must be loaded last
 (main)
