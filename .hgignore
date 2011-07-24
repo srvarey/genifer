@@ -17,3 +17,17 @@ haskell\*.out
 haskell\*.toc
 haskell\*.bat
 haskell\*.tex
+lisp\fuzzy\*.aux
+lisp\fuzzy\*.exe
+lisp\fuzzy\*.hi
+lisp\fuzzy\*.log
+lisp\fuzzy\*.o
+lisp\fuzzy\*.ptb
+lisp\fuzzy\*.pdf
+lisp\fuzzy\*.mtc
+lisp\fuzzy\*.mtc*
+lisp\fuzzy\*.maf
+lisp\fuzzy\*.out
+lisp\fuzzy\*.toc
+lisp\fuzzy\*.bat
+lisp\fuzzy\*.tex
