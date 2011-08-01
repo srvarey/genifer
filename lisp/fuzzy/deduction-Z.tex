@@ -29,6 +29,9 @@
 ;;;; ------------------------------------------------------------------------------
 \end{comment}
 
+A set of introductory slides about deduction is here:
+\href{http://code.google.com/p/genifer/downloads/list}{Slides}.
+
 Abbreviations:\\
 \tab sub = substitution\\
 \tab TV = truth value
@@ -84,6 +87,13 @@ remembering the search state, but we don't use that here.  We simply maintain th
 \end{lstlisting}
 
 \section{Data structures}
+
+\begin{figure}[h]
+\centering
+\includegraphics{Lisp-data-structures.png}
+\caption{Data structures}
+\end{figure}
+
 Proof tree is a tree with back-links so we can go from a child node to its parent node.
 This is to facilitate the bottom-up evaluation of expressions, with the goal at the root.
 A tree node can be either a sub-goal or a fact/rule.
@@ -511,6 +521,213 @@ On entry: current node has failed\\
 
 \section{Belief propagation}
 
+\subsection{Pearl's algorithm}
+
+The algorithm is explained in detail in Chapter 4 of \citep*{Pearl1988}.  We're using the belief
+propagation algorithm for polytrees (singly-connected networks), reproduced below:
+\begin{figure}[h]
+\centering
+\includegraphics{polytree-typical-node.png}
+\caption{A typical polytree node X and its parents and children}
+\end{figure}
+
+A node updates its belief according to:
+\begin{equation}
+Bel(X) \defeq (X|K^\uparrow,K^\downarrow) = \frac{(K^\uparrow)}{(K^\uparrow,K^\downarrow)}
+   (K^\downarrow|X)(X|K^\uparrow) = \alpha \lambda(X) \pi(X)
+\end{equation}
+where $K^\uparrow$ and $K^\downarrow$ are the evidence (or background knowledge, ie, nodes that
+ are ``clamped'') upstream and downstream of X, $\alpha$ is the normalizing constant, and:
+\begin{eqnarray}
+\lambda(X) &\defeq& (K^\downarrow|X) = \prod_j \lambda_{Y_j \rightarrow X} \\
+    \pi(X) &\defeq& (X|K^\uparrow) = \sum_{U_i} (X|U_{1...n}) \prod_i \pi_{U_i \rightarrow X}
+\end{eqnarray}
+where $\lambda_{Y_j \rightarrow X}$ and $\pi_{U_i \rightarrow X}$ are the messages sent to X
+from its children and parents, respectively.  In turn, node X sends messages to its parents
+and children, given by\footnote{About the notation $\sum_{U_{k \neq i}}$: the probability
+ $(X|U_{1...n})$ is conditioned on all the $U_i$'s \underline{including} $U_k$, but the sum is
+ over the permutation of all $U_i$'s \underline{excluding} $U_k$. }:
+\begin{eqnarray}
+\lambda_{X \rightarrow U_i} &=& \beta \sum_X \lambda(X) \sum_{U_{k \neq i}} (X|U_{1...n}) 
+         \prod_{k \neq i} \pi_{U_k \rightarrow X} \\
+% \pi_{X \rightarrow Y_j} &=& \alpha \frac{Bel(X)}{\lambda_{Y_j \rightarrow X}} \nonumber
+\pi_{X \rightarrow Y_j} &=& \alpha \pi(X) \prod_{k \neq j} \lambda_{Y_k \rightarrow X}
+\end{eqnarray}
+where $\alpha$ is same as above ($= \frac{ (K^\uparrow) }{ (K^\uparrow,K^\downarrow) } $) and
+ $\beta = (K^\uparrow_{U_{k \neq i}})$.
+
+\subsection{Factor graph algorithm}
+
+Pretty much the same as Pearl's algorithm, except the graph is added with factor nodes.
+
+\begin{figure}[h]
+\centering
+\includegraphics{factor-graph-typical-node.png}
+\caption{The previous Bayesian network node X translated to factor graph form}
+\end{figure}
+
+1. From the top, each $U_i$ sends to $G$:
+\begin{equation}
+\pi_{U_i \rightarrow G} = (U_i | K^\uparrow_{U_i})
+\end{equation}
+
+\tab $G$ sends to $X$:
+\begin{eqnarray}
+\pi_{G \rightarrow X} &=& \sum G \prod \pi                 \nonumber \\
+                      &=& \sum_{U_i} (X|U_{1...n}) \prod_i \pi_{U_i \rightarrow G}
+\end{eqnarray}
+
+2. From the bottom, each $Y_i$ sends to $F_i$:
+\begin{equation}
+\lambda_{Y_i \rightarrow F_i} = (K^\downarrow_{Y_i} | X)
+\end{equation}
+
+\tab Each $F_i$ sends to $X$:
+\begin{equation}
+\lambda_{F_i \rightarrow X} = \lambda_{Y_i \rightarrow F_i}
+\end{equation}
+
+3. At this point $Bel(X)$ can be computed by multiplying all incoming messages at $X$.  Then $X$
+ sends to each node the product of \textit{other} incoming messages.  For example,
+ it sends the product of $G, F_2, F_3, ...$'s messages to $F_1$, and so on.
+
+4. Upwards, $G$ sends to each $U_i$:
+\begin{eqnarray}
+\lambda_{G \rightarrow U_i} &=& \sum \lambda(X) \sum G \prod \pi             \nonumber \\
+  &=& \sum_X \lambda(X) \sum_{U_i} (X|U_{1...n}) \prod_? \pi_{? \rightarrow ?}
+\end{eqnarray}
+
+5. Downwards, each $F_i$ sends to each $Y_i$:
+\begin{eqnarray}
+\pi_{F_i \rightarrow Y_i} &=& \pi(X) \prod \lambda                           \nonumber \\
+ &=&  \pi(X) \prod_? \lambda_{? \rightarrow ?}
+\end{eqnarray}
+
+\subsection{Evaluating a single rule}
+
+The rule is of the form:
+$$ H_1, H_2, ... \PimpL B_1, B_2, B_3, ... \nonumber $$
+where H means ``head'' and B means ``body''.
+
+The multi-head form is needed because \textit{substitutions} are shared across the entire rule,
+ but probabilistically the rule is equivalent to:
+\begin{eqnarray}
+H_1 &\PimpL& B_1, B_2, ... \nonumber \\
+H_2 &\PimpL& B_1, B_2, ... \nonumber \\
+    &....&                 \nonumber
+\end{eqnarray}
+
+Abram's method is so nice that we can use it to construct $(H|B_1,B_2...)$ out of the individual
+$(H|B_i)$'s, with the (optional) help of the prior $(H)$.
+
+There are 3 cases:\\
+\tab 1A. We're seeking $H_j$.  Forward application (= sum-product).\\
+\tab 1B. We're seeking $H_j$ but one of the $B_i$'s is missing.  Apply Case 2 and
+    then apply Case 1A.\\
+\tab 2. We're seeking $B_j$.  Backward application (= Bayes law).
+
+In the following assume K = background knowledge.
+
+\subsubsection{Case 1A}
+
+Simple sum-product:
+$$ (H_j|K) = \sum_{B_i} (H_j|B_i)(B_i|K) $$
+
+\subsubsection{Case 1B}
+
+One of the $B_i$'s is missing, but we have one $H_{k \neq j}$.  Apply Case 2 to get $B_j$.\\
+Then apply Case 1A to get $H_j$.
+
+\subsubsection{Case 2}
+
+Simple application of Bayes law:
+\begin{equation}
+\label{eqn:apply-Bayes-law}
+ (B_i|K) = \sum_{H_j} \frac{(H_j,K)}{(H_j)}
+           \sum_{B_{j \neq i}} (H_j|B_{1...n}) \prod_k (B_k|B_i)
+\end{equation}
+
+\subsection{Combining multiple rules -- Abram's method}
+
+If all rules are aligned in the ``forward'' direction, as in:
+\begin{eqnarray}
+H &\PimpL& A_1, A_2, A_3, ... \nonumber \\
+H &\PimpL& B_1, B_2, B_3, ... \nonumber \\
+  & .... &                    \nonumber
+\end{eqnarray}
+Abram's method is a trick to construct a joint CPT (which would otherwise not be given) using
+marginal conditionals and priors:
+\begin{eqnarray}
+(H|A_i,B_i,...) &=& \frac{ (A_i,B_i,...|H)(H) } { (A_i,B_i,...) } \tab\tab\tab \mbox{Bayes law} \nonumber \\
+ &=& \frac{ (A_i|H) (B_i|H) ... (H) }{ (A_i,B_i,...) } \tab\tab \mbox{Naive Bayes assumption} \nonumber \\
+ &=& \frac{ (H|A_i) (A_i) (H|B_i) (B_i) ... }{ (A_i,B_i,...) (H)^{n-1} } \tab \mbox{Bayes law again} \nonumber
+\end{eqnarray}
+where $n$ is the number of rules.
+
+Before applying the naive Bayes assumption, the joint CPT is underconstained by the given
+probabilities;  Abram believes that one can always choose the priors judiciously within some
+bounds such that the resulting Bayes net remains probabilistically consistent.
+
+Then we can apply the forward rule:
+$$ (H|K) = \sum_{A_i,B_i,...} (H|A_i,B_i,...) \prod (A_i|K) \prod (B_i|K) ... $$
+
+If any of the rules is malaligned, we need to reverse that rule first, by Bayes law
+(see eqn \ref{eqn:apply-Bayes-law}).
+
+\subsubsection{Case $n=2$}
+\begin{eqnarray}
+H &\PimpL& A \nonumber \\
+H &\PimpL& B \nonumber
+\end{eqnarray}
+\begin{eqnarray}
+(H|A,B) &=& \frac{ (A,B|H)(H) } { (A,B) } \tab\tab\tab \mbox{Bayes law} \nonumber \\
+ &=& \frac{ (A|H) (B|H) (H) }{ (A,B) } \tab\tab \mbox{Naive Bayes assumption} \nonumber \\
+ &=& \frac{ (H|A) (A) (H|B) (B) }{ (A,B) (H)^{2-1} } \tab\tab \mbox{Bayes law again} \nonumber \\
+ &=& \frac{ (H|A) (H|B) (A) }{ (A|B) (H) } \nonumber \\
+ &=& \frac{ (H|A) (H|B) (A) }{ [ (A|H)(H|B) + (A|\neg H)(\neg H|B) ] (H) } \nonumber \\
+ &=& \frac{ (H|A) (H|B) }{ (H|A)(H|B) + \frac{(\neg H|A)(\neg H|B)(H)}{(\neg H)} } \nonumber
+\end{eqnarray}
+
+If we don't have the prior $(H)$, we may assume it is 0.5, thus $(H)=(\neg H)$ and:
+$$ (H|A,B) = \frac{ (H|A) (H|B) }{ (H|A)(H|B) + (\neg H|A)(\neg H|B) } \nonumber $$
+and the plot is:
+\begin{figure}[H]
+\centering
+\includegraphics{Abrams-rule-plot.png}
+%\caption{}
+\end{figure}
+
+\subsubsection{Case $n=3$}
+\begin{eqnarray}
+H &\PimpL& A \nonumber \\
+H &\PimpL& B \nonumber \\
+H &\PimpL& C \nonumber
+\end{eqnarray}
+\begin{eqnarray}
+(H|A,B,C) &=& \frac{ (A,B,C|H)(H) } { (A,B,C) } \tab\tab\tab \mbox{Bayes law} \nonumber \\
+ &=& \frac{ (A|H)(B|H)(C|H)(H) }{ (A,B,C) } \tab\tab \mbox{Naive Bayes assumption} \nonumber \\
+ &=& \frac{ (H|A)(A)(H|B)(B)(H|C)(C) }{ (A,B,C) (H)^2 } \tab \mbox{Bayes law again} \nonumber \\
+ &=& \frac{ (H|A)(H|B)(H|C)(A)(B)(C) }{ (A|B,C)(B,C) (H)^2 } \nonumber \\
+ &=& \frac{ (H|A)(H|B)(H|C)(A)(B)(C) }
+          { [ (A|H)(H|B,C) + (A|\neg H)(\neg H|B,C) ] (B,C)(H)^2 } \nonumber \\
+ &=& \frac{ (H|A)(H|B)(H|C)(B)(C) }
+          { [ \frac{(H|A)(H|B,C)}{(H)} + \frac{(\neg H|A)(\neg H|B,C)}{(\neg H)} ] (B,C)(H)^2 } \nonumber \\
+ &=& \frac{ (H|A)(H|B)(H|C)(B) }
+          { [ \frac{(H|A)(H|B,C)}{(H)} + \frac{(\neg H|A)(\neg H|B,C)}{(\neg H)} ]
+            (B|C)(H)^2 } \nonumber \\
+ &=& \frac{ (H|A)(H|B)(H|C)(B) }
+          { [ \frac{(H|A)(H|B,C)}{(H)} + \frac{(\neg H|A)(\neg H|B,C)}{(\neg H)} ]
+            [(B|H)(H|C) + (B|\neg H)(\neg H|C)] (H)^2 } \nonumber \\
+ &=& \frac{ (H|A)(H|B)(H|C) }
+          { [ \frac{(H|A)(H|B,C)}{(H)} + \frac{(\neg H|A)(\neg H|B,C)}{(\neg H)} ]
+            [ \frac{(H|B)(H|C)}{(H)} + \frac{(\neg H|B)(\neg H|C)}{(\neg H)}] (H)^2 } \nonumber \\
+ &=& \frac{ (H|A)(H|B,C) }
+          { (H|A)(H|B,C) + \frac{(\neg H|A)(\neg H|B,C)(H)}{(\neg H)} } \nonumber
+\end{eqnarray}
+which suggests a recursive pattern.
+
+\subsection{Code}
+
 **** Propagate messages up the proof tree\\
 INPUT:   a new list of solutions arrives at the current node\\
 RETURN:  nothing (update solutions in proof tree)\\
@@ -540,103 +757,6 @@ Algorithm:\\
 \tab send the result message to parent node\\
 \tab ( it is impossible for the parent to be a fact ) \\
 9. recurse to parent
-
-\subsection{Evaluating a single rule}
-
-The rule is of the form:
-$$ H_1, H_2, ... \PimpL B_1, B_2, B_3, ... \nonumber $$
-where H means ``head'' and B means ``body''.
-
-There are 3 cases:\\
-\tab 1A. We're seeking $H_j$.  Forward application (= sum-product).\\
-\tab 1B. We're seeking $H_j$ but one of the $B_i$'s is missing.  Apply Case 2 and
-    then apply Case 1A.\\
-\tab 2. We're seeking $B_j$.  Backward application (= Bayes law).
-
-In the following assume K = background knowledge.
-
-\subsubsection{Case 1A}
-
-Simple sum-product:
-$$ (H_j|K) = \sum_{B_i} (H_j|B_i)(B_i|K) $$
-
-\subsubsection{Case 1B}
-
-One of the $B_i$'s is missing, but we have one $H_{k \neq j}$  Apply Case 2 to get $B_j$.
-
-Then apply Case 1 to get $H_j$.
-
-\subsubsection{Case 2}
-
-Simple application of Bayes law:
-$$ (B_i|K) = (B_i) \sum_{H_j} \frac{(H_j,K)}{(H_j)}
-               \sum_{B_{j \neq i}} (H_j|B_1,...,B_n,K) \prod (B_i|K) $$
-
-\subsection{Combining multiple rules -- Abram's method}
-
-If all rules are aligned in the ``forward'' direction, as in:
-\begin{eqnarray}
-H &\PimpL& A_1, A_2, A_3, ... \nonumber \\
-H &\PimpL& B_1, B_2, B_3, ... \nonumber \\
-  & .... &                    \nonumber
-\end{eqnarray}
-Abram's method is a trick to construct a joint CPT (that is not given) using marginal CPTs
-and priors:
-\begin{eqnarray}
-(H|A_i,B_i,...) &=& \frac{ (A_i,B_i,...|H)(H) } { (A_i,B_i,...) } \tab\tab\tab \mbox{Bayes law} \nonumber \\
- &=& \frac{ (A_i|H) (B_i|H) ... (H) }{ (A_i,B_i,...) } \tab\tab \mbox{Naive Bayes assumption} \nonumber \\
- &=& \frac{ (H|A_i) (A_i) (H|B_i) (B_i) ... }{ (A_i,B_i,...) (H)^{n-1} } \tab \mbox{Bayes law again} \nonumber
-\end{eqnarray}
-where $n$ is the number of rules.
-
-Then we can apply the forward rule:
-$$ (H|K) = \sum_{A_i,B_i,...} (H|A_i,B_i,...) \prod (A_i|K) \prod (B_i|K) $$
-
-If any of the rules is malaligned, we need to reverse that rule first, by Bayes law.
-(Same as Case 2 in the last section.)
-
-\subsubsection{Case $n=2$}
-\begin{eqnarray}
-H &\PimpL& A \nonumber \\
-H &\PimpL& B \nonumber
-\end{eqnarray}
-\begin{eqnarray}
-(H|A,B) &=& \frac{ (A,B|H)(H) } { (A,B) } \tab\tab\tab \mbox{Bayes law} \nonumber \\
- &=& \frac{ (A|H) (B|H) (H) }{ (A,B) } \tab\tab \mbox{Naive Bayes assumption} \nonumber \\
- &=& \frac{ (H|A) (A) (H|B) (B) }{ (A,B) (H)^{2-1} } \tab\tab \mbox{Bayes law again} \nonumber \\
- &=& \frac{ (H|A) (H|B) (A) }{ (A|B) (H) } \nonumber \\
- &=& \frac{ (H|A) (H|B) (A) }{ [ (A|H)(H|B) + (A|\neg H)(\neg H|B) ] (H) } \nonumber \\
- &=& \frac{ (H|A) (H|B) }{ (H|A)(H|B) + \frac{(\neg H|A)(\neg H|B)(H)}{(\neg H)} } \nonumber
-\end{eqnarray}
-
-\subsubsection{Case $n=3$}
-\begin{eqnarray}
-H &\PimpL& A \nonumber \\
-H &\PimpL& B \nonumber \\
-H &\PimpL& C \nonumber
-\end{eqnarray}
-\begin{eqnarray}
-(H|A,B,C) &=& \frac{ (A,B,C|H)(H) } { (A,B,C) } \tab\tab\tab \mbox{Bayes law} \nonumber \\
- &=& \frac{ (A|H)(B|H)(C|H)(H) }{ (A,B,C) } \tab\tab \mbox{Naive Bayes assumption} \nonumber \\
- &=& \frac{ (H|A)(A)(H|B)(B)(H|C)(C) }{ (A,B,C) (H)^2 } \tab \mbox{Bayes law again} \nonumber \\
- &=& \frac{ (H|A)(H|B)(H|C)(A)(B)(C) }{ (A|B,C)(B,C) (H)^2 } \nonumber \\
- &=& \frac{ (H|A)(H|B)(H|C)(A)(B)(C) }
-          { [ (A|H)(H|B,C) + (A|\neg H)(\neg H|B,C) ] (B,C)(H)^2 } \nonumber \\
- &=& \frac{ (H|A)(H|B)(H|C)(B)(C) }
-          { [ \frac{(H|A)(H|B,C)}{(H)} + \frac{(\neg H|A)(\neg H|B,C)}{(\neg H)} ] (B,C)(H)^2 } \nonumber \\
- &=& \frac{ (H|A)(H|B)(H|C)(B) }
-          { [ \frac{(H|A)(H|B,C)}{(H)} + \frac{(\neg H|A)(\neg H|B,C)}{(\neg H)} ]
-            (B|C)(H)^2 } \nonumber \\
- &=& \frac{ (H|A)(H|B)(H|C)(B) }
-          { [ \frac{(H|A)(H|B,C)}{(H)} + \frac{(\neg H|A)(\neg H|B,C)}{(\neg H)} ]
-            [(B|H)(H|C) + (B|\neg H)(\neg H|C)] (H)^2 } \nonumber \\
- &=& \frac{ (H|A)(H|B)(H|C) }
-          { [ \frac{(H|A)(H|B,C)}{(H)} + \frac{(\neg H|A)(\neg H|B,C)}{(\neg H)} ]
-            [ \frac{(H|B)(H|C)}{(H)} + \frac{(\neg H|B)(\neg H|C)}{(\neg H)}] (H)^2 } \nonumber \\
- &=& \frac{ (H|A)(H|B,C) }
-          { [ (H|A)(H|B,C) + \frac{(\neg H|A)(\neg H|B,C)(H)}{(\neg H)} ] } \nonumber
-\end{eqnarray}
-Note that this formula needs to invoke the previous formula recursively.
 
 \begin{lstlisting}[language=Lisp]
 (defun propagate (node new-solutions)
