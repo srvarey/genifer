@@ -2,6 +2,7 @@
 
 %dvips OR pdftex
 \usepackage[pdftex, pdfauthor={Yan King Yin}, bookmarks, anchorcolor=blue, colorlinks, linkcolor=blue, citecolor=blue, urlcolor=blue, breaklinks, plainpages=false, pdfpagelabels, hypertexnames=false]{hyperref}
+\pdfcompresslevel0
 \usepackage{breakurl}
 \usepackage[final]{graphicx}
 \usepackage{float}
@@ -40,7 +41,7 @@
 \renewcommand{\vec}[1]{\mathbf{#1}}
 
 %%%%%%%%%%%%%%%%% Symbols defined by me %%%%%%%%%%%%%%%%%%%
-\newcommand{\defeq}{\stackrel{def}{=}}
+\newcommand{\defeq}{\stackrel{\triangle}{=}}
 % fuzzy and probabilistic logic operators
 \newcommand{\Zand}{\stackrel{Z}{\wedge}}
 \newcommand{\Zor}{\stackrel{Z}{\vee}}
@@ -173,10 +174,18 @@ sed '/^\\end/,/language=Lisp\]\$/ d' >FILENAME.lisp <FILENAME.tex
 
 \section{Substitution management}
 
+\chapter{Inductive learning}
+
 %\chapter{Memory}
 
 %\chapter{Induction}
 
 %\chapter{Main}
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliographystyle{plainnat}
+\bibliography{AGI-book}
 
 \end{document}
