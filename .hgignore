@@ -17,6 +17,8 @@ haskell\*.out
 haskell\*.toc
 haskell\*.bat
 haskell\*.tex
+haskell\*.bbl
+haskell\*.blg
 lisp\fuzzy\*.aux
 lisp\fuzzy\*.exe
 lisp\fuzzy\*.hi
@@ -30,3 +32,5 @@ lisp\fuzzy\*.maf
 lisp\fuzzy\*.out
 lisp\fuzzy\*.toc
 lisp\fuzzy\*.bat
+lisp\fuzzy\*.bbl
+lisp\fuzzy\*.blg

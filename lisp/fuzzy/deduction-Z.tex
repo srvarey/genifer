@@ -521,6 +521,47 @@ On entry: current node has failed\\
 
 \section{Belief propagation}
 
+\subsection{Introduction}
+
+This part concerns the propagation of truth values.  For example, we
+have an inference step:\\
+\tab A $\Pimp$ B    \tab \tv{$TV_1$} \\
+\tab A              \tab\tab \tv{$TV_2$} \\
+\tab -----------------------------------------  \\
+\tab B              \tab\tab \tv{$TV_3$} \\
+So $TV_3$ would be ``some function'' of $TV_1$ and $TV_2$.  The TVs are just some number(s).
+
+In \textbf{NARS} (one of the early AGI logics that influenced both OpenCog and Genifer), Pei Wang uses
+2 numbers as TV.  One is somewhat like probability, the other is confidence.
+
+In \textbf{OpenCog's PLN}, Ben Goertzel uses up to 4 numbers for a TV.
+
+In \textbf{Genifer}, we use 1 number for probability, another number if fuzzy-probabilistic, and
+another number for confidence.
+
+In Genifer, the propagation of probabilistic TVs follows strictly the belief propagation
+algorithm in Bayesian networks, which is why it is more complicated.
+
+In addition, this part of the AGI also solves the problem of \textbf{defeasible reasoning}.
+Two examples are:
+
+1.  \english{Tweety is a penguin, which is a bird.  All birds can fly.  But penguins are an
+exception that cannot fly.  Can Tweety fly?}
+
+2.  \english{John promises to go to the airport to meet Mary.  John is very conscientious so
+he will probably arrive at the airport.  But, John is killed en route in a car accident.
+Will John arrive at the airport?}
+
+Both examples require one line of reasoning to ``defeat'' the other.  Pei Wang provides a
+solution with the \textbf{weighted average}:
+$$ f_3 = \frac{f_1 c_1 + f_2 c_2} {c_1 + c_2} $$
+where the $f$'s are probabilities and $c$'s are confidences (ie, how many examples support each
+hypothesis).  This is a neat solution, but Abram Demski formulated an alternative solution that
+more closely conforms with Bayesian theory.
+
+This is all you need to know if you want to treat this part of the algorithm as a black box.
+If you want to know more details, read on.  The AGI book explains the theory in detail.
+
 \subsection{Pearl's algorithm}
 
 The algorithm is explained in detail in Chapter 4 of \citep*{Pearl1988}.  We're using the belief
@@ -529,9 +570,10 @@ propagation algorithm for polytrees (singly-connected networks), reproduced belo
 \centering
 \includegraphics{polytree-typical-node.png}
 \caption{A typical polytree node X and its parents and children}
+\label{fig:polytree-typical-node}
 \end{figure}
 
-A node updates its belief according to:
+A typical node (figure \ref{fig:polytree-typical-node}) updates its belief according to:
 \begin{equation}
 Bel(X) \defeq (X|K^\uparrow,K^\downarrow) = \frac{(K^\uparrow)}{(K^\uparrow,K^\downarrow)}
    (K^\downarrow|X)(X|K^\uparrow) = \alpha \lambda(X) \pi(X)
@@ -544,11 +586,16 @@ where $K^\uparrow$ and $K^\downarrow$ are the evidence (or background knowledge,
 \end{eqnarray}
 where $\lambda_{Y_j \rightarrow X}$ and $\pi_{U_i \rightarrow X}$ are the messages sent to X
 from its children and parents, respectively.  In turn, node X sends messages to its parents
-and children, given by\footnote{About the notation $\sum_{U_{k \neq i}}$: the probability
- $(X|U_{1...n})$ is conditioned on all the $U_i$'s \underline{including} $U_k$, but the sum is
- over the permutation of all $U_i$'s \underline{excluding} $U_k$. }:
+and children, given by\footnote{About the notation $\sum_{\{\backslash U_i\}}$: the probability
+ $(X|U_{1...n})$ is conditioned on all the $U_k$'s \underline{including} $U_i$, but the sum is
+ over the permutation of all $U_k$'s \underline{excluding} $U_i$. This is a special kind of
+ summation operation peculiar to probability calculations, also known as the \textbf{summary
+ operation}.  What it does is to perform the marginalization of a joint probability, by summing
+ over all variables except the variable in question. Summary is special in that its order
+ can be interchanged with multiplication.  Thus the distributive law of multiplication can be
+ exploited. For more about this, see \citep*{Kschischang2001}}:
 \begin{eqnarray}
-\lambda_{X \rightarrow U_i} &=& \beta \sum_X \lambda(X) \sum_{U_{k \neq i}} (X|U_{1...n}) 
+\lambda_{X \rightarrow U_i} &=& \beta \sum_X \lambda(X) \sum_{\{\backslash U_i\}} (X|U_{1...n}) 
          \prod_{k \neq i} \pi_{U_k \rightarrow X} \\
 % \pi_{X \rightarrow Y_j} &=& \alpha \frac{Bel(X)}{\lambda_{Y_j \rightarrow X}} \nonumber
 \pi_{X \rightarrow Y_j} &=& \alpha \pi(X) \prod_{k \neq j} \lambda_{Y_k \rightarrow X}
@@ -558,12 +605,15 @@ where $\alpha$ is same as above ($= \frac{ (K^\uparrow) }{ (K^\uparrow,K^\downar
 
 \subsection{Factor graph algorithm}
 
-Pretty much the same as Pearl's algorithm, except the graph is added with factor nodes.
+A well-written introduction to factor graphs is \citep*{Kschischang2001}.  A Bayes net can
+be easily translated into a factor graph by adding factor nodes.  Let's look at a typical
+variable node X (figure \ref{fig:factor-graph-typical-node}).
 
 \begin{figure}[h]
 \centering
 \includegraphics{factor-graph-typical-node.png}
 \caption{The previous Bayesian network node X translated to factor graph form}
+\label{fig:factor-graph-typical-node}
 \end{figure}
 
 1. From the top, each $U_i$ sends to $G$:
@@ -594,13 +644,14 @@ Pretty much the same as Pearl's algorithm, except the graph is added with factor
 4. Upwards, $G$ sends to each $U_i$:
 \begin{eqnarray}
 \lambda_{G \rightarrow U_i} &=& \sum \lambda(X) \sum G \prod \pi             \nonumber \\
-  &=& \sum_X \lambda(X) \sum_{U_i} (X|U_{1...n}) \prod_? \pi_{? \rightarrow ?}
+  &=& \sum_X \lambda(X) \sum_{\{ \backslash U_i\}} (X|U_{1...n}) \prod_{k \neq i}
+      \pi_{U_k \rightarrow G}
 \end{eqnarray}
 
 5. Downwards, each $F_i$ sends to each $Y_i$:
 \begin{eqnarray}
 \pi_{F_i \rightarrow Y_i} &=& \pi(X) \prod \lambda                           \nonumber \\
- &=&  \pi(X) \prod_? \lambda_{? \rightarrow ?}
+ &=&  \pi(X) \lambda_{X \rightarrow F_i}
 \end{eqnarray}
 
 \subsection{Evaluating a single rule}
