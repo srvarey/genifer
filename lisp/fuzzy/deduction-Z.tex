@@ -529,10 +529,10 @@ have an inference step:\\
 \tab A              \tab\tab \tv{$TV_2$} \\
 \tab -----------------------------------------  \\
 \tab B              \tab\tab \tv{$TV_3$} \\
-So $TV_3$ would be ``some function'' of $TV_1$ and $TV_2$.  The TVs are just some number(s).
+So $TV_3$ would be ``some function'' of $TV_1$ and $TV_2$.  Each TV is some number(s).
 
-In \textbf{NARS} (one of the early AGI logics that influenced both OpenCog and Genifer), Pei Wang uses
-2 numbers as TV.  One is somewhat like probability, the other is confidence.
+In \textbf{NARS} (one of the early AGI logics that influenced both OpenCog and Genifer), Pei Wang
+uses 2 numbers as TV.  One is somewhat like probability, the other is confidence.
 
 In \textbf{OpenCog's PLN}, Ben Goertzel uses up to 4 numbers for a TV.
 
@@ -552,7 +552,7 @@ exception that cannot fly.  Can Tweety fly?}
 he will probably arrive at the airport.  But, John is killed en route in a car accident.
 Will John arrive at the airport?}
 
-Both examples require one line of reasoning to ``defeat'' the other.  Pei Wang provides a
+Both examples require one line of reasoning to ``defeat'' the other.  Pei Wang gave a
 solution with the \textbf{weighted average}:
 $$ f_3 = \frac{f_1 c_1 + f_2 c_2} {c_1 + c_2} $$
 where the $f$'s are probabilities and $c$'s are confidences (ie, how many examples support each

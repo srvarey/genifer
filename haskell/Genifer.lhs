@@ -22,13 +22,13 @@
 \usepackage{movie15}
 \usepackage{caption}
 
-\definecolor{DarkGreen}{rgb}{0.1,0.4,0.1}
-
-\newcommand{\formula}[1]{\textcolor{DarkGreen}{#1}}
+\newcommand{\formula}[1]{\textcolor{PineGreen}{#1}}
+\newcommand{\english}[1]{\rmfamily \textit{#1} \sffamily}
 \renewcommand{\star}{$* \;$}
 \newcommand{\app}{$\cdot \;$}
 \newcommand{\eg}{\textbf{Example:} }
 \newcommand{\tab}{\hspace*{1cm} }
+\newcommand{\tv}[1]{$\langle${#1}$\rangle$}
 \newcommand{\underconst}{\includegraphics{UnderConst.png}}
 \renewcommand{\vec}[1]{\mathbf{#1}}
 
@@ -93,7 +93,12 @@
 \interfootnotelinepenalty=50000
 
 \title{\textbf{Genifer in Haskell}}
-\author{YKY (general.intelligence@@Gmail.com)}
+\author{Contributors: \\
+Abram Demski \\
+Seh \\
+% Sandeep Pai \\
+William Taysom \\
+YKY (general.intelligence@@Gmail.com) }
 \date{\copyright \quad latest revision: \today}
 
 \setlength{\headheight}{0cm}
@@ -143,6 +148,205 @@ This file is Genifer.pdf, generated from Genifer.lhs by:\\
 You can run the source code contained in Genifer.lhs by:\\
 \tab ghci Genifer.lhs
 
+\chapter{Predicate logic}
+
+\section{Data structures for logic}
+
+The definition of types and terms are pretty standard for $\lambda$-calculus:
+
+\subsection{Types}
+
+The set of types is the closure of: \\
+$\alpha_1, \alpha_2, ..., \alpha_n \in T $ and \\
+$\beta \in T_0 \Rightarrow (\alpha_1 \times \alpha_2 \times ... \times \alpha_n \rightarrow \beta) \in T$
+
+\subsubsection{Order of a type}
+
+The order of a type is defined by:\\
+-- if $\tau \in T_0 \quad Ord(\tau) = 1$ \\
+-- if $\tau = (\alpha_1 \times \alpha_2 \times ... \times \alpha_n \rightarrow \beta) \quad
+   Ord(\tau) = max\{ Ord(\alpha_i) \mid 1 \le i \le n \} + 1 $
+
+\subsection{Terms}
+
+-- $\mathcal{C}$ is the set of \textbf{constant} symbols. \\
+-- $\mathcal{V}$ is the set of \textbf{variable} symbols.
+
+\begin{figure}[h]
+\centering
+\includegraphics{HOL-syntax.png}
+\caption{HOL syntax}
+% \label{fig:HOL-syntax}
+\end{figure}
+
+\begin{code}
+type Id       = (Int,String)
+data Var      = Var Id                         deriving (Show, Eq)
+data Const    = Const Id                       deriving (Show, Eq)
+data Atom     = VarAtom Id | ConstAtom Id      deriving (Show, Eq) 
+data Term     = AtomicTerm Atom | Apply Atom [Term] | Lambda [Var] Term
+                deriving (Show, Eq)
+\end{code}
+
+This is a test:
+
+\begin{code}
+size :: Term -> Int
+size (AtomicTerm a) = 1
+size (Apply u v) = 1 + (sum (map size v))
+size (Lambda u v) = (length u) + 1
+\end{code}
+
+% \section{First-order unification}
+% 
+% The following code is borrowed from Takashi Yamamiya's web site:\\
+% \tab http://propella.blogspot.com/2009/04/prolog-in-haskell.html
+% 
+% The type:
+% \begin{spec}
+% type Substitution = [(Term, Term)]
+% true = []
+% \end{spec}
+% 
+% This is the code for applying a substitution:
+% \begin{spec}
+% -- apply [(w"X", w"Y"), (w"Y", w"Z")] [(w"X"), (w"Y")] == [(w"Z"), (w"Z")]
+% apply :: Substitution -> [Term] -> [Term]
+% apply s ts = [applyTerm s t | t <- ts]
+% 
+% applyTerm [] (Var y n)                                  = Var y n
+% applyTerm ((Var x i, t):s) (Var y j) | x == y && i == j = applyTerm s t
+%                                      | otherwise        = applyTerm s (Var y j)
+% applyTerm s (Struct n ts)                               = Struct n (apply s ts)
+% \end{spec}
+% 
+% And here is unify:
+% \begin{spec}
+% -- unify (w"X") (w"apple") == Just [(w"X", w"apple")]
+% unify :: Term -> Term -> Maybe Substitution
+% unify (Var x n) (Var y m) = Just [(Var x n, Var y m)]
+% unify (Var x n)      y    = Just [(Var x n,       y)]
+% unify      x    (Var y m) = Just [(Var y m,       x)]
+% unify (Struct a xs) (Struct b ys)
+%       | a == b = unifyList xs ys
+%       | otherwise   = Nothing
+% 
+% unifyList :: [Term] -> [Term] -> Maybe Substitution
+% unifyList [] [] = Just true
+% unifyList [] _ = Nothing
+% unifyList _ [] = Nothing
+% unifyList (x:xs) (y:ys) = do s <- unify x y
+%                              s' <- unifyList (apply s xs) (apply s ys)
+%                              return (s ++ s')
+% \end{spec}
+
+\section{Second-order unification}
+
+This algorithm is from \citep*{Huet1978}, which is a restriction from \citep*{Huet1975} to the
+2nd-order case.  It has 2 parts:  Simplfy and GrowTree.
+
+\subsection{Simplify}
+
+The first part simplifies a set N of pairs of terms, by recognizing common constant initial
+subterms.  $\mathcal{C}$ is the set of constants.
+
+\begin{algorithm}[H]
+\caption{Simplify}
+\alginout{$N$ a set of pairs of terms}
+{new $N$}
+\begin{algtab}
+\alglabel{alg:SO-unify-simplify}
+
+\algrepeat
+if $N = \emptyset$ then exit with answer \fbox{S} \\
+
+%\addtocounter{algline}{-1}\algnonumber
+
+\algif{there is no pair \tv{$t_1, t_2$} in $N$ with $t_1$ rigid}
+
+ exit with the answer set $N$.  \\
+
+\algelse{select a pair of the form $\langle \lambda x_1 ... x_n \cdot \phi (t_1, ..., t_p), \;
+      \lambda x'_1 ... x'_n \cdot \phi' (t'_1, ..., t'_p) \rangle $ \\
+where $\phi \in \{ x_1, ..., x_n \} \cup \mathcal{C}$ } \\
+
+\algif{$\phi'$ is $\phi$ modulo bound variable renaming, ie, \\
+       $\phi' = \phi$ when $\phi \in \mathcal{C}$, and $\phi' = x'_i$ when $\phi = x_i$ }
+
+replace the pair with $ \{ \langle \lambda x_1 ... x_n \cdot t_i,  \;
+                                            \lambda x'_1 ... x'_n \cdot t'_i \rangle \; \mid
+                                            1 \le i \le p \} $ \\
+
+\algelse{exit with answer \fbox{F}} \\
+
+\end{algtab}
+\end{algorithm}
+\vspace{-0.6cm}
+
+\subsection{Growing the Matchings Tree}
+
+To grow the Matchings Tree:
+
+\begin{compactenum}
+\item The root node is $N_0 = Simplify \{ \langle t, t' \rangle \}$.
+
+\item Nodes \fbox{S} and \fbox{F} are leaves. The successors of a non-leave node $N$ is
+  constructed by first selecting from $N$ an arbitrary pair \tv{$t_1, t_2$}. Then then function
+  $Match(t_1,t_2)$ below returns a list of substitutions $\{\sigma_1, ... ,\sigma_k\}$.
+  For each substitution, grow an arc labelled with $\sigma_i$ from N to its successor
+  $Simplfy(\sigma_i N)$.  (If $k=0$, replace $N$ by $\fbox{F}$.)
+\end{compactenum}
+
+\begin{algorithm}[H]
+\caption{Match}
+\alginout{$\tau(t_1)=\tau(t_2)$, $t_2$ is rigid, $t_1$ is not}
+{a list of substitutions $\sigma_1,...,\sigma_k$}
+\begin{algtab}
+\alglabel{alg:SO-unify-match}
+
+\algswitch{order of the head $\mathcal{H}(t_1)$ }
+
+\algcase {order = 1}
+\algbegin
+$t_1 = \lambda u_1 ... u_n \cdot x \quad \tau(x) \in T_0 $ \\
+Let $t_2 = \lambda v_1 ... v_n \cdot t'_2$ \\
+\algifthenelse{one of the $v$'s appear free in $t'_2$}
+{$k = 0$, no solutions}
+{$k=1$, return the unique solution $\langle x, t'_2 \rangle$}
+\algend
+\algcase {order = 2}
+\algbegin
+  $t_1 = \lambda u_1 ... u_n \cdot f(t^1_1,...,t^p_1)$ \\
+  $t_2 = \lambda v_1 ... v_n \cdot \phi(t^1_2,...,t^q_2)$ \quad with \quad
+         $\phi \in \{ v_1,...,v_n \} \cup \mathcal{C} $ \\
+  generate $k \le p+1$ solutions as follows: \\
+
+  \algif{$\phi \in \mathcal{C}$}
+  \algbegin
+    generate one \textbf{imitation} $\langle f, \lambda x_1,...,x_p \cdot \phi(\hat{t}_1,...,\hat{t}_q) \rangle$ \\
+    where $\hat{t}_i$ is constructed as: \\
+    \algif{$\tau(t^i_2) \in T_0$}
+       $\hat{t}_i = h_i(x_1,...,x_p)$ \\
+    \algend
+    \algif{$\tau(t^i_2) = (\alpha_1 \times ... \times \alpha_s \rightarrow \beta)$}
+        $\hat{t}_i = \lambda w_1 ... w_s \cdot h_i(x_1,...,x_p, w_1,...,w_s)$ \\ 
+        \quad \quad with $\tau(w_j) = \alpha_j \quad 1 \le j \le s$ \\
+        \quad \quad where $h_i$'s are new distinct variables of the appropriate type \\
+    \algend
+  \algend
+  
+  \algelse{generate all the \textbf{projections} $\langle f, \lambda x_1,...,x_p \cdot x_j \rangle$
+    that are type compatible \\
+    ie, such that $\tau(f) = (\gamma_1 \times ... \times \gamma_p \rightarrow \delta)$
+        with $\delta = \gamma_j$ } \\
+\algend
+
+\end{algtab}
+\end{algorithm}
+\vspace{-0.6cm}
+
+\section{Substitution management}
+
 \chapter{Message passing}
 
 The agent waits for messages.  An incoming message can be:
@@ -174,24 +378,30 @@ Attach the answer to the instantiated rule.
 
 If there are answers for all the subgoals in that rule, evaluate it (see \S\ref{ch:tv-evaluation} TV evaluation).
 
-\section{CloudHaskell}
+\section{ZeroMQ}
 
 \begin{code}
-import Remote
-
-import Data.Typeable (Typeable)
-import Data.Data (Data)
-import Data.Binary (Binary,get,put)
-import System.Random (randomR,getStdRandom)
-import Control.Concurrent (threadDelay)
-import Control.Monad (when)
-import Control.Monad.Trans (liftIO)
-
 main = putStrLn "Hello, World!"
 \end{code}
 
-\chapter{TV evaluation}
-\label{ch:tv-evaluation}
+% \section{CloudHaskell}
+% 
+% \begin{code}
+% import Remote
+% 
+% import Data.Typeable (Typeable)
+% import Data.Data (Data)
+% import Data.Binary (Binary,get,put)
+% import System.Random (randomR,getStdRandom)
+% import Control.Concurrent (threadDelay)
+% import Control.Monad (when)
+% import Control.Monad.Trans (liftIO)
+% 
+% main = putStrLn "Hello, World!"
+% \end{code}
+
+\chapter{Uncertainty}
+\label{ch:uncertainty}
 
 \section{Combining multiple rules}
 
@@ -238,57 +448,16 @@ evalRule op head body subgoal params msgsH msgsB
     | otherwise    = 0  -- TODO
 \end{code}
 
-\chapter{First-order logic}
-
-\section{Unification}
-
-The following code is borrowed from Takashi Yamamiya's web site:\\
-\tab http://propella.blogspot.com/2009/04/prolog-in-haskell.html
-
-The type:
-\begin{spec}
-type Substitution = [(Term, Term)]
-true = []
-\end{spec}
-
-This is the code for applying a substitution:
-\begin{spec}
--- apply [(w"X", w"Y"), (w"Y", w"Z")] [(w"X"), (w"Y")] == [(w"Z"), (w"Z")]
-apply :: Substitution -> [Term] -> [Term]
-apply s ts = [applyTerm s t | t <- ts]
-
-applyTerm [] (Var y n)                                  = Var y n
-applyTerm ((Var x i, t):s) (Var y j) | x == y && i == j = applyTerm s t
-                                     | otherwise        = applyTerm s (Var y j)
-applyTerm s (Struct n ts)                               = Struct n (apply s ts)
-\end{spec}
-
-And here is unify:
-\begin{spec}
--- unify (w"X") (w"apple") == Just [(w"X", w"apple")]
-unify :: Term -> Term -> Maybe Substitution
-unify (Var x n) (Var y m) = Just [(Var x n, Var y m)]
-unify (Var x n)      y    = Just [(Var x n,       y)]
-unify      x    (Var y m) = Just [(Var y m,       x)]
-unify (Struct a xs) (Struct b ys)
-      | a == b = unifyList xs ys
-      | otherwise   = Nothing
-
-unifyList :: [Term] -> [Term] -> Maybe Substitution
-unifyList [] [] = Just true
-unifyList [] _ = Nothing
-unifyList _ [] = Nothing
-unifyList (x:xs) (y:ys) = do s <- unify x y
-                             s' <- unifyList (apply s xs) (apply s ys)
-                             return (s ++ s')
-\end{spec}
-
-\section{Substitution management}
-
 %\chapter{Memory}
 
 %\chapter{Induction}
 
 %\chapter{Main}
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliographystyle{plainnat}
+\bibliography{AGI-book}
 
 \end{document}
