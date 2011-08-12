@@ -168,6 +168,24 @@ The Lisp source code can be extracted from *.tex by the *nix utility sed:
 sed '/^\\end/,/language=Lisp\]\$/ d' >FILENAME.lisp <FILENAME.tex
 \end{lstlisting}
 
+\chapter{Standards}
+
+\section{Syntax of logic}
+
+\subsection{Logic formula}
+
+\textbf{BNF:}
+
+\tv{Formula} ::= Constant \|        \\
+                 Variable \|        \\
+                 Apply-Operator \|  \\
+                 Apply-Functor
+
+\subsection{Logic rule}
+
+\section{Messages}
+
+
 \include{deduction-Z}
 
 \chapter{First-order logic}
