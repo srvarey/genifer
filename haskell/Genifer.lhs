@@ -341,14 +341,14 @@ renames t1 t2 = let h1 = (head_of t1)
                      in (not (isNothing i)) && (i == (elemIndex hh2 (boundVars t2)))
 
 head_of :: Term -> Either Const Var
-head_of (VarAtom v) = Right v
-head_of (ConstAtom c) = Left c
-head_of (ApplyVar v _) = Right v
-head_of (ApplyConst c _) = Left c
-head_of (Lambda _ (VarAtom v)) = Right v
-head_of (Lambda _ (ConstAtom c)) = Left c
-head_of (Lambda _ (ApplyVar v _)) = Right v
-head_of (Lambda _ (ApplyConst c _)) = Left c
+head_of (VarAtom v)                 = Right v
+head_of (ConstAtom c)               = Left  c
+head_of (ApplyVar v _)              = Right v
+head_of (ApplyConst c _)            = Left  c
+head_of (Lambda _ (VarAtom v))      = Right v
+head_of (Lambda _ (ConstAtom c))    = Left  c
+head_of (Lambda _ (ApplyVar v _))   = Right v
+head_of (Lambda _ (ApplyConst c _)) = Left  c
 
 isConstant :: Either Const Var -> Bool
 isConstant (Left _) = True
@@ -358,7 +358,17 @@ boundVars (Lambda vs _) = vs
 boundVars _ = []
 
 decompose :: Term -> Term -> [(Term,Term)]
-decompose t1 t2 = [(t1,t2)]  -- TODO2
+-- for all vars in arguments of t1, generate the pair:
+--           < Lambda (boundVars t1) t_i, Lambda (boundVars t2) t_i2 >
+-- on entry t1 is known to be rigid, and t2 renames t1
+decompose (ConstAtom _) _ = []          -- not sure if this is needed
+decompose (ApplyConst _ ts) (ApplyConst _ ts2) =  zip ts ts2
+decompose (Lambda vs (ApplyConst _ ts)) (Lambda vs2 (ApplyConst _ ts2))
+    = zip (map (\t -> (Lambda vs  t)) ts)
+          (map (\t -> (Lambda vs2 t)) ts2)
+decompose (Lambda vs (ApplyVar _ ts)) (Lambda vs2 (ApplyVar _ ts2))
+    = zip (map (\t -> (Lambda vs  t)) ts)
+          (map (\t -> (Lambda vs2 t)) ts2)
 \end{code}
 
 \subsection{Growing the Matchings Tree}
