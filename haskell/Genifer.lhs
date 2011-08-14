@@ -148,6 +148,25 @@ This file is Genifer.pdf, generated from Genifer.lhs by:\\
 You can run the source code contained in Genifer.lhs by:\\
 \tab ghci Genifer.lhs
 
+\chapter{Main}
+
+\begin{code}
+{-# LANGUAGE NoMonomorphismRestriction #-} -- Otherwise we need more type declarations.
+
+import Data.Char
+import Data.List
+import Data.Maybe
+import Data.Either
+import Text.Parsec
+
+main = do
+       putStrLn "Hello, World!"
+       -- Tests --
+       print prop_showTerm
+       print prop_parseTerm_success
+       print prop_parseTerm_fail
+\end{code}
+
 \chapter{Predicate logic}
 
 \section{Data structures for logic}
@@ -180,22 +199,27 @@ The order of a type is defined by:\\
 \end{figure}
 
 \begin{code}
-type Id       = (Int,String)
-data Var      = Var Id                         deriving (Show, Eq)
-data Const    = Const Id                       deriving (Show, Eq)
-data Atom     = VarAtom Id | ConstAtom Id      deriving (Show, Eq) 
-data Term     = AtomicTerm Atom | Apply Atom [Term] | Lambda [Var] Term
-                deriving (Show, Eq)
+type Id = (Int, String)
+data Var = Var Id                           deriving (Show, Eq)
+data Const = Const Id                       deriving (Show, Eq)
+
+data Term =
+       VarAtom Var
+     | ConstAtom Const
+     | ApplyVar Var [Term]
+     | ApplyConst Const [Term]
+     | Lambda [Var] Term
+  deriving (Show, Eq)
 \end{code}
 
-This is a test:
-
-\begin{code}
-size :: Term -> Int
-size (AtomicTerm a) = 1
-size (Apply u v) = 1 + (sum (map size v))
-size (Lambda u v) = (length u) + 1
-\end{code}
+% This is a test:
+% 
+% \begin{code}
+% size :: Term -> Int
+% size (AtomicTerm a) = 1
+% size (Apply u v) = 1 + (sum (map size v))
+% size (Lambda u v) = (length u) + 1
+% \end{code}
 
 % \section{First-order unification}
 % 
@@ -242,12 +266,12 @@ size (Lambda u v) = (length u) + 1
 
 \section{Second-order unification}
 
-This algorithm is from \citep*{Huet1978}, which is a restriction from \citep*{Huet1975} to the
+This algorithm is from \citep*{Huet1978}, which is a restriction of \citep*{Huet1975} to the
 2nd-order case.  It has 2 parts:  Simplfy and GrowTree.
 
 \subsection{Simplify}
 
-The first part simplifies a set N of pairs of terms, by recognizing common constant initial
+The first part simplifies a set $N$ of pairs of terms, by recognizing common constant initial
 subterms.  $\mathcal{C}$ is the set of constants.
 
 \begin{algorithm}[H]
@@ -282,6 +306,60 @@ replace the pair with $ \{ \langle \lambda x_1 ... x_n \cdot t_i,  \;
 \end{algtab}
 \end{algorithm}
 \vspace{-0.6cm}
+
+\begin{code}
+success = True
+failure = False
+
+simplify :: Either Bool [(Term,Term)] -> Either Bool [(Term,Term)]
+simplify (Right []) = Left success
+
+simplify (Right (x:xs)) = let (t1,t2) = x in
+    if (rigid t1) then
+        if (renames t1 t2) then Right ((decompose t1 t2) ++ (fromRight (simplify (Right xs))))
+        else Left failure -- TODO1
+    else simplify (Right xs)
+
+fromRight :: Either a b -> b
+fromRight (Right r) = r
+
+rigid :: Term -> Bool
+rigid (ConstAtom _) = True
+rigid (ApplyConst _ _) = True
+rigid (Lambda _  (ApplyConst _ _)) = True
+rigid (Lambda vs (ApplyVar v _)) = v `elem` vs
+rigid _ = False
+
+renames :: Term -> Term -> Bool
+renames t1 t2 = let h1 = (head_of t1)
+                    h2 = (head_of t2) in
+                if (isConstant h1) then
+                   h1 == h2
+                else let (Right hh1) = h1
+                         (Right hh2) = h2
+                         i = (elemIndex hh1 (boundVars t1))
+                     in (not (isNothing i)) && (i == (elemIndex hh2 (boundVars t2)))
+
+head_of :: Term -> Either Const Var
+head_of (VarAtom v) = Right v
+head_of (ConstAtom c) = Left c
+head_of (ApplyVar v _) = Right v
+head_of (ApplyConst c _) = Left c
+head_of (Lambda _ (VarAtom v)) = Right v
+head_of (Lambda _ (ConstAtom c)) = Left c
+head_of (Lambda _ (ApplyVar v _)) = Right v
+head_of (Lambda _ (ApplyConst c _)) = Left c
+
+isConstant :: Either Const Var -> Bool
+isConstant (Left _) = True
+
+boundVars :: Term -> [Var]
+boundVars (Lambda vs _) = vs
+boundVars _ = []
+
+decompose :: Term -> Term -> [(Term,Term)]
+decompose t1 t2 = [(t1,t2)]  -- TODO2
+\end{code}
 
 \subsection{Growing the Matchings Tree}
 
@@ -380,10 +458,6 @@ If there are answers for all the subgoals in that rule, evaluate it (see \S\ref{
 
 \section{ZeroMQ}
 
-\begin{code}
-main = putStrLn "Hello, World!"
-\end{code}
-
 % \section{CloudHaskell}
 % 
 % \begin{code}
@@ -452,7 +526,83 @@ evalRule op head body subgoal params msgsH msgsB
 
 %\chapter{Induction}
 
-%\chapter{Main}
+\chapter{Miscellaneous functions}
+
+\section{Pretty printing}
+
+\begin{code}
+showVar   (Var   (_, s)) = s
+showConst (Const (_, s)) = s
+
+showTerm (VarAtom   (Var (_, s))) = s
+showTerm (ConstAtom (Const (_, s))) = s
+showTerm (ApplyConst c ts) = showConst c ++ "(" ++ intercalate ", " (map showTerm ts) ++ ")"
+showTerm (ApplyVar   v ts) = showVar   v ++ "(" ++ intercalate ", " (map showTerm ts) ++ ")"
+showTerm (Lambda vs t) = "\\" ++ intercalate " " (map showVar vs) ++ " . " ++ showTerm t
+
+-- Test --
+
+lxy_Pxy = Lambda [Var (0, "x"), Var (0, "y")]
+  (ApplyConst (Const (0, "P")) [VarAtom (Var (0, "x")), VarAtom (Var (0, "y"))])
+
+prop_showTerm = "\\x y . P(x, y)" == showTerm lxy_Pxy
+\end{code}
+
+\section{Parsing}
+
+\begin{code}
+variable = do
+  c <- lower
+  cs <- many (alphaNum <|> char '_')
+  return $ Var (0, c:cs)
+
+constant = do
+  c <- upper
+  cs <- many (alphaNum <|> char '_')
+  return $ Const (0, c:cs)
+
+varOrApply = do
+  a <- variable
+  option (VarAtom a) $ try $ do
+    spaces
+    char '('
+    spaces
+    ts <- term `sepBy` (spaces >> char ',' >> spaces)
+    spaces
+    char ')'
+    return $ ApplyVar a ts
+
+constOrApply = do
+  a <- constant
+  option (ConstAtom a) $ try $ do
+    spaces
+    char '('
+    spaces
+    ts <- term `sepBy` (spaces >> char ',' >> spaces)
+    spaces
+    char ')'
+    return $ ApplyConst a ts
+
+lambda = do
+  char '\\'
+  spaces
+  vs <- variable `sepEndBy` spaces
+  char '.'
+  spaces
+  t <- term
+  return $ Lambda vs t
+  
+term = varOrApply <|> constOrApply <|> lambda
+
+-- Test --
+
+parseCheck s = case parse term "" s of
+  Left  _ -> Nothing
+  Right v -> Just v
+
+prop_parseTerm_success = parseCheck "\\x y . P(x,y)" == Just lxy_Pxy
+prop_parseTerm_fail = parseCheck "\\x y . P x,y)" == Nothing
+\end{code}
 
 \clearpage
 \phantomsection
