@@ -98,9 +98,9 @@
 
 \setlength{\headheight}{0cm}
 \setlength{\hoffset}{0cm}
-\setlength{\topmargin}{-2cm}
-\setlength{\oddsidemargin}{-2cm}
-\setlength{\evensidemargin}{-2cm}
+\setlength{\topmargin}{ -2cm}
+\setlength{\oddsidemargin}{ -2cm}
+\setlength{\evensidemargin}{ -2cm}
 \setlength{\textwidth}{19.5cm}
 \setlength{\textheight}{28cm}
 \setlength{\headsep}{0cm}
@@ -111,7 +111,7 @@
 \setlength{\intextsep}{0.5cm}
 \setlength{\parindent}{0em}
 \setlength{\parskip}{7pt}
-\setlength{\pltopsep}{-5pt}   % for compact-enum
+\setlength{\pltopsep}{ -5pt}   % for compact-enum
 
 \pagestyle{fancy}
 \renewcommand{\headrulewidth}{0pt}
@@ -143,6 +143,73 @@ This file is Genifer.pdf, generated from Genifer.lhs by:\\
 You can run the source code contained in Genifer.lhs by:\\
 \tab ghci Genifer.lhs
 
+%\addtocounter{algline}{ -1}\algnonumber
+\vspace{ -0.6cm}
+        else Left failure -- TODO1 -- we need to exit with failure
+-- There is no restriction as to the type of Term to be tested, so we need to consider all cases
+-- for all vars in arguments of t1, generate the pair(s):
+decompose (ConstAtom _) _ = []
+\begin{spec}
+-- Tree data structure --
+
+data MatchTree a = NodeMT a [MatchTree a]
+
+
+
+-- Grow tree --
+growTree :: Term -> Term -> MatchTree
+
+growTree t1 t2 = let root = (simplify t1 t2) in
+  if root == success || root == failure then end
+  else -- select a pair p in root, (match p)
+
+\end{spec}
+
+
+\begin{code}
+-- Match --
+
+match :: Term -> Term -> [(Term,Term)]
+-- on entry, type of t1 & t2 are the same;  t2 is rigid, t1 is not
+-- are t1 & t2 necessarily in Lambda form?  not sure
+match t1 t2 =
+  if (order_of_head_of t1) == 1 then -- 1st order
+     let (Lambda us x) = t1
+         (Lambda vs t22) = t2
+     in if (not (isNothing (find (\z -> z `elem` (freeVars t22)) vs)))
+        then []
+        else [(x,t22)]
+  else  -- 2nd order
+     let (Lambda us t11) = t1
+         (Lambda vs t22) = t2
+         xs = us
+     in if (isConstant (head_of t2))
+        -- case (a) generate one imitation
+        then let f = (ApplyVar (Var (0,"a")) [(VarAtom (Var (0, "a")))])
+                 applier = ApplyVar
+                 phi = Var (0,"a")
+                 ts = []
+             in [(f,(Lambda xs (applier phi ts)))]
+        else -- case (b) generate all projections
+           []
+
+-- Order of a function or var or const (it must be one of these b/c it's the head of a Term)
+-- if simple type, order = 1
+-- if function application, order = max of order of arguments + 1
+-- we only need to distinguish between 1st order and 2nd-order-or-above (= 2)
+order_of_head_of :: Term -> Int
+order_of_head_of (ConstAtom _) = 1
+order_of_head_of (VarAtom _) = 1
+order_of_head_of (ApplyConst _ _) = 2
+order_of_head_of (ApplyVar _ _) = 2
+order_of_head_of (Lambda _ (ConstAtom _)) = 1
+order_of_head_of (Lambda _ (VarAtom _)) = 1
+order_of_head_of (Lambda _ _) = 2
+
+-- returns list of free variables in Term
+freeVars :: Term -> [Var]
+freeVars t = []
+\end{code}
 \chapter{Message passing}
 
 The agent waits for messages.  An incoming message can be:

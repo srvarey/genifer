@@ -1,0 +1,22 @@
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.1}To do}{\reset@font\mtcSfont 3}{section.9}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.2}Introduction}{\reset@font\mtcSfont 3}{section.16}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.3}Parameters}{\reset@font\mtcSfont 3}{section.17}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.4}Data structures}{\reset@font\mtcSfont 4}{section.27}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.5}Backward-chaining -- best-first search}{\reset@font\mtcSfont 5}{section.78}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.6}Building the proof tree}{\reset@font\mtcSfont 6}{section.143}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.6.1}Processing a sub-goal}{\reset@font\mtcSSfont 6}{subsection.144}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.6.2}Processing a fact node}{\reset@font\mtcSSfont 7}{subsection.211}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.6.3}Processing a rule node}{\reset@font\mtcSSfont 8}{subsection.239}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.6.4}Retracting a failed node}{\reset@font\mtcSSfont 9}{subsection.328}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.7}Belief propagation}{\reset@font\mtcSfont 10}{section.354}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.7.1}Introduction}{\reset@font\mtcSSfont 10}{subsection.355}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.7.2}Pearl's algorithm}{\reset@font\mtcSSfont 10}{subsection.356}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.7.3}Factor graph algorithm}{\reset@font\mtcSSfont 11}{subsection.362}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.7.4}Evaluating a single rule}{\reset@font\mtcSSfont 12}{subsection.370}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Case 1A}{\reset@font\mtcSSSfont 13}{equation.371}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Case 1B}{\reset@font\mtcSSSfont 13}{equation.371}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Case 2}{\reset@font\mtcSSSfont 13}{equation.371}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.7.5}Combining multiple rules -- Abram's method}{\reset@font\mtcSSfont 13}{subsection.373}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Case $n=2$}{\reset@font\mtcSSSfont 14}{equation.375}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Case $n=3$}{\reset@font\mtcSSSfont 14}{figure.caption.378}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.7.6}Code}{\reset@font\mtcSSfont 15}{subsection.381}}

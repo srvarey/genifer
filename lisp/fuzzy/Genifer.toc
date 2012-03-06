@@ -1,0 +1,30 @@
+\contentsline {chapter}{\numberline {1}Preface}{2}{chapter.2}
+\contentsline {section}{\numberline {1.1}Literate programming}{2}{section.3}
+\contentsline {chapter}{\numberline {2}Z deduction}{3}{chapter.8}
+\contentsline {section}{\numberline {2.1}To do}{3}{section.9}
+\contentsline {section}{\numberline {2.2}Introduction}{3}{section.16}
+\contentsline {section}{\numberline {2.3}Parameters}{3}{section.17}
+\contentsline {section}{\numberline {2.4}Data structures}{4}{section.27}
+\contentsline {section}{\numberline {2.5}Backward-chaining -- best-first search}{5}{section.78}
+\contentsline {section}{\numberline {2.6}Building the proof tree}{6}{section.143}
+\contentsline {subsection}{\numberline {2.6.1}Processing a sub-goal}{6}{subsection.144}
+\contentsline {subsection}{\numberline {2.6.2}Processing a fact node}{7}{subsection.211}
+\contentsline {subsection}{\numberline {2.6.3}Processing a rule node}{8}{subsection.239}
+\contentsline {subsection}{\numberline {2.6.4}Retracting a failed node}{9}{subsection.328}
+\contentsline {section}{\numberline {2.7}Belief propagation}{10}{section.354}
+\contentsline {subsection}{\numberline {2.7.1}Introduction}{10}{subsection.355}
+\contentsline {subsection}{\numberline {2.7.2}Pearl's algorithm}{10}{subsection.356}
+\contentsline {subsection}{\numberline {2.7.3}Factor graph algorithm}{11}{subsection.362}
+\contentsline {subsection}{\numberline {2.7.4}Evaluating a single rule}{12}{subsection.370}
+\contentsline {subsubsection}{Case 1A}{13}{equation.371}
+\contentsline {subsubsection}{Case 1B}{13}{equation.371}
+\contentsline {subsubsection}{Case 2}{13}{equation.371}
+\contentsline {subsection}{\numberline {2.7.5}Combining multiple rules -- Abram's method}{13}{subsection.373}
+\contentsline {subsubsection}{Case $n=2$}{14}{equation.375}
+\contentsline {subsubsection}{Case $n=3$}{14}{figure.caption.378}
+\contentsline {subsection}{\numberline {2.7.6}Code}{15}{subsection.381}
+\contentsline {chapter}{\numberline {3}First-order logic}{18}{chapter.545}
+\contentsline {section}{\numberline {3.1}Unification}{18}{section.546}
+\contentsline {section}{\numberline {3.2}Substitution management}{18}{section.547}
+\contentsline {chapter}{\numberline {4}Inductive learning}{19}{chapter.548}
+\contentsline {chapter}{Bibliography}{20}{section*.549}
