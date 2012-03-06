@@ -22,18 +22,18 @@
 \usepackage{movie15}
 \usepackage{caption}
 
-\definecolor{DarkGreen}{rgb}{0.1,0.4,0.1}
-\definecolor{DarkMagenta}  {rgb}{0.4,0.1,0.4}
+\definecolor{TodoColor}{rgb}{0.1,0.4,0.1}   % Dark Green
+\definecolor{LogicColor}{rgb}{0.4,0.1,0.4}  % Magenta
 
 \newcommand{\code}   [1]{{\footnotesize{\ttfamily #1}}}
-\newcommand{\formula}[1]{\textcolor{DarkMagenta}{#1}}
-\newcommand{\todo}   [1]{\textcolor{DarkGreen}{\{ #1 \}}}
-\newcommand{\english}[1]{\rmfamily \textit{#1} \sffamily}
+\newcommand{\formula}[1]{\textcolor{LogicColor}{#1}}
+\newcommand{\todo}   [1]{\textcolor{TodoColor}{\{ #1 \}}}
+\newcommand{\english}[1]{\rmfamily \textit{``#1''}\sffamily}
 \renewcommand{\star}{$* \;$}
-\newcommand{\app}{$\cdot \;$}
+\newcommand{\app}{$\circ \;$}
 \newcommand{\eg}{\textbf{Example:} }
 \newcommand{\tab}{\hspace*{1cm} }
-\newcommand{\underconst}{\includegraphics{UnderConst.png}}
+\newcommand{\underconst}{\includegraphics[scale=0.5]{UnderConst.png}}
 \renewcommand{\vec}[1]{\mathbf{#1}}
 
 %%%%%%%%%%%%%%%%% Symbols defined by me %%%%%%%%%%%%%%%%%%%
@@ -173,7 +173,7 @@ Pei Wang
 --- YKY
 \end{flushright}
 
-\color{DarkGreen}
+\color{TodoColor}
 
 {\sffamily\bfseries\Huge To-do:}
 
@@ -195,7 +195,7 @@ Pei Wang
 
 \item[Ch 11 (Learning)]  A lot of new material is in the slides.
 
-\item[Ch 12 (NL)]  Improved Geniform -- revise all examples.
+\item[Ch 12 (NL)]
 
 \item[Ch 13 (Memory)]  Explain hierarchical clustering idea (from slides).
 

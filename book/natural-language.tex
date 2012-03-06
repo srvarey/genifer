@@ -15,30 +15,6 @@ Our approach is to define a logic that can faithfully render arbitrary natural-l
 
 All the irregularities of NL will be taken care of via machine learning.
 
-\subsection{Multiplicity of knowledge representation schemes}
-
-This is how I think of the issue of knowledge representation:\\
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.7]{KR-functors.png}
-% \caption{KR functors}
-\end{figure}
-
-There are various KR schemes.  For example, in NL, there are various grammar formulations\\
-$F$ may be Phrase Structure Grammar.\\
-$G$ may be Fluid Construction Grammar.\\
-$H$ may be Categorial Grammar.\\
-$J$ may be Geniform (a simple grammar I designed for Genifer)\\
-$K$ may be Genifer's machine-learned grammar (which may be stochastic and inscrutable to humans)
-
-And then there would be transformations ($\eta, \epsilon, ...$) between the grammatical formalisms.
-
-The problem is whether we can mix multiple KR schemes like $F$ and $G$.  The commonsense KB would be different under either $F$ or $G$, and the entire KB needs to be transformed by some $\eta$.
-
-If we use $F, G, H,...$ at the same time, confusion may arise during machine learning and reasoning.
-
-Perhaps, if we make Genifer be aware of transformations like $\eta, \epsilon, ...$ then maybe it can deal with multiple KR schemes at the same time?  Therefore we maybe don't need to choose or commit to any particular KR scheme at this stage...  in other words, any would be fine.
-
 \subsection{Background: unification-based grammars}
 
 The family of unification-based grammars includes LFG (Lexical Functional Grammar), HPSG (Head-Driven Phrase Structure Grammar), and PATR grammar.  The unification algorithm used in unification-based grammar is the same as the unification algorithm used in logic.  This is further evidence that the brain employs abstract symbolic processing similar to formal logic.
@@ -127,7 +103,7 @@ I think this method is superior to $\lambda$ because the meanings of phrases can
 
 \section{Comprehensive grammatical categories of English}
 
-Here are some NL grammatical categories (intended to cover as broadly as possible) and typical examples in English.  Designers of NL interfaces can supply translations to these examples.  [The contents in this section and all the examples are taken directly from the book "English Grammar" by Peter Collins, 1998, Addison Wesley.  \textbf{NOTE:  This may be a copyright infringement but I have contacted the author without getting his reply.}]  This page is intended to provide a simple comparison of NL interfaces, not meant to be a standard grammar for AGI purposes.
+Here are some NL grammatical categories (intended to cover as broadly as possible) and typical examples in English.  Designers of NL interfaces can supply translations to these examples.  [The contents in this section and all the examples are taken directly from the book "English Grammar" by Peter Collins, 1998, Addison Wesley.  \todo{NOTE:  This may be a copyright infringement but I have contacted the author without getting his reply.}]  This page is intended to provide a simple comparison of NL interfaces, not meant to be a standard grammar for AGI purposes.
 
 \titleformat{\subsection}[hang]{\sffamily\bfseries\large\color{blue}}{(\Alph{subsection}) \hspace{5pt}}{0pt}{}
 
@@ -141,547 +117,547 @@ Here are some NL grammatical categories (intended to cover as broadly as possibl
 
 \subsubsection{Common nouns}
 
-eg "chair", "chairs"
+eg \english{chair}, \english{chairs}
 
-eg "importance"
+eg \english{importance}
 
 \subsubsection{Proper nouns}
 
-eg "Australia"
+eg \english{Australia}
 
-eg "The Isle of Man"
+eg \english{The Isle of Man}
 
 \subsubsection{Pronouns}
 
-eg "he"
+eg \english{he}
 
-eg "\textbf{our} chair" (possessive, as determiner)
+eg \english{\textbf{our} chair} (possessive, as determiner)
 
-eg "theirs"
+eg \english{theirs}
 
-eg "each other", "one another" (reciprocal pronouns)
+eg \english{each other}, \english{one another} (reciprocal pronouns)
 
-eg "this", "that" (demonstrative pronouns)
+eg \english{this}, \english{that} (demonstrative pronouns)
 
-eg "who", "whom", "whatever" (interrogative and relative pronouns)
+eg \english{who}, \english{whom}, \english{whatever} (interrogative and relative pronouns)
 
-eg "some", "both", "any", "each", "none", "nobody" (indefinite pronouns)
+eg \english{some}, \english{both}, \english{any}, \english{each}, \english{none}, \english{nobody} (indefinite pronouns)
 
 \subsection{Verbs}
 
 \subsubsection{Main verbs}
 
-eg "kick", "grow"
+eg \english{kick}, \english{grow}
 
-eg "to kick", "kicked", "kicking", "kicks" (tenses and other inflections)
+eg \english{to kick}, \english{kicked}, \english{kicking}, \english{kicks} (tenses and other inflections)
 
 \subsubsection{Auxiliary verbs}
 
-eg "can", "have", "haven't"
+eg \english{can}, \english{have}, \english{haven't}
 
-eg "She \textbf{is} dancing the lambada."
+eg \english{She \textbf{is} dancing the lambada.}
 
-eg "He \textbf{has} driven for 4 hours."
+eg \english{He \textbf{has} driven for 4 hours.}
 
 \subsubsection{Operators}
 
-eg "they \textbf{will} try their best", "Sam \textbf{won't} play chess"
+eg \english{they \textbf{will} try their best}, \english{Sam \textbf{won't} play chess}
 
 \subsection{Adjectives}
 
 \subsubsection{Attributive (modifies a head noun)}
 
-eg "the \textbf{loud} bell"
+eg \english{the \textbf{loud} bell}
 
 \subsubsection{Predicative}
 
-eg "the bell was \textbf{loud}"
+eg \english{the bell was \textbf{loud}}
 
 \subsubsection{Gradation}
 
-eg "\textbf{very} loud", "\textbf{a bit} loud"
+eg \english{\textbf{very} loud}, \english{\textbf{a bit} loud}
 
 \subsubsection{Comparison}
 
-eg "louder", "loudest"
+eg \english{louder}, \english{loudest}
 
 \subsection{Adverbs}
 
-eg "The policeman acted \textbf{decisively}"
+eg \english{The policeman acted \textbf{decisively}}
 
-eg "He is a \textbf{somewhat} shy young man"
+eg \english{He is a \textbf{somewhat} shy young man}
 
-eg "\textbf{Actually}, many of the lifeboats have been removed"
+eg \english{\textbf{Actually}, many of the lifeboats have been removed}
 
-eg "Patrick has lost 2 games, \textbf{however} he could still win"
+eg \english{Patrick has lost 2 games, \textbf{however} he could still win}
 
-eg "more surprisingly", "most surprisingly"
+eg \english{more surprisingly}, \english{most surprisingly}
 
 \subsection{Determinatives}
 
 \subsubsection{Articles}
 
-eg "the", "a", "an"
+eg \english{the}, \english{a}, \english{an}
 
 \subsubsection{Demonstratives}
 
-eg "this", "that", "those"
+eg \english{this}, \english{that}, \english{those}
 
 \subsubsection{Interrogatives}
 
-eg "which", "what"
+eg \english{which}, \english{what}
 
 \subsubsection{Cardinal numerals}
 
-eg "one", "two"
+eg \english{one}, \english{two}
 
 \subsubsection{Quantifiers}
 
-eg "both", "all", "every", "any", "no", "much", "less"
+eg \english{both}, \english{all}, \english{every}, \english{any}, \english{no}, \english{much}, \english{less}
 
 \subsubsection{Prepositions}
 
 \subsubsubsection{Time}
 
 
-eg "\textbf{after} our match", "\textbf{during} the exam"
+eg \english{\textbf{after} our match}, \english{\textbf{during} the exam}
 
 \subsubsubsection{Place}
 
 
-eg "\textbf{in} the kitchen", "\textbf{against} the wall"
+eg \english{\textbf{in} the kitchen}, \english{\textbf{against} the wall}
 
 \subsubsubsection{Manner}
 
 
-eg "\textbf{with} ease"
+eg \english{\textbf{with} ease}
 
 \subsubsubsection{Agency}
 
 
-eg "\textbf{by} the mechanic"
+eg \english{\textbf{by} the mechanic}
 
 \subsubsubsection{Recipience}
 
 
-eg "\textbf{to} a friend"
+eg \english{\textbf{to} a friend}
 
 \subsubsection{Subordinates}
 
 \subsubsubsection{Time}
 
 
-eg "\textbf{until} it rains", "\textbf{as} she spoke"
+eg \english{\textbf{until} it rains}, \english{\textbf{as} she spoke}
 
 \subsubsubsection{Condition}
 
 
-eg "\textbf{if} we win Lotto", "\textbf{unless} a catastrophe occurs"
+eg \english{\textbf{if} we win Lotto}, \english{\textbf{unless} a catastrophe occurs}
 
 \subsubsubsection{Concession}
 
 
-eg "\textbf{although} she likes coffee", "\textbf{while} it was undoubtedly entertaining"
+eg \english{\textbf{although} she likes coffee}, \english{\textbf{while} it was undoubtedly entertaining}
 
 \subsubsubsection{Contrast}
 
 
-eg "\textbf{whereas} Japan is a creditor nation"
+eg \english{\textbf{whereas} Japan is a creditor nation}
 
 \subsubsubsection{Exception}
 
 
-eg "\textbf{except} he didn't have the strength"
+eg \english{\textbf{except} he didn't have the strength}
 
 \subsubsubsection{Reason}
 
 
-eg "\textbf{because} the bus broke down"
+eg \english{\textbf{because} the bus broke down}
 
 \subsubsubsection{Comparison}
 
 
-eg "you ate more peanuts \textbf{than} I did"
+eg \english{you ate more peanuts \textbf{than} I did}
 
 \subsubsection{Coordinators}
 
-eg "Peter went to Paris \textbf{but} his family stayed home"
+eg \english{Peter went to Paris \textbf{but} his family stayed home}
 
-eg "Barbie was wearing a new bracelet \textbf{and} a diamond ring"
+eg \english{Barbie was wearing a new bracelet \textbf{and} a diamond ring}
 
-eg "Should we come before \textbf{or} after lunch?"
+eg \english{Should we come before \textbf{or} after lunch?}
 
-eg "\textbf{Both} Bill \textbf{and} his wife deny the allegations"
+eg \english{\textbf{Both} Bill \textbf{and} his wife deny the allegations}
 
-eg "She \textbf{neither} hates him \textbf{nor} loves him"
+eg \english{She \textbf{neither} hates him \textbf{nor} loves him}
 
-eg "It's \textbf{not} for you \textbf{but} for me"
+eg \english{It's \textbf{not} for you \textbf{but} for me}
 
 \subsection{Phrases}
 
 \subsubsection{Noun phrase (NP)}
 
-eg "large birds with sharp claws"
+eg \english{large birds with sharp claws}
 
-eg "writers of science fiction, who are here for a conference"
+eg \english{writers of science fiction, who are here for a conference}
 
 \subsubsection{Verb phrase (VP)}
 
-eg "[Lisa] \textbf{trains} 3 times a week"
+eg \english{[Lisa] \textbf{trains} 3 times a week}
 
-eg "There I \textbf{am}, minding my own business, when this tall blonde \textbf{walks} up and \textbf{asks} me for a cigarette"
+eg \english{There I \textbf{am}, minding my own business, when this tall blonde \textbf{walks} up and \textbf{asks} me for a cigarette}
 
-eg "Ken said, 'I \textbf{have} enough money' "
+eg \english{Ken said, 'I \textbf{have} enough money' }
 
-eg "[If I] \textbf{could} have my life over again, [I] \textbf{would} not change anything"
+eg \english{[If I] \textbf{could} have my life over again, [I] \textbf{would} not change anything}
 
-eg "[They should] \textbf{have reached} the peak by now"
+eg \english{[They should] \textbf{have reached} the peak by now}
 
-eg "[Ken] \textbf{is} building a new house"
+eg \english{[Ken] \textbf{is} building a new house}
 
-eg "[Many footballers] \textbf{get} injured"
+eg \english{[Many footballers] \textbf{get} injured}
 
 \subsubsection{Adjective phrase (AdjP)}
 
-eg "too rebellious", "quite surprisingly intelligent", "very slow"
+eg \english{too rebellious}, \english{quite surprisingly intelligent}, \english{very slow}
 
-eg "slower than a wet week", "large for a goldfish"
+eg \english{slower than a wet week}, \english{large for a goldfish}
 
-eg "fiercer than I expected"
+eg \english{fiercer than I expected}
 
-eg "sorry that he hurt her feelings" (noun clause)
+eg \english{sorry that he hurt her feelings} (noun clause)
 
-eg "aware of the consequences" (of-PP)
+eg \english{aware of the consequences} (of-PP)
 
 \subsubsection{Adverb phrase (AdvP)}
 
-eg "very quickly", "most reluctantly"
+eg \english{very quickly}, \english{most reluctantly}
 
-eg "more defiantly than they had predicted"
+eg \english{more defiantly than they had predicted}
 
 \subsubsection{Prepositional phrase (PP)}
 
-eg "\textbf{in} the water"
+eg \english{\textbf{in} the water}
 
-eg "\textbf{with} a spoon"
+eg \english{\textbf{with} a spoon}
 
-eg "[way] \textbf{below} standard", "[just] \textbf{before} the start"
+eg \english{[way] \textbf{below} standard}, \english{[just] \textbf{before} the start}
 
-eg "Scott arrived \textit{in} \textbf{a limousine} \textit{with} \textbf{his girlfriend}"
+eg \english{Scott arrived \textit{in} \textbf{a limousine} \textit{with} \textbf{his girlfriend}}
 
 \subsubsection{Genitive phrase (GP)}
 
-eg "\textit{The princess's} popularity was greater than \textit{her husband's}"
+eg \english{\textit{The princess's} popularity was greater than \textit{her husband's}}
 
 \subsection{Clauses}
 
 \subsubsection{Object vs predicative complements}
 
-eg "Mary contacted \textbf{a police officer}" (object)
+eg \english{Mary contacted \textbf{a police officer}} (object)
 
-eg "Mary was \textbf{a police officer}" (predicative, "was"=copula)
+eg \english{Mary was \textbf{a police officer}} (predicative, \english{was}=copula)
 
 \subsubsection{Subjective and objective predicatives}
 
-eg "Indira was \textbf{generous}" (subjective)
+eg \english{Indira was \textbf{generous}} (subjective)
 
-eg "We considered Indira \textbf{generous}" (objective)
+eg \english{We considered Indira \textbf{generous}} (objective)
 
 \subsubsection{Patterns of complementation}
 
 \subsubsubsection{intransive (S P)}
 
-eg "Sue \textbf{stumbled}"
+eg \english{Sue \textbf{stumbled}}
 
 \subsubsubsection{monotransitive (S P Od)}
 
-eg "Sue \textbf{sipped a martini}"
+eg \english{Sue \textbf{sipped a martini}}
 
 \subsubsubsection{Copulative (S P PCs)}
 
-eg "Sue \textbf{seems drunk}"
+eg \english{Sue \textbf{seems drunk}}
 
 \subsubsubsection{Ditransitive (S P Oi Od)}
 
-eg "Sue \textbf{offered her guests a martini}"
+eg \english{Sue \textbf{offered her guests a martini}}
 
 \subsubsubsection{Complex-transitive (S P Od PCo)}
 
-eg "Sue \textbf{made them drunk}"
+eg \english{Sue \textbf{made them drunk}}
 
 \subsubsection{Other complements}
 
 \subsubsubsection{PP-complements of prepositional verbs}
 
-eg "They have decided \textbf{on a short vacation}"
+eg \english{They have decided \textbf{on a short vacation}}
 
-eg "He approves entirely \textbf{of your decision}"
+eg \english{He approves entirely \textbf{of your decision}}
 
-eg "Geoff protected his little brother \textbf{from the bullies}"
+eg \english{Geoff protected his little brother \textbf{from the bullies}}
 
-eg "She blames all their problems \textbf{on his incompetence}"
+eg \english{She blames all their problems \textbf{on his incompetence}}
 
 \subsubsubsection{Adverbs as complement of phrasal verbs}
 
-eg "Vera cried \textbf{out}"
+eg \english{Vera cried \textbf{out}}
 
-eg "We give \textbf{up}"
+eg \english{We give \textbf{up}}
 
-eg "The umpires have called \textbf{off} the match"
+eg \english{The umpires have called \textbf{off} the match}
 
-eg "Please take the garbage \textbf{out}"
+eg \english{Please take the garbage \textbf{out}}
 
-eg "We have come \textbf{up} \textbf{with an alternative plan}"
+eg \english{We have come \textbf{up} \textbf{with an alternative plan}}
 
 \subsubsubsection{Non-finite complements of 'catenative' verbs}
 
-eg "I \textbf{plan} to \textbf{keep} applying for jobs"
+eg \english{I \textbf{plan} to \textbf{keep} applying for jobs}
 
-eg "You should \textbf{stop} \textbf{trying} to \textbf{get} invited"
+eg \english{You should \textbf{stop} \textbf{trying} to \textbf{get} invited}
 
 \subsubsection{Adjuncts}
 
-AdvP: eg "very carefully", "sometimes", "moreover"
+AdvP: eg \english{very carefully}, \english{sometimes}, \english{moreover}
 
-PP: eg "over the road", "with a torch"
+PP: eg \english{over the road}, \english{with a torch}
 
-Subordinate clause:  eg "because it is raining" "after the music stopped"
+Subordinate clause:  eg \english{because it is raining}, \english{after the music stopped}
 
-NP: eg "next Easter" "this Friday"
+NP: eg \english{next Easter}, \english{this Friday}
 
 types:
 
-Time:  eg "at Easter" "in 2 week's time"
+Time:  eg \english{at Easter}, \english{in 2 week's time}
 
-Frequency:  eg "each Friday" "on the hour"
+Frequency:  eg \english{each Friday}, \english{on the hour}
 
-Place: eg "in Bandung" "on the summit"
+Place: eg \english{in Bandung}, \english{on the summit}
 
-Purpose: eg "in order to test the hypothesis" "for a break"
+Purpose: eg \english{in order to test the hypothesis}, \english{for a break}
 
-Reason: eg "because he is shy" "on the grounds of sanity"
+Reason: eg \english{because he is shy}, \english{on the grounds of sanity}
 
-Condition: eg "if you agree" "unless it is convenient"
+Condition: eg \english{if you agree}, \english{unless it is convenient}
 
-Manner: eg "more politely" "with a spade"
+Manner: eg \english{more politely}, \english{with a spade}
 
-Degree: eg "in my opinion" "to be fair" "unfortunately"
+Degree: eg \english{in my opinion}, \english{to be fair}, \english{unfortunately}
 
-Connective: eg "consequently" "in other words" "however"
+Connective: eg \english{consequently}, \english{in other words}, \english{however}
 
 \subsubsection{Mood}
 
 \subsubsubsection{Declarative mood}
 
-eg "He is serious"
+eg \english{He is serious}
 
 \subsubsubsection{Interrogative mood}
 
-eg "Is he serious?"
+eg \english{Is he serious?}
 
-eg "Anastasia has sent another e-mail, hasn't she?"
+eg \english{Anastasia has sent another e-mail, hasn't she?}
 
-eg "Whose T-shirt is that?"
+eg \english{Whose T-shirt is that?}
 
-eg "Who can help me?"
+eg \english{Who can help me?}
 
-eg "Where are my keys?"
+eg \english{Where are my keys?}
 
 \subsubsubsection{Imperative mood}
 
-eg "Be serious"
+eg \english{Be serious}
 
-eg "Give me some more money"
+eg \english{Give me some more money}
 
-eg "Don't forget to write"
+eg \english{Don't forget to write}
 
-eg "Let's apply for a loan"
+eg \english{Let's apply for a loan}
 
 \subsubsubsection{Exclamative mood}
 
-eg "How serious he is!"
+eg \english{How serious he is!}
 
-eg "How many times have I asked you!"
+eg \english{How many times have I asked you!}
 
 \subsubsection{Negation}
 
-clausal negation:  eg "Courtney is \textbf{not} reading"\\
-                   eg "We have heard \textbf{nothing}"\\
-                   eg "\textbf{Nobody} likes a loser"\\
-                   eg "We \textbf{barely} made it"\\
-                   eg "They \textbf{seldom} celebrate birthdays"
+clausal negation:  eg \english{Courtney is \textbf{not} reading}\\
+                   eg \english{We have heard \textbf{nothing}}\\
+                   eg \english{\textbf{Nobody} likes a loser}\\
+                   eg \english{We \textbf{barely} made it}\\
+                   eg \english{They \textbf{seldom} celebrate birthdays}
 
-sub-clausal negation:  eg "Karen is very \textbf{unfriendly}"\\
-                      eg "The ambulance arrived \textbf{not long ago}"
+sub-clausal negation:  eg \english{Karen is very \textbf{unfriendly}}\\
+                      eg \english{The ambulance arrived \textbf{not long ago}}
 
 \subsection{Subordination and coordination}
 
 \subsubsection{Subordinative clause (complex sentence)}
 
-eg "I know \textbf{that Ella lives in Sydney}"
+eg \english{I know \textbf{that Ella lives in Sydney}}
 
-eg "He knows a woman \textbf{who lives in Sydney}"
+eg \english{He knows a woman \textbf{who lives in Sydney}}
 
-eg "He asked \textbf{whether anyone had submitted a nomination}"
+eg \english{He asked \textbf{whether anyone had submitted a nomination}}
 
 \subsubsubsection{Adverbial clauses}
 
-time:  eg "Angelica will not agree to it \textbf{until his attitude improves}"
+time:  eg \english{Angelica will not agree to it \textbf{until his attitude improves}}
 
-place:  eg "he goes \textbf{wherever his fancy takes him}"
+place:  eg \english{he goes \textbf{wherever his fancy takes him}}
 
 etc
 
 \subsubsubsection{Relative clauses}
 
-eg "Is that the boy who you were referring to?"
+eg \english{Is that the boy who you were referring to?}
 
-eg "I remember the days when none of us had a care in the world"
+eg \english{I remember the days when none of us had a care in the world}
 
-eg "I know who is replacing you"
+eg \english{I know who is replacing you}
 
-eg "Whatever is now developing can only cause harm"
+eg \english{Whatever is now developing can only cause harm}
 
 \subsubsubsection{Comparative clauses}
 
-eg "He performed worse than you did"
+eg \english{He performed worse than you did}
 
-eg "Tim has won a larger grant than I have"
+eg \english{Tim has won a larger grant than I have}
 
-eg "She is as tall as we had anticipated"
+eg \english{She is as tall as we had anticipated}
 
 \subsubsubsection{Non-finite clauses}
 
-infinitival: eg "Sharon wants to \textbf{apply next year}"
+infinitival: eg \english{Sharon wants to \textbf{apply next year}}
 
-present-participle: eg "Sharon favors \textbf{applying next year}"
+present-participle: eg \english{Sharon favors \textbf{applying next year}}
 
-past-participle: eg "Sharon has her application \textbf{lodged already}"
+past-participle: eg \english{Sharon has her application \textbf{lodged already}}
 
-past-participle: eg "Anyone \textbf{caught smoking here} can be prosecuted"
+past-participle: eg \english{Anyone \textbf{caught smoking here} can be prosecuted}
 
 \subsubsubsection{Verbless clauses}
 
-eg "\textbf{If in doubt} consult your solicitor"
+eg \english{\textbf{If in doubt} consult your solicitor}
 
-eg "He visits his parents \textbf{whenever possible}"
+eg \english{He visits his parents \textbf{whenever possible}}
 
-eg "\textbf{With Claudia in charge} we should be able to regain control"
+eg \english{\textbf{With Claudia in charge} we should be able to regain control}
 
 \subsubsection{Coordinated clause (compound sentence)}
 
-eg "Ella lives in Sydney, but she was born in China"
+eg \english{Ella lives in Sydney, but she was born in China}
 
-eg "Daphne like classical music \textbf{but} her husband prefers jazz"
+eg \english{Daphne like classical music \textbf{but} her husband prefers jazz}
 
 \subsection{Information packaging}
 
 \subsubsection{Topic}
 
-eg "Leonardo da Vinci painted the Mona Lisa"\\
-vs "The Mona Lisa was painted by Leonardo da Vinci"
+eg \english{Leonardo da Vinci painted the Mona Lisa}\\
+vs \english{The Mona Lisa was painted by Leonardo da Vinci}
 
 \subsubsection{Focus}
 
-eg "The judges gave near maximum points to Lipinsky"\\
-vs "The judges gave Lipinsky near maximum points"
+eg \english{The judges gave near maximum points to Lipinsky}\\
+vs \english{The judges gave Lipinsky near maximum points}
 
 \subsubsection{Weight (more weight near end of sentence)}
 
-eg "It surprised us that an Australian skier could win a medal in the slalom event at the Nagano Olympics"\\
-vs "That an Australian skier could win a medal in the slalom event at the 
-Nagano Olympics surprised us"
+eg \english{It surprised us that an Australian skier could win a medal in the slalom event at the Nagano Olympics}\\
+vs \english{That an Australian skier could win a medal in the slalom event at the 
+Nagano Olympics surprised us}
 
 \subsubsection{Voice}
 
-active: eg "Sergeant Rogerson arrested the thief"\\
-passive: eg "The thief was arrested by Sergeant Rogerson"
+active: eg \english{Sergeant Rogerson arrested the thief}\\
+passive: eg \english{The thief was arrested by Sergeant Rogerson}
 
-eg "Each specimen was carefully dissected"
+eg \english{Each specimen was carefully dissected}
 
 \subsubsection{Cleft sentences}
 
 eg\\
-"Whitlam recalled the remaining troops from vietnam"\\
-"It was Whitlam who recalled the remaining troops from Vietnam"\\
-"It was the remaining troops that Whitlam recalled from vietnam"\\
-"It was from Vietnam that Whitlam recalled the remaining troops"
+\english{Whitlam recalled the remaining troops from vietnam}\\
+\english{It was Whitlam who recalled the remaining troops from Vietnam}\\
+\english{It was the remaining troops that Whitlam recalled from vietnam}\\
+\english{It was from Vietnam that Whitlam recalled the remaining troops}
 
 eg\\
-"Salt air can cause rust"\\
-"What can cause rust is salt air"\\
-"Salt air is what can cause rust"
+\english{Salt air can cause rust}\\
+\english{What can cause rust is salt air}\\
+\english{Salt air is what can cause rust}
 
 \subsubsection{Extraposition}
 
-eg "It is a pity that CDs are so expensive"
+eg \english{It is a pity that CDs are so expensive}
 
 \subsubsection{Existential sentences}
 
-eg "There is a fly in my soup"
+eg \english{There is a fly in my soup}
 
-eg "There's been another oil spill"
+eg \english{There's been another oil spill}
 
-eg "There's a present for you"
+eg \english{There's a present for you}
 
-eg "There followed a new round of toasts"
+eg \english{There followed a new round of toasts}
 
 \subsubsection{Reordering}
 
 \subsubsubsection{Subject-complement reversal}
 
-eg "Tom is the short one"\\
-$\Longrightarrow$ "The short one is Tom"
+eg \english{Tom is the short one}\\
+$\Longrightarrow$ \english{The short one is Tom}
 
 \subsubsubsection{Topicalization}
 
-eg "He rejects totally the corruption charge"\\
-$\Longrightarrow$  "The corruption charge he rejects totally"
+eg \english{He rejects totally the corruption charge}\\
+$\Longrightarrow$ \english{The corruption charge he rejects totally}
 
-eg "It rained for most of the day last Saturday"\\
-$\Longrightarrow$  "Last Saturday it rained for most of the day"
+eg \english{It rained for most of the day last Saturday}\\
+$\Longrightarrow$ \english{Last Saturday it rained for most of the day}
 
 \subsubsubsection{Locative inversion}
 
-eg "Another F15 appeared from behind the clouds"\\
-$\Longrightarrow$  "From behind the clouds appeared another F15"
+eg \english{Another F15 appeared from behind the clouds}\\
+$\Longrightarrow$ \english{From behind the clouds appeared another F15}
 
 \subsubsubsection{Dislocation}
 
-eg "Dr Davidson's never available on Wednesdays"\\
-$\Longrightarrow$  "(As for) Dr Davidson, he's never available on Wednesdays"
+eg \english{Dr Davidson's never available on Wednesdays}\\
+$\Longrightarrow$ \english{(As for) Dr Davidson, he's never available on Wednesdays}
 
 \subsubsubsection{Dative movement}
 
-eg "Steve gave a red rose to his girlfriend"\\
-$\Longrightarrow$  "Steve gave his girlfriend a red rose"
+eg \english{Steve gave a red rose to his girlfriend}\\
+$\Longrightarrow$ \english{Steve gave his girlfriend a red rose}
 
 \subsubsubsection{Extraposition from NP}
 
-eg "A position for someone with programming expertise is available"\\
-$\Longrightarrow$  "A position is available for someone with programming expertise"
+eg \english{A position for someone with programming expertise is available}\\
+$\Longrightarrow$ \english{A position is available for someone with programming expertise}
 
 \subsubsection{Some grammatical devices}
 
 \subsubsubsection{Co-reference}
 
-eg "Your sister rang yesterday. \textbf{She} asked if you could call her back."
+eg \english{Your sister rang yesterday. \textbf{She} asked if you could call her back.}
 
-eg "It is inadvisable to visit Jakarta at present.  Civil unrest has broken out \textbf{there}."
+eg \english{It is inadvisable to visit Jakarta at present.  Civil unrest has broken out \textbf{there}.}
 
 \subsubsubsection{Ellipsis}
 
-eg "Come whenever you can [come]"
+eg \english{Come whenever you can [come]}
 
-eg "Somebody should help dad.  I'll ask Barry to [help dad]."
+eg \english{Somebody should help dad.  I'll ask Barry to [help dad].}
 
 \subsubsubsection{Substitution}
 
-eg "I have 2 spare tickets for the concert.  Would you like \textbf{one}?"
+eg \english{I have 2 spare tickets for the concert.  Would you like \textbf{one}?}
 
-eg "She achieved less this year than she \textbf{did} last year."
+eg \english{She achieved less this year than she \textbf{did} last year.}
 
-eg "I'll collect the kids after school if you don't get the opportunity to \textbf{do so}."
+eg \english{I'll collect the kids after school if you don't get the opportunity to \textbf{do so}.}
 
 \titleformat{\subsection}[hang]{\sffamily\bfseries\large\color{blue}}{\thesubsection \hspace{5pt}}{0pt}{}
 
@@ -693,61 +669,75 @@ eg "I'll collect the kids after school if you don't get the opportunity to \text
 % Rus proposed a popular logical form for rendering natural language, which is of reference value.  Geniform has made several significant improvements over it.
 
 The Geniform logical form is special in that it can represent all natural-language grammatical categories elegantly.  To illustrate this, consider:\\
-\hspace*{1cm} ``John loves Mary''\\
+\tab \english{John loves Mary}\\
 which is rendered in predicate logic as:\\
-\hspace*{1cm} \formula{loves(john, mary)}\\
+\tab \formula{loves(john, mary)}\\
 (ignoring tense).  But what if we want to say:\\
-\hspace*{1cm} ``\textit{Loving Mary} is foolish'' ?\\
-The verb phrase ``loving Mary'' is a grammatical unit that has a specific meaning but it cannot be represented in predicate logic.  In computational linguistics we usually use the \textbf{$\lambda$-abstraction} to represent it:\\
-\hspace*{1cm} \formula{$\lambda$x.loves(x, mary)}\\
+\tab \english{\textit{Loving Mary} is foolish} ?\\
+The verb phrase \english{loving Mary} is a grammatical unit that has a specific meaning but it cannot be represented in predicate logic.  In computational linguistics we usually use the \textbf{$\lambda$-abstraction} to represent it:\\
+\tab \formula{$\lambda$x.loves(x, mary)}\\
 but as you can see, this form is not very human-readable.
 
-The innovation of Geniform is to replace $\lambda$-abstractions with combinators \footnote{As in combinatory logic, a formalism equivalent in expressive power as $\lambda$ calculus.}.  For example,\\
-\hspace*{1cm} \formula{loves(x, y)}\\
-is represented in \textbf{curried form}\footnote{In honor of the logician Haskell B Curry.}:\\
-\hspace*{1cm} \formula{\textbf{loves} = $\lambda$y($\lambda$x.loves(x,y))}\\
-so that \formula{\textbf{loves}} is equivalent to the original predicate but it takes its arguments one at a time.
+% One idea is to replace $\lambda$-abstractions with \textbf{combinators}\footnote{This idea came from Curry's combinatory logic, which has computational power equivalent to that of $\lambda$-calculus.  The technique of Currying was also invented by Curry.}.  For example,\\
+% \tab \formula{loves(x, y)}\\
+% can be represented in \textbf{Curried form} as:\\
+% \tab \formula{\textbf{loves} = $\lambda$y($\lambda$x.loves(x,y))}\\
+% so that \formula{\textbf{loves}} is equivalent to the original predicate but it takes its arguments one at a time.
 
-Now we can represent elements like:\\
-\hspace*{1cm} ``John loves ....'' as \formula{(\textbf{loves} john)} and\\
-\hspace*{1cm} ``.... loves Mary'' as \formula{(\textbf{C loves} mary)}\\
-where \formula{\textbf{C}} is a combinator with the property \formula{\textbf{C}XYZ = \textbf{C}XZY}.
+% Now we can represent elements like:\\
+% \tab \english{John loves ....} as \formula{(\textbf{loves} john)} and\\
+% \tab \english{.... loves Mary} as \formula{(\textbf{C loves} mary)}\\
+% where \formula{\textbf{C}} is a combinator with the property \formula{\textbf{C}XYZ = \textbf{C}XZY}.
 
-( TO-DO:  With the use of combinators, our logic is no longer a first-order logic, but some kind of higher-order logic.  Indeed, the naive form of this logic will be affected by problems like the Liar's Paradox. )
+Instead of $\lambda$-expressions, Geniform uses \textbf{combinators} to represent concepts, resulting in a more elegant syntax that uses only application $(a \circ b)$ and pairing $(a,b)$ \footnote{For details about combinatory concept composition, please see \S\ref{sec:composition}.}.  So,\\
+\tab \english{John loves Mary}\\
+would be\\
+\tab \formula{((mary $\circ$ loves) $\circ$ john)}.\\
+For simplicity we can omit the $\circ$ and write:\\
+\tab \formula{((mary loves) john)}.\\
+And because of associativity we can also omit the parentheses:\\
+\tab \formula{mary loves john}.\\
+Notice that this \textit{logic formula} looks exactly like English \textit{in reverse}!
 
-Anyway, Geniform can now express most NL categories.  For example:\\
-\hspace*{1cm} chair $\Longrightarrow$ \formula{chair(chair$_1$)}\\
-\hspace*{1cm} wooden chair $\Longrightarrow$ \formula{chair(chair$_1$), wooden(chair$_1$)}\\
-\hspace*{1cm} a chair $\Longrightarrow$ \formula{chair(chair$_1$), a(chair$_1$)}\\
-\hspace*{1cm} 3 chairs $\Longrightarrow$ \formula{chair(chair$_1$), 3(chair$_1$)}\\
-\hspace*{1cm} 3 wooden chairs $\Longrightarrow$ \formula{chair(chair$_1$), 3(chair$_1$), wooden(chair$_1$)}\\
-\hspace*{1cm} any chair $\Longrightarrow$ \formula{chair(chair$_1$), any(chair$_1$)}\\
-\hspace*{1cm} no chair $\Longrightarrow$ \formula{chair(chair$_1$), no(chair$_1$)}\\
-where \formula{chair$_1$} is an \textbf{instantiation} of the concept ``chair'', ie, a new constant \formula{chair$_1$} is created and ``\formula{chair(chair$_1$)}'' is asserted.  Notice that \formula{chair$_1$} does not denote \textit{one} chair; it is just an instantiation of the abstract concept of ``chair''; additional predicates are needed to specify it.  For example, the application of \formula{a()} or \formula{the()} specifies that \formula{chair$_1$} is singular, and the application of \formula{3()} specifies that \formula{chair$_1$} numbers 3.  It may stretch your understanding a bit to think of ``any chair'' and ``no chair'' as instances of ``chair'', but I think the idea is sound.
+Geniform can express any NL category.  For example:\\
+\tab chair $\Longrightarrow$ \formula{chair}\\
+\tab wooden chair $\Longrightarrow$ \formula{wooden chair}\\
+\tab a chair $\Longrightarrow$ \formula{a chair}\\
+\tab chairs $\Longrightarrow$ \formula{plural chair}\\
+\tab 3 chairs $\Longrightarrow$ \formula{(3, plural) chair}\\
+\tab 3 wooden chairs $\Longrightarrow$ \formula{(3, plural, wooden) chair}\\
+\tab any chair $\Longrightarrow$ \formula{any chair}\\
+\tab no chair $\Longrightarrow$ \formula{no chair}\\
+Notice that \formula{(chair)} does not denote \textit{one} chair; it is just an instantiation of the abstract concept of ``chair''; additional predicates are needed to specify it.  For example, the application of \formula{(a)} or \formula{(the)} specifies that \formula{(chair)} is singular, and the application of \formula{(3)} specifies that \formula{(chair)} numbers 3.  It may stretch your understanding a bit to think of ``any chair'' and ``no chair'' as instances of ``chair'', but I think the idea is sound.
 
-Now let's add some syntactic sugar.  The notation \formula{(a \app b)} denotes \textbf{function application} in combinatory logic:  \formula{(a \app b)} is the same as \formula{a(b)}.  The notation \formula{(a -b)} is just syntactic sugar for \formula{(b \app a)}, ie, it expresses function application in a postfix way that makes it look more like English.  So:\\
-\hspace*{1cm} the chair $\Longrightarrow$ \formula{(the \app chair$_1$)}\\
-\hspace*{1cm} chairs $\Longrightarrow$ \formula{(chair$_1$ -s)} $\equiv$ \formula{plural(chair$_1$)}\\
-\hspace*{1cm} 3 wooden chairs $\Longrightarrow$ \formula{(3 \app wooden \app chair$_1$ -s)}\\
-\hspace*{1cm} unexpectedly $\Longrightarrow$ \formula{(un \app expect$_1$ -ed -ly)}
+% Now let's add some syntactic sugar.  The notation \formula{(a \app b)} denotes \textbf{function application} in combinatory logic:  \formula{(a \app b)} is the same as \formula{a(b)}.  The notation \formula{(a -b)} is just syntactic sugar for \formula{(b \app a)}, ie, it expresses function application in a postfix way that makes it look more like English.  So:\\
+% \tab the chair $\Longrightarrow$ \formula{the chair}\\
+% \tab chairs $\Longrightarrow$ \formula{(chair -s)}\\
+% \tab \tab $\equiv$ \formula{(s chair)}\\
+% \tab \tab $\equiv$ \formula{(plural chair)}\\
+% \tab 3 wooden chairs $\Longrightarrow$ \formula{(3, wooden) \app (chair -s)}\\
+% \tab unexpectedly $\Longrightarrow$ \formula{(un \app expect -ed -ly)}
 
-We also need some way to differentiate parts of speech, eg:\\
-\hspace*{1cm} ``He loves her'' $\Longrightarrow$ \formula{loves:verb(he:pronoun, her:pronoun)}.\\
-(In the following examples we will omit such tags.)
+More examples:\\
+\tab expected $\Longrightarrow$ \formula{did expect} \footnote{It is perhaps interesting to note that linguists believe the English past tense such as \english{expected} has evolved from the form \english{expect} + \english{did}.}\\
+\tab unexpectedly $\Longrightarrow$ \formula{ly not did expect}
 
-If the logic has types, we can use intrinsic types to represent parts-of-speech tags; otherwise we can use predicates to emulate types.  Notice that if we write:\\
-\hspace*{1cm} \formula{verb(love)}\\
-where \formula{love} is a predicate, \formula{verb} would be a second-order predicate and thus requires higher-order logic.
+We may (but I'm not sure yet) need a way to differentiate parts of speech, eg:\\
+\tab \english{He loves her} $\Longrightarrow$ \formula{her:pronoun loves:verb he:pronoun}.
+
+If the logic has types, we can use intrinsic types to represent parts-of-speech tags; otherwise we can use predicates to emulate types.  Currently I have decided that Genifer's logic is untyped.  % Notice that if we write:\\
+% \tab \formula{verb(love)}\\
+% where \formula{(love)} is a predicate, \formula{(verb)} would be a second-order predicate and thus requires higher-order logic.
 
 %In this section, ``sentence'' refers to NL sentences;  ``formula'' refers to logic formulae.
 
 There may be additional problems in rendering NL into logical form:
 \begin{compactenum}[\textbullet ]
-\item NL notions of ``and'' and ``or'' are not exactly the same as logical $\wedge, \vee$.
-\item NL notions of negation are not exactly the same as logical $\neg$.
-\item NL notions of "all" and "exists" are not exactly the same as logical $\forall, \exists$.
+\item NL notions of \english{and} and \english{or} are not exactly the same as logical $\wedge, \vee$.
+\item NL notions of \english{not} are not exactly the same as logical $\neg$.
+\item NL notions of \english{for all} and \english{there is} are not exactly the same as logical $\forall, \exists$.
 \end{compactenum}
-But I speculate that these minor differences can be mended manually or via machine learning.
+But I speculate that these minor differences can be corrected manually or via machine learning.
 
 \subsection{Nouns / noun phrases}
 
@@ -755,286 +745,355 @@ But I speculate that these minor differences can be mended manually or via machi
 
 \subsubsection{Common nouns}
 
-"chair" $\Longrightarrow$ \formula{chair}
+\english{chair} $\Longrightarrow$ \formula{chair}
 
-"wooden chair" $\Longrightarrow$ \formula{(wooden \app chair$_1$)} $\equiv$ \formula{wooden(chair$_1$)}
+\english{wooden chair} $\Longrightarrow$ \formula{(wooden chair)}
 
-"chairs" $\Longrightarrow$ \formula{(chair -s)} $\equiv$ \formula{s(chair)} $\equiv$ \formula{plural(chair)}
+\english{chairs} $\Longrightarrow$ \formula{(chair -s)} $\equiv$ \formula{(s chair)} $\equiv$ \formula{plural(chair)}
 
 \subsubsection{Proper nouns}
 
-"China" $\Longrightarrow$ \formula{china}
+\english{China} $\Longrightarrow$ \formula{china}
 
 \subsubsection{Pronouns}
 
-\{ TO-DO:  Currently the Genifer prototype doesn't try to resolve pronoun references. \}
+\todo{Currently the Genifer prototype doesn't try to resolve pronoun references.}
 
-"she" $\Longrightarrow$ \formula{she}
+\english{she} $\Longrightarrow$ \formula{she}
 
 \subsection{Verbs}
 
 \subsubsection{Main verbs}
 
-"John \textbf{smiles}" $\Longrightarrow$ \formula{[smile -s](john)} \hspace*{0.5cm} (syntactic sugar) \\
-\hspace*{1cm} $\equiv$ \formula{smile$_1$ = smile(john), tense(present, smile$_1$)}
+\english{John \textbf{smiles}} $\Longrightarrow$ \formula{(present-tense smile) john}
 
-"John \textbf{loves} Mary" $\Longrightarrow$ \formula{[love -s](john, mary)} \\
-\hspace*{1cm} $\equiv$ \formula{love$_1$ = love(john, mary), tense(present, love$_1$)}
+\english{John \textbf{loves} Mary} $\Longrightarrow$ \formula{((mary, present-tense) love) john}
 
 \subsubsection{Auxiliary verbs}
 
-"John \textbf{has} tried" $\Longrightarrow$ \formula{try$_1$ = try(john), has(try$_1$)}
+\english{John \textbf{has} tried} $\Longrightarrow$ \formula{((did try) has) john}\\
+\tab \tab \tab or \formula{((has, did) try) john} \\
+but I believe the first version is correct.
+
+\english{She \textbf{is} dancing the lambada.} $\Longrightarrow$ \formula{the lambada dancing is she}
+
+\english{He \textbf{has not} slept for 2 days.} $\Longrightarrow$ \formula{((((2, plural) day for, past-participle) sleep) , not) has he}
 
 \subsection{Adjectives}
 
 \subsubsection{Attributive}
 
-"\textbf{young} girl" $\Longrightarrow$ \formula{girl$_1$, young(girl$_1$)}\\
-where \formula{girl$_1$} is a logical constant.
+\english{\textbf{young} girl} $\Longrightarrow$ \formula{young girl}
 
 \subsubsection{Predicative}
 
-"John is \textbf{male}" $\Longrightarrow$ \formula{male(john)}
+\english{Evelyn is \textbf{male}} $\Longrightarrow$ \formula{male evelyn}
+
+It is interesting that the syntactic form for the sentence \english{Evelyn is male} and the noun phrase \english{the male Evelyn} are identical.  But if we consider the sentence \english{The male Evelyn won the prize}, we will see that its logical form consists of 2 sub-statements \english{Evelyn won the prize} and \english{[the] Evelyn [who won the prize] is male}.
 
 \subsubsection{Gradation}
 
-"Mary is \textbf{very shy}" $\Longrightarrow$ \formula{shy$_1$ = shy(mary), very(shy$_1$)}
+\english{Mary is \textbf{very shy}} $\Longrightarrow$ \formula{very shy mary}
 
 \subsubsection{Comparison}
 
-"Mary is \textbf{prettier}" $\Longrightarrow$ \formula{pretty$_1$ = pretty(mary), more(pretty$_1$)}
+\english{Mary is \textbf{prettier}} $\Longrightarrow$ \formula{more pretty mary}
 
-"Mary is \textbf{prettiest}" $\Longrightarrow$ \formula{pretty$_1$ = pretty(mary), most(pretty$_1$)}
+\english{Mary is \textbf{prettiest}} $\Longrightarrow$ \formula{most pretty mary}
 
 \subsection{Adverbs}
 
 (Tense ignored)
 
-"John talks \textbf{fast}" $\Longrightarrow$ \formula{talk$_1$(john), fast(talk$_1$)} \\
-\hspace*{1cm} $\equiv$ \formula{talk$_1$ = talk(john), fast(talk$_1$)}
+\english{John talks \textbf{fast}} $\Longrightarrow$ \formula{fast talks john}
 
-"John walks \textbf{slowly}" $\Longrightarrow$ \formula{walk$_1$(john), [slow -ly](walk$_1$)} \\
-\hspace*{1cm} $\equiv$ \formula{walk$_1$ = walk(john), [slow -ly](walk$_1$)} \\
-\hspace*{1cm} $\equiv$ \formula{walk$_1$ = walk(john), ly$_1$ = -ly(walk$_1$), slow(ly$_1$)} \\
-\hspace*{1cm} $\Longrightarrow$ \formula{walk$_1$ = walk(john), slow(walk$_1$)} \hspace*{0.5cm} (adverb simplification)
+\english{John walks \textbf{slowly}} $\Longrightarrow$ \formula{ly slow walks john}
+
+It seems that the modifier "-ly" is redundant and the logical form can be simply:\\
+\tab\tab\tab\tab \formula{slow walks john}
 
 \subsection{Determinatives}
 
 \subsubsection{Articles}
 
-"\textbf{The} cat is black" $\Longrightarrow$ \formula{black(the \app cat$_1$)}
+\english{\textbf{The} cat is black} $\Longrightarrow$ \formula{(black, the) cat}
 
 \subsubsection{Demonstratives}
 
-"\textbf{This} cat is black" $\Longrightarrow$ \formula{black(this \app cat$_1$)}
+\english{\textbf{This} cat is black} $\Longrightarrow$ \formula{(black, this) cat}
 
 \subsubsection{Interrogatives}
 
 I have not thought about the representation of \textbf{questions} in logic.  This is tentative:
 
-"\textbf{Which} cat is black?" $\Longrightarrow$ \formula{black(which \app cat$_1$)}
+\english{\textbf{Which} cat is black?} $\Longrightarrow$ \formula{(black, which) cat}
+
+We need to add some sort of tag to mark this as a question rather than an ordinary statement.
 
 \subsubsection{Cardinal numerals}
 
 (Plurals ignored)
 
-"\textbf{3} mangoes" $\Longrightarrow$ \formula{(3 \app mango$_1$)}
+\english{\textbf{3} mangoes} $\Longrightarrow$ \formula{3 mango}
 
-"John has \textbf{3} mangoes" $\Longrightarrow$ \formula{has(john,(3 \app mango$_1$))}
+\english{John has \textbf{3} mangoes} $\Longrightarrow$ \formula{3 mango has john}
 
 \subsubsection{Quantifiers}
 
 (Plurals ignored)
 
-"\textbf{All} men are mortal" $\Longrightarrow$ \formula{mortal(all \app man$_1$)} \\
-\hspace*{1cm} $\equiv$ \formula{all(man$_1$), mortal(man$_1$)} \\
-\hspace*{1cm} $\Longrightarrow$ \formula{man(X) $\rightarrow$ mortal(X)}
+\english{\textbf{All} men are mortal} $\Longrightarrow$ \formula{(mortal, all) man} 
 
-"\textbf{Most} AGI researchers are crazy" $\Longrightarrow$ \formula{crazy(most \app (agi \app researcher$_1$))}
+\english{\textbf{Most} AGI researchers are crazy} $\Longrightarrow$ \formula{(crazy, most, agi) researcher}
 
-"\textbf{Every} person in the room is happy" $\Longrightarrow$ \formula{every(person$_1$), in(the \app room$_1$, person$_1$), happy(person$_1$)}
+\english{\textbf{Every} person in the room is happy} $\Longrightarrow$ \formula{(every, the room in, happy) person}
 
 \subsubsection{Prepositions}
 
-"John is \textbf{in} the kitchen" $\Longrightarrow$ \formula{in((the \app kitchen$_1$), john)}
+\english{John is \textbf{in} the kitchen} $\Longrightarrow$ \formula{the kitchen in john}
 
-"John stands \textbf{before} Mary" $\Longrightarrow$ \formula{stand$_1$(john), before(stand$_1$, mary)}
+\english{John stands \textbf{before} Mary} $\Longrightarrow$ \formula{mary before stands john}
 
-"John programs \textbf{in} Lisp" $\Longrightarrow$ \formula{program$_1$(john), in(program$_1$, lisp)}
+\english{John programs \textbf{in} Lisp} $\Longrightarrow$ \formula{lisp in programs john}
 
-"John eats spaghetti \textbf{with} chop-sticks" $\Longrightarrow$ \formula{eat$_1$(john, spaghetti), with(eat$_1$, chopSticks)}
+\english{John eats spaghetti \textbf{with} chop-sticks} $\Longrightarrow$ \formula{(chopSticks with, spaghetti) eats john}
 
 With tense:\\
-"John cheated \textbf{during} the exam" $\Longrightarrow$ \formula{cheat$_1$(john), tense(cheat$_1$, past), during(cheat$_1$, (the \app exam$_1$))}
+\english{John cheated \textbf{during} the exam} $\Longrightarrow$ \formula{(the exam during, did) cheat john}
 
 \subsubsection{Subordinates}
 
-"They danced \textbf{until} it rains" $\Longrightarrow$ \formula{dance$_1$(they), until(dance$_1$, rain$_1$)}
+\english{They danced \textbf{until} it rains} $\Longrightarrow$\\
+\tab \formula{s$_2$ until s$_1$}\\
+\tab + \formula{s$_1$ := did dance they}\\
+\tab + \formula{s$_2$ := present rain it}\\
+where the s$_i$'s are statements.
 
-"Paul will go \textbf{if} John goes" $\Longrightarrow$ \formula{go$_1$(paul), will(go$_1$), go$_2$(john), if(go$_2$, go$_1$)}
+As a general rule, every syntactic structure must separate when they minimally qualify as a proposition, ie, having a truth value.
 
-"Pete is taller \textbf{than} John" $\Longrightarrow$ \formula{tall$_1$(pete), more(tall$_1$), than(tall$_1$, john)}
+\english{Paul will go \textbf{if} John goes} $\Longrightarrow$\\
+\tab \formula{s$_2$ if s$_1$}\\
+\tab + \formula{s$_1$ := go will paul}\\
+\tab + \formula{s$_2$ := present go john}
 
-"Water conducts electricity \textbf{because} it contains ions"  $\Longrightarrow$ \formula{conduct$_1$(water, electricity), \\
-\hspace*{2cm} contain$_1$(it, ions), because(conduct$_1$, contain$_1$)}
+\todo{There is a slight irregularity in the above translation.  We could have written:\\
+\tab + \formula{s$_2$ := future go paul}.
+}
+
+\english{Pete is taller \textbf{than} John} $\Longrightarrow$ \formula{john than more tall pete}
+
+\english{Water conducts electricity \textbf{because} it contains ions}  $\Longrightarrow$\\
+\tab \formula{s$_2$ because s$_1$}\\
+\tab + \formula{s$_1$ := (electricity, present) conduct water}\\
+\tab + \formula{s$_2$ := (plural ion, present) contain it}
 
 \subsubsection{Coordinators}
 
-"John prefers Lisp \textbf{but} Pete prefers Java" $\Longrightarrow$ \formula{prefer$_1$(john, lisp), prefer$_2$(pete, java), but(prefer$_1$, prefer$_2$)}
+\english{John prefers Lisp \textbf{but} Pete prefers Java} $\Longrightarrow$\\
+\tab \formula{s$_2$ but s$_1$)}\\
+\tab + \formula{s$_1$ := (lisp, present) prefer john}\\
+\tab + \formula{s$_2$ := (java, present) prefer pete}
 
-"She \textbf{neither} hates him \textbf{nor} loves him" $\Longrightarrow$ \formula{hate$_1$(she, him), love$_1$(she, him), neitherNor(hate$_1$, love$_1$)}
+\english{She \textbf{neither} hates him \textbf{nor} loves him} $\Longrightarrow$\\
+\tab \formula{s$_2$ neither-nor s$_1$}\\
+\tab + \formula{s$_2$ := him hates she}\\
+\tab + \formula{s$_1$ := him loves she}\\
+$\Longrightarrow$ \todo{ ??? a bit unsatisfactory... }
 
-"John is male \textbf{or} John is female" $\Longrightarrow$ \formula{male$_1$(john), female$_1$(john), or(male$_1$, female$_1$)} \\
-\hspace*{1cm} $\Longrightarrow$ \formula{male$_1$(john) $\vee$ female$_1$(john)}
+\english{John is male \textbf{or} John is female} $\Longrightarrow$\\
+\tab \formula{s$_2$ or s$_1$}\\
+\tab + \formula{male john}\\
+\tab + \formula{female john}\\
+$\Longrightarrow$ \formula{(male john) $\vee$ (female john)}
 
 \subsection{Phrases}
 
 \subsubsection{Noun phrase}
 
-"large birds with sharp claws" $\Longrightarrow$ \formula{plural(bird$_1$), large(bird$_1$), with(bird$_1$, sharp \app claws)} 
+\english{large birds with sharp claws} $\Longrightarrow$ \formula{((sharp, plural) claw with, large, plural) bird}
 
-"writers of science fiction, who are here for a conference" $\Longrightarrow$ \formula{plural(writer$_1$), of(writer$_1$, science \app fiction), here$_1$(writer$_1$), for(here$_1$, a \app conference)}
+\english{writers of science fiction, who are here for a conference} $\Longrightarrow$\\
+\tab \formula{(a conference for here, science fiction of, plural) writer}
 
 \subsubsection{Verb phrase}
 
-"[Lisa] \textbf{trains} 3 times a week" $\Longrightarrow$ \formula{train$_1$, tense(present, train$_1$), time$_1$(train$_1$, 3), plural(time$_1$), per(time$_1$, a \app week)}
+\english{[Lisa] \textbf{trains} 3 times a week} $\Longrightarrow$\\
+\tab \formula{((a week per, 3) times, present) train} $\;$ or\\
+\tab \formula{((a week, 3) times, present) train}
 
-"[I] would not \textbf{change} anything" $\Longrightarrow$ \formula{change$_1$(anything), not(change$_1$), would$_1$(change$_1$)}
+\english{[I] would not \textbf{change} anything} $\Longrightarrow$\\
+\tab \formula{(anything, not) change would} $\;$ or\\
+\tab \formula{(anything, not, would) change}.\\
+The first version seems correct.
 
-"[Many footballers] \textbf{get} injured" $\Longrightarrow$ \formula{get$_1$(injured)}
+\english{[Many footballers] \textbf{get} injured} $\Longrightarrow$ \formula{injured get}
 
 \subsubsection{Adjective phrase}
 
-"too rebellious" $\Longrightarrow$ \formula{rebellious$_1$, too(rebellious$_1$)}
+\english{too rebellious} $\Longrightarrow$ \formula{too rebellious}
 
-"fiercer than I expected" $\Longrightarrow$ \formula{fierce$_1$, more$_1$(fierce$_1$), than(more$_1$, x$_1$), expect(i, x$_1$)}
+\english{fiercer than I expected} $\Longrightarrow$\\
+\tab \formula{c$_1$ than more fierce}\\
+\tab + \formula{(c$_1$, did) expect i}\\
+where c$_1$ is an introduced constant.
 
-"sorry that he hurt her feelings" $\Longrightarrow$ \formula{sorry$_1$, that(sorry$_1$, hurt$_1$), hurt$_1$(he, her \app feelings)}
+\english{sorry that he hurt her feelings} $\Longrightarrow$\\
+\tab \formula{s$_1$ that sorry}\\
+\tab + \formula{s$_1$ := ((her, plural) feeling, did) hurt he}
 
-"aware of the consequences" $\Longrightarrow$ \formula{aware$_1$, of(aware$_1$, the \app consequence -s)}
+\english{aware of the consequences} $\Longrightarrow$ \formula{(the, plural) consequence of aware}
 
 \subsubsection{Adverb phrase}
 
-"most reluctantly" $\Longrightarrow$ \formula{(reluctant$_1$ -ly), most(reluctant$_1$)}
+\english{most reluctantly} $\Longrightarrow$ \formula{(most, ly) reluctant}
 
-"more defiantly than they had predicted" \\
-\hspace*{1cm} $\Longrightarrow$ \formula{(defiant$_1$ -ly), more$_1$(defiant$_1$), than(more$_1$, x$_1$), [predict -ed](they, x)}
+\english{more defiantly than they had predicted} $\Longrightarrow$\\
+\tab \formula{(c$_1$ than more, ly) defiant}\\
+\tab + \formula{(c$_1$, past-participle) predict had they}
 
 \subsubsection{Prepositional phrase}
 
-"with a spoon" $\Longrightarrow$ \formula{$\lambda$x.with(x, (a \app spoon))}\\
-\hspace*{2.7cm} $\equiv$ \formula{(\textbf{C} with (a \app spoon))}
+\english{with a spoon} $\Longrightarrow$ \formula{a spoon with}
+% $\Longrightarrow$ \formula{$\lambda$x.with(x, (a \app spoon))}\\
 
-"way below standard" $\Longrightarrow$ \formula{below$_1$(standard), way(below$_1$)}
+\english{way below standard} $\Longrightarrow$ \formula{(standard, way) below}
 
 \subsubsection{Genitive phrase}
 
-"The princess's popularity" $\Longrightarrow$ \formula{popularity$_1$, of(popularity$_1$, (the \app princess))}
+\english{The princess's popularity} $\Longrightarrow$ \formula{the princess popularity}\\
+\tab\tab\tab\tab or \formula{the princess of popularity}\\
+\tab\tab\tab\tab or \formula{(the princess of, popular) nounification}
+
+\todo{I'm too lazy to work out the rest of the examples...}
+
+\underconst
 
 \subsection{Clauses}
 
 \subsubsection{Object vs predicative complements}
 
-\{ TO-DO: I'm too lazy to work out all the examples... \}
+\english{Mary contacted a police officer} $\Longrightarrow$ \formula{}
 
-"Mary contacted a police officer" $\Longrightarrow$ \formula{}
-
-"Mary was a police officer" $\Longrightarrow$ \formula{}
+\english{Mary was a police officer} $\Longrightarrow$ \formula{}
 
 \subsubsection{Subjective and objective predicatives}
 
-"Indira was generous" $\Longrightarrow$ \formula{}
+\english{Indira was generous} $\Longrightarrow$ \formula{}
 
-"We considered Indira generous" $\Longrightarrow$ \formula{}
+\english{We considered Indira generous} $\Longrightarrow$ \formula{}
 
 \subsubsection{Complements}
 
-"Sue stumbled" $\Longrightarrow$ \formula{}
+\english{Sue stumbled} $\Longrightarrow$ \formula{}
 
-"Sue sipped a martini" $\Longrightarrow$ \formula{}
+\english{Sue sipped a martini} $\Longrightarrow$ \formula{}
 
-"Sue seemed drunk" $\Longrightarrow$ \formula{}
+\english{Sue seemed drunk} $\Longrightarrow$ \formula{}
 
-"Sue offered her guests a martini" $\Longrightarrow$ \formula{}
+\english{Sue offered her guests a martini} $\Longrightarrow$ \formula{}
 
-"She made them drunk" $\Longrightarrow$ \formula{}
+\english{She made them drunk} $\Longrightarrow$ \formula{}
 
-"He approves entirely of your decision" $\Longrightarrow$ \formula{}
+\english{He approves entirely of your decision} $\Longrightarrow$ \formula{}
 
-"We give up" $\Longrightarrow$ \formula{}
+\english{We give up} $\Longrightarrow$ \formula{}
 
-"I plan to keep applying for jobs" $\Longrightarrow$ \formula{}
+\english{I plan to keep applying for jobs} $\Longrightarrow$ \formula{}
 
 \subsubsection{Adjuncts}
 
-"in order to test a hypothesis" $\Longrightarrow$ \formula{}
+\english{in order to test a hypothesis} $\Longrightarrow$ \formula{}
 
 \subsubsection{Mood}
 
-"He is serious" $\Longrightarrow$ \formula{}
+\english{He is serious} $\Longrightarrow$ \formula{}
 
-"Is he serious?" $\Longrightarrow$ \formula{}
+\english{Is he serious?} $\Longrightarrow$ \formula{}
 
-"Be serious" $\Longrightarrow$ \formula{}
+\english{Be serious} $\Longrightarrow$ \formula{}
 
-"How serious is he!" $\Longrightarrow$ \formula{}
+\english{How serious is he!} $\Longrightarrow$ \formula{}
 
 \subsubsection{Negation}
 
-"Courtney is not reading" $\Longrightarrow$ \formula{}
+\english{Courtney is not reading} $\Longrightarrow$ \formula{}
 
-"We have heard nothing" $\Longrightarrow$ \formula{}
+\english{We have heard nothing} $\Longrightarrow$ \formula{}
 
-"Nobody likes a loser" $\Longrightarrow$ \formula{}
+\english{Nobody likes a loser} $\Longrightarrow$ \formula{}
 
-"They seldom celebrate birthdays" $\Longrightarrow$ \formula{}
+\english{They seldom celebrate birthdays} $\Longrightarrow$ \formula{}
 
-"Karen is very unfriendly" $\Longrightarrow$ \formula{}
+\english{Karen is very unfriendly} $\Longrightarrow$ \formula{}
 
-"The ambulance arrived not long ago" $\Longrightarrow$ \formula{}
+\english{The ambulance arrived not long ago} $\Longrightarrow$ \formula{}
 
 \subsection{Subordination and coordination}
 
 \subsubsection{Subordination}
 
-"I know that Ella lives in Sydney" $\Longrightarrow$ \formula{}
+\english{I know that Ella lives in Sydney} $\Longrightarrow$ \formula{}
 
-"He knows a woman who lives in Sydney" $\Longrightarrow$ \formula{}
+\english{He knows a woman who lives in Sydney} $\Longrightarrow$ \formula{}
 
-"He asked whether anyone had submitted a nomination" $\Longrightarrow$ \formula{}
+\english{He asked whether anyone had submitted a nomination} $\Longrightarrow$ \formula{}
 
-"Angelica will not agree to it until his attitude improves" $\Longrightarrow$ \formula{}
+\english{Angelica will not agree to it until his attitude improves} $\Longrightarrow$ \formula{}
 
-"I remember the days when none of us had a care in the world" $\Longrightarrow$ \formula{}
+\english{I remember the days when none of us had a care in the world} $\Longrightarrow$ \formula{}
 
-"She is as tall as we had anticipated" $\Longrightarrow$ \formula{}
+\english{She is as tall as we had anticipated} $\Longrightarrow$ \formula{}
 
-"Sharon wants to apply next year" $\Longrightarrow$ \formula{}
+\english{Sharon wants to apply next year} $\Longrightarrow$ \formula{}
 
-"Anyone caught smoking here can be prosecuted" $\Longrightarrow$ \formula{}
+\english{Anyone caught smoking here can be prosecuted} $\Longrightarrow$ \formula{}
 
-"If in doubt consult your solicitor" $\Longrightarrow$ \formula{}
+\english{If in doubt consult your solicitor} $\Longrightarrow$ \formula{}
 
 \subsubsection{Coordination}
 
-"Ella lives in Sydney, but she was born in China" $\Longrightarrow$ \formula{}
+\english{Ella lives in Sydney, but she was born in China} $\Longrightarrow$ \formula{}
 
 \subsection{Information packaging}
 
-TO-DO...
+\todo{To-do...}
 
 \subsection{Minor word classes}
 
 \subsubsection{Formulaic words}
 
-eg: "hello", "bye", "thanks".
+eg: \english{okay}, \english{thanks}, \english{bye}.
 
 \section{Some example English sentences}
 \label{sec:English-examples}
 
-\underconst
+\textbf{1.} \english{If Oswald hadn't shot Kennedy, someone else would have.} $\Longrightarrow$\\
+\tab \formula{s$_2$ implies s$_1$}\\
+\tab + \formula{s$_1$ := (\underline{(kennedy, did) shoot}, not), did) have Oswald}\\
+\tab + \formula{s$_2$ := (\underline{(kennedy, did) shoot} have, did) will someone}.
 
-\begin{tabular}{|l|l|}
-If Oswald hadn't shot Kennedy, someone else would have. & \formula{?} \\
-There I am, minding my own business, when this tall blonde walks up and asks me for a cigarette. & \formula{?} \\
-\end{tabular}
+\todo{The underlined part should be shared.}\\
+\todo{The if-then syntax is not rendered naturally.}
+
+\textbf{2.} \english{There I am, minding my own business, when this tall blonde walks up and asks me for a cigarette.} $\Longrightarrow$\\
+\tab \formula{s$_2$ when s$_1$}\\
+\tab + \formula{s$_1$ := [(my own business, present) mind, there] am i}\\
+\tab + \formula{s$_2$ := [(a cigarette for me, present) ask, (up, present) walk, this, tall] blonde}
+
+\textbf{3.} \english{Bison that rounded a snake while grazing, met a stack of green hay. But the bison waited for the hay to turn yellow before it started to eat. Once it turns yellow, hay becomes very tasty.} \footnote{This sentence was made up by Ivan Vodi\u{s}ek during a mailing-list discussion.} $\Longrightarrow$\\
+\tab \formula{s$_1$ := [((gazing while, a snake), did) round, ((green hay of, a) stack, did) meet] bison}\\
+\tab \formula{s$_2$ := [yellow turn to, the hay for, did] wait bison}\\
+\tab \formula{s$_3$ := s$_4$ but s$_1$}\\
+\tab \formula{s$_4$ := s$_5$ before s$_2$}\\
+\tab \formula{s$_5$ := (eat to, did) start bison}\\
+\tab \formula{s$_6$ := (yellow, present) turn hay}\\
+\tab \formula{s$_7$ := s$_6$ once s$_8$}\\
+\tab \formula{s$_8$ := (very tasty, present) become hay}
+
+This diagram illustrates the structure of the first formula, s$_1$:
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.75]{ivans-bison-example.png}
+\end{figure}
+Notice that the links in the graph are directed, as the application operator is non-commutative, ie,
+$$a \circ b \neq b \circ a .$$

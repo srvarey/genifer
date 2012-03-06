@@ -11,6 +11,30 @@ A common misconception is:  ``How can complex ideas such as `John loves Mary' be
 
 % Sorted or unsorted logic?
 
+\section{Multiplicity of knowledge representation schemes}
+
+This is how I think of the issue of knowledge representation:\\
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{KR-functors.png}
+% \caption{KR functors}
+\end{figure}
+
+There are various KR schemes.  For example, in NL, there are various grammar formulations:\\
+$F$ may be Phrase Structure Grammar\\
+$G$ may be Fluid Construction Grammar\\
+$H$ may be Categorial Grammar\\
+$J$ may be Genifer's machine-learned grammar (which may be stochastic and inscrutable to humans)\\
+$K$ may be some spatio-temporal KR scheme such as temporal logic, event calculus, situation calculus, etc
+
+And then there would be transformations ($\eta, \epsilon, ...$) between the grammatical formalisms.
+
+The problem is whether we can mix multiple KR schemes like $F$ and $G$.  The commonsense KB would be different under either $F$ or $G$, and the entire KB needs to be transformed by some $\eta$.
+
+If we use $F, G, H,...$ at the same time, confusion may arise during machine learning and reasoning.
+
+Perhaps, if we make Genifer be aware of transformations like $\eta, \epsilon, ...$ then maybe it can deal with multiple KR schemes at the same time?  Therefore we maybe don't need to choose or commit to any particular KR scheme at this stage...  in other words, any would be fine.
+
 \section{Natural language}
 
 Please also see the chapter on natural language (\ref{ch:natural-language}).
@@ -32,25 +56,32 @@ In 1963 JA Robinson discovered resolution, which is really unification + proposi
 Around the 1900s, George Boole, CS Peirce, Gottlob Frege, amongst others, developed \textbf{predicate logic}, which is later popularized by people such Hilbert, Ackermann, Russell, and Whitehead.  Predacate logic has really been popular for only about 80 years, versus syllogistic logic that has been around since Aristotle's time.  Predicate logic differs from propositional logic by giving propositions \textit{internal structure} -- a proposition is broken down into a \textbf{predicate} and one or more \textbf{objects}.  However, this decomposition seems inadequate to deal with arbitrarily free combinations of concepts.
 
 Combinatory logic provides a free way to compose terms via "application".  The key is to regard terms as (compound) concepts.  For example, in Genifer's notation:\\
-\tab "tall handsome guy"\\
+\tab \english{tall handsome guy}\\
 is the combination of the concepts\\
 \tab (tall, handsome) $\circ$ guy.
 
 Now, a few examples:\\
-"tall handsome guy" is equivalent to "handsome tall guy";\\
-"very tall guy" implies "tall guy";  but\\
-"very tall guy" does not equal "tall very guy";
+\english{tall handsome guy} is equivalent to \english{handsome tall guy};\\
+\english{very tall guy} implies \english{tall guy};  but\\
+\english{very tall guy} does not equal \english{tall very guy};
 
 Thus the unification is modulo some special rules such as commutativity, associativity, etc, and certain reduction rules.  In other words, unification modulo a theory = "the calculus of concepts".
 
 So we have a neat decomposition:\\
 \tab calculus of thoughts = calculus of concepts + calculus of propositions
 
-In \textbf{category theory}, one enforces the associative composing of arrows:\\
+In \textbf{category theory}, one enforces the associative composition of arrows:\\
 \tab $(ab)c = a(bc)$. \footnote{We often omit the application symbol $\circ$.}\\
 Likewise, I observed that if we enforce the associative composition of concepts, the logical form becomes very elegant.  Due to associativity, any pair of concepts in an application:\\
 \tab $a \circ b$\\
 must be \textit{meaningful} in a meaningful sentence.
+
+A consequence of enforcing associativity is that we can no longer use \textbf{Currying}.  For example:\\
+\tab \english{John loves Mary}\\
+would be rendered in Genifer's logic as\\
+\tab \formula{((mary loves) john)}\\
+rather than as suggested by Currying:\\
+\tab \formula{((loves mary) john)}
 
 Thus, in Genifer's logic, the 2 primitive operations are:\\
 \tab 1. \textbf{application}, $\circ$\\
@@ -80,11 +111,11 @@ This suggests that the \textbf{semantics} of the compound concepts depend on \te
 \label{sec:reification}
 
 Reification means ``to turn into objects''.  For example:\\
-\tab \english{``John loves Mary''}\\
+\tab \english{John loves Mary}\\
 can be rendered as\\
 \tab \formula{loves(john, mary)}\\
 but\\
-\tab \english{``John loves Mary deeply''}\\
+\tab \english{John loves Mary deeply}\\
 would have to rendered as:\\
 \tab \formula{love(love$_1$)} \tab \tab ; love$_1$ is an instance of love\\
 \tab \formula{subject(love$_1$, john)}\\
@@ -109,6 +140,6 @@ In Genifer, a context is just a set of propositions that are \textit{true in tha
 
 \section{Assumptions and counterfactuals}
 
-How to make assumptions during inference?  ``Assuming mom is at home, I call her phone number''.
+How to make assumptions during inference?  \english{Assuming mom is at home, I call her phone number.}
 
-Example of a counterfactual conditional:  ``If Oswald did not kill kennedy, someone else would have''.
+Example of a counterfactual conditional:  \english{If Oswald did not kill kennedy, someone else would have.}
