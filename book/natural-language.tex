@@ -1,4 +1,5 @@
 \chapter{Natural language}
+\label{ch:natural-language}
 \begin{flushright}
 \emph{The fish trap exists because of the fish; once you've gotten the fish,\\
 you can forget the trap. The rabbit snare exists because of the rabbit;\\
@@ -10,20 +11,46 @@ you can forget language.}\\ --- Zhuangzi (4th Century BC)
 
 \section{Natural language is not essential to AGI}
 
-Needless to say, fully solving the natural language problem is AGI-complete.  This however is not a show-stopper.  Our ultimate goal is to reach the \textbf{RSI point} (\S\ref{sec:RSI}) with as little effort as possible.  Which means we only need the most basic system that can automatically write programs for us.  Such a system only needs to accept commands in a \textit{restricted} subset of English.  Thus, for all our purposes an NL module that can parse restricted English would suffice.
+Our approach is to define a logic that can faithfully render arbitrary natural-language texts.  We call such a logical form Geniform.  The translation of NL to Geniform can itself be encoded as logical rules, thus the parsing of NL can be achieved via logical inference (as forward-chaining in a bottom-up manner).  And since logical inference is reversible, the generation of NL will also come as free.
 
-\section{Unification-based grammars}
+All the irregularities of NL will be taken care of via machine learning.
+
+\subsection{Multiplicity of knowledge representation schemes}
+
+This is how I think of the issue of knowledge representation:\\
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{KR-functors.png}
+% \caption{KR functors}
+\end{figure}
+
+There are various KR schemes.  For example, in NL, there are various grammar formulations\\
+$F$ may be Phrase Structure Grammar.\\
+$G$ may be Fluid Construction Grammar.\\
+$H$ may be Categorial Grammar.\\
+$J$ may be Geniform (a simple grammar I designed for Genifer)\\
+$K$ may be Genifer's machine-learned grammar (which may be stochastic and inscrutable to humans)
+
+And then there would be transformations ($\eta, \epsilon, ...$) between the grammatical formalisms.
+
+The problem is whether we can mix multiple KR schemes like $F$ and $G$.  The commonsense KB would be different under either $F$ or $G$, and the entire KB needs to be transformed by some $\eta$.
+
+If we use $F, G, H,...$ at the same time, confusion may arise during machine learning and reasoning.
+
+Perhaps, if we make Genifer be aware of transformations like $\eta, \epsilon, ...$ then maybe it can deal with multiple KR schemes at the same time?  Therefore we maybe don't need to choose or commit to any particular KR scheme at this stage...  in other words, any would be fine.
+
+\subsection{Background: unification-based grammars}
 
 The family of unification-based grammars includes LFG (Lexical Functional Grammar), HPSG (Head-Driven Phrase Structure Grammar), and PATR grammar.  The unification algorithm used in unification-based grammar is the same as the unification algorithm used in logic.  This is further evidence that the brain employs abstract symbolic processing similar to formal logic.
 
-\section{Cognitive linguistics}
+\subsection{Background: cognitive linguistics}
 
-Currently we are using the ``formal semantics'' approach.
+Our approach is closer to ``formal semantics''.  Many authors, most famously Richard Montague, have argued that natural languages are formal languages.  Some have also advocated the use of natural language as knowledge representation in AI.  Thus the line between formal and natural languages is blurred.
 
-\{ TO-DO:  How may cognitive linguistics affect the design of the natural language subsystem? \}
+\todo{How may cognitive linguistics affect natural language processing in Genifer?}
 
 \section{Abduction as interpretation}
-\label{sec:AbductionAsInterpretation}
+\label{sec:abduction-as-interpretation}
 
 \subsection{A detailed example}
 
@@ -64,11 +91,13 @@ Next we perform semantic parsing.  The key is to generate partial meanings for p
 
 \textbf{Lambda operator.}  In formal semantics, it is customary to use the $\lambda$ operator to represent the meaning of phrases.  The reason is that first-order logic do not have the expressive power to represent such phrases.  For example, the VP ``loves Mary'' denotes ``somebody's loving Mary'', which may be represented as $love(\_ \,,mary)$; but that is not a well-formed formula in FOL.  Instead we can represent it using the $\lambda$ expression $\lambda x \; love(x,mary)$.
 
-\textbf{Composition functor.}  (See also \S\ref{sec:CompositionFunctor})  Under this method, all phrases are represented by compositions.  For example, the VP ``loves Mary'' can be represented by $comp(loves,mary)$, or in short-hand $loves * mary$.  This composite is a \textit{first-order object}, which cannot be further reduced, but when we compose it with $john$, we get $john * (loves * mary)$ which is equivalent to the first-order statement $loves(john,mary)$.  So we need special inference rules to convert such composites into statements.
+\textbf{Composition of concepts.}  (For details see \S\ref{sec:composition})  Under this method, all phrases are represented by compositions.  For example, the VP ``loves Mary'' can be represented by $app(loves,mary)$, or in short form $mary \circ loves$.  This composite is a \textit{first-order object}, ie, a first-class citizen in the logic which can be further manipulated or modified, eg, when we compose it with $john$, we get $((mary \circ loves) \circ john)$ which is equivalent to the FOL statement $loves(john,mary)$.
 
 I think this method is superior to $\lambda$ because the meanings of phrases can be represented by first-order objects.  It also makes semantic parsing very intuitive.
 
-\{ TO-DO:  Explain semantic parsing with examples. \}
+% \todo{Revise this example with the newly improved Geniform.}
+
+\todo{Explain semantic parsing with examples.}
 
 %A semantic rule is similar to a syntactic one:\\
 %\hspace*{1cm} $\mbox{lexeme-love}(X) rightarrow \exists e \; \mbox{parse-as}(e, X) \wedge \mbox{verb}(e) \wedge \mbox{means}(e, \mbox{concept-love})$\\
@@ -98,7 +127,7 @@ I think this method is superior to $\lambda$ because the meanings of phrases can
 
 \section{Comprehensive grammatical categories of English}
 
-Here are some NL grammatical categories (intended to cover as broadly as possible) and typical examples in English.  Designers of NL interfaces can supply translations to these examples.  [The contents in this section and all the examples are taken directly from the book "English Grammar" by Peter Collins, 1998, Addison Wesley.  \textbf{NOTE:  This may be copyright infringement but I have just contacted the author and waiting for reply.}]  This page is intended to provide a simple comparison of NL interfaces, not meant to be a standard grammar for AGI purposes.
+Here are some NL grammatical categories (intended to cover as broadly as possible) and typical examples in English.  Designers of NL interfaces can supply translations to these examples.  [The contents in this section and all the examples are taken directly from the book "English Grammar" by Peter Collins, 1998, Addison Wesley.  \textbf{NOTE:  This may be a copyright infringement but I have contacted the author without getting his reply.}]  This page is intended to provide a simple comparison of NL interfaces, not meant to be a standard grammar for AGI purposes.
 
 \titleformat{\subsection}[hang]{\sffamily\bfseries\large\color{blue}}{(\Alph{subsection}) \hspace{5pt}}{0pt}{}
 
@@ -658,8 +687,10 @@ eg "I'll collect the kids after school if you don't get the opportunity to \text
 
 \renewcommand{\subsubsection}[1]{\sffamily{\bfseries{\color{blue}{ \stepcounter{subsubsection} #1}}}}
 
-\section{Logical form (Geniform)}
-\label{sec:LogicalForm}
+\section{Geniform -- a logical form for natural language}
+\label{sec:geniform}
+
+% Rus proposed a popular logical form for rendering natural language, which is of reference value.  Geniform has made several significant improvements over it.
 
 The Geniform logical form is special in that it can represent all natural-language grammatical categories elegantly.  To illustrate this, consider:\\
 \hspace*{1cm} ``John loves Mary''\\

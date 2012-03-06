@@ -18,7 +18,7 @@ Note:  This chapter is currently very chaotic because of a re-organization effor
 \textbf{Bound variables:}  In the abstraction $(\lambda x.t)$ we call $x$ the bound variable and $t$ the body.  Every occurrence of $x$ in $t$ is \textbf{bound} by the abstraction.  Conversely, an occurrence of a variable $y$ is \textbf{free} if it is not bound, eg in $(\lambda z.(\lambda x.(yx)))$.
 
 \textbf{Head-normal form:}  A $\lambda$ term is in head-normal form if, for $m \geq 0$ and $n \geq 0$, it can be expressed as:
-$$\lambda x_1 ... x_m . x t_1 ... t_n$$.
+$$\lambda x_1 ... x_m . \; x t_1 ... t_n.$$
 The variable $x$ may either be free or bound (one of $x_1,...,x_m$).
 
 \textbf{De Bruijn indexes.}
@@ -29,8 +29,6 @@ The variable $x$ may either be free or bound (one of $x_1,...,x_m$).
 
 (See Wikipedia: \href{http://en.wikipedia.org/wiki/Combinatory_logic}{Combinatory logic}).
 
-Bound variables -- why they are confusing?
-
 \subsection{Term-rewriting systems}
 
 \subsection{Simple type theory}
@@ -39,7 +37,7 @@ Bound variables -- why they are confusing?
 
 \textbf{Standard semantics and general semantics (of higher-order logic).}
 
-Why Henkin semantics is a reduction to FOL?
+Why is Henkin semantics a reduction to FOL?
 
 \subsection{Model theory}
 
@@ -56,16 +54,6 @@ Why Henkin semantics is a reduction to FOL?
 \textbf{Tableau.}
 
 \textbf{Resolution.}
-
-\subsection{Paradoxes in logic}
-
-\textbf{Liar's paradox.}
-
-\textbf{Skolem's paradox.}
-
-\textbf{Tarski's paradox.}
-
-\textbf{Non-axiomatizability.}  ``First order logic has an effective notion of proof which is complete w.r.t. the intended interpretation.  This is the content of Godel's completeness theorem.  As a result, the set of (Godel numbers of) universally valid first-order formulas is recursively enumerable.''  But ``the set of second order validities is not arithmetically definable let alone recursively enumerable and hence that an effective and complete axiomatization of second-order validity is impossible'' \citep*{Benthem}.
 
 \subsection{Functional programming}
 
@@ -144,14 +132,35 @@ X \PimpL B \nonumber
 \end{eqnarray}
 Pei Wang's idea is to calculate the combined conditional probability by weighing each individual conditional probability with their associated \textbf{confidences} (\S\ref{sec:confidence}):
 $$ P(X|A,B) = \frac{ P(X|A)c_A + P(X|B)c_B }{ c_A + c_B } $$
-which is a nice idea\footnote{Except that NARS truth values do not conform to probability theory.}, but Abram Demski came up with an alternative idea that is more in accord with Bayesianism.  The idea is to reconstruct $P(X|A,B)$ from the marginal conditionals $P(X|A)$ and $P(X|B)$ and priors $P(A)$ and $P(B)$.  This is achieved by applying Bayes' rule twice:
+which is a nice idea\footnote{Except that NARS truth values do not conform to probability theory.}, but Abram Demski came up with an alternative idea that is more in accord with Bayesianism.  The idea is to construct $P(X|A,B)$ from the marginal conditionals $P(X|A)$ and $P(X|B)$ and priors $P(A)$ and $P(B)$.  This is achieved by applying Bayes' rule twice:
 \begin{eqnarray}
 P(X|A,B) &=& \frac{P(A,B|X)P(X)}{normalization} \nonumber \\
          &=& \frac{P(A|X)P(B|X)P(X)}{normalization} \nonumber \\
          &=& \frac{P(X|A)P(A)P(X|B)P(B)}{P(X) \; normalization}
 \end{eqnarray}
 
-\{ To-do:  Abram's solution seems problematic, I'm discussing it with him... \}
+It may be possible to use Abram's method to construct all joint CPTs, instead of using contrived probabilistic formulations of AND and OR.
+
+\subsection{An example}
+
+\english{John is usually punctual, therefore, John will arrive at the airport on time.}\\
+\english{John died en route to the airport, therefore, John will NOT arrive on time.}
+
+\formula{punctual(john)} = $(P)$ = \tv{0.8} \\
+\formula{punctual(john) $\Pimp$ arrive(john)} = $(A \vert P)$ = \tv{0.8} \\
+\formula{dead(john) $\Pimp$ arrive(john)} = $(A \vert D)$ = \tv{0.05}
+
+Abram's method:
+$$ (A|P,D) = \frac { (A \vert P) (P) (A \vert D) (D) } { (P, D) (A)^{2-1} } $$
+
+\section{Unification}
+\label{sec:unification}
+
+Unification is the process of making 2 terms identical via substitutions.
+
+\subsection{Equational unification / narrowing}
+
+\textbf{Narrowing} is \textbf{term rewriting} combined with \textbf{unification}.  
 
 \section{Equality}
 \index{equality}  \index{identity|see{equality}}
@@ -185,22 +194,26 @@ One argument for the use of modal logic arises from the previous example:\\
 \end{tabular}\\
 but Mary may not know that Superman is Clark Kent.  This problem can be resolved as in the last section (\S\ref{sec:equality}).
 
+\section{Logical paradoxes}
+\label{sec:paradox}
+
+\underconst
+
+\textbf{Liar's paradox.}
+
+\textbf{Curry's paradox.}
+
+\textbf{Skolem's paradox.}
+
+\textbf{Tarski's paradox.}
+
+\textbf{Non-axiomatizability.}  ``First order logic has an effective notion of proof which is complete w.r.t. the intended interpretation.  This is the content of Godel's completeness theorem.  As a result, the set of (Godel numbers of) universally valid first-order formulas is recursively enumerable.''  But ``the set of second order validities is not arithmetically definable let alone recursively enumerable and hence that an effective and complete axiomatization of second-order validity is impossible'' \citep*{Benthem}.
+
 \section{Shortcomings of the current logic}
 
-1.  \textbf{Binary vs $\mathcal{P/Z}$.}  It may be desirable to have binary logic alongside $\mathcal{P/Z}$ logic.  $\mathcal{P/Z}$ reasoning is suitable for common-sense concepts, whereas binary reasoning is good for \textit{programmatic}
+\textbf{Binary vs $\mathcal{P/Z}$.}  It may be desirable to have binary logic alongside $\mathcal{P/Z}$ logic.  $\mathcal{P/Z}$ reasoning is suitable for common-sense concepts, whereas binary reasoning is good for \textit{programmatic}
 \footnote{Ie, binary logic makes programming easier}
 or computational reasons.  However, one unsolved problem is that many common-sense concepts appear to be binary but are fuzzy upon close inspection (eg male/female, dead/alive).  The question is how to let binary and fuzzy concepts coexist in the same logic.
-
-2.  \textbf{First-order vs Higher-order logic.}  Let us admit outright that FOL as a KR scheme is insufficient for common-sense reasoning and thus AGI.  But I also have the impression that second-order logic would be sufficient for most common-sense reasoning purposes.
-
-With some tricks (such as reification, \S\ref{sec:reification}), FOL may be able to deal with second-order reasoning.
-
-Another trick is that the FOL reasoner can ``escape'' to a meta-reasoner when higher-order constructs are needed.  This will be taken up on the chapter on meta-reasoning, \S\ref{ch:meta-reasoning}.
-
-As a more satisfactory long-term solution, we are currently working on creating a $\mathcal{P(Z)C}$ HOL, see \S\ref{sec:HOL}.
-
-%With P and Z, the AGI can express ideas such as:\\
-%\hspace*{1cm} ``Mary is \underline{probably} \underline{fairly} tall.''
 
 \section{$\mathcal{B}$: binary logic}
 \label{sec:binary-logic}
@@ -251,3 +264,41 @@ One example of meta-reasoning pertinent to fuzziness is:\\
 In S1 the predicates \textit{patriot} and \textit{traitor} have binary character.  In S2 they have fuzzy character.
 
 \underconst
+
+\section{Algebraic logic}
+
+\{ Survey of algebraic logics \}
+
+My motivation for studying algebraization is to speed up inference.  For all logics that I know of, deduction is performed by \textit{iterating} deductive steps.  Each step is the application of an inference rule.  If a formula with quantification is involved, some kind of pattern matching or unification is required apply the formula.  Such an iterative process is equivalent to searching in a large proof space.
+
+My idea is:  perhaps we can ``map'' logic to some \textit{continuous} space, and somehow approximate the proof process by spatial computational techniques?
+
+One natural idea is:\\
+\tab \begin{tabular}{rll}
+first-order objects & $\longrightarrow$ & points in space\\
+predicates          & $\longrightarrow$ & regions / shapes in space\\
+logical entailment  & $\longrightarrow$ & finding intersections of regions\\
+\end{tabular}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=1.0]{cylindrical-logic.png}
+%\caption{algebraic logic}
+\end{figure}
+
+We know that, for some concepts (predicates), the shape of the regions defining the predicate can be extremely irregular or even incomputable.
+
+Our motivation is twofold:\\
+1. How can we find intersections of regions efficiently?\\
+2. Can we altogether avoid performing deduction via iterative steps?
+
+One idea is to have multiple ``domain grids''.  We'd be sorting the source domains into various clusters.  That will speeed up the look-up of intersections.
+
+However, this idea only gives us a geometric interpretation, but it doesn't tell us how to compute the shapes of regions efficiently.  The only way to compute the regions is to go back to the basic inference rules of the logic, ie, iteratively and syntactically.
+
+Another idea is the ``dual'':\\
+\tab \begin{tabular}{rll}
+first-order objects & $\longrightarrow$ & shapes / regions in space\\
+predicates          & $\longrightarrow$ & points in space\\
+logical entailment  & $\longrightarrow$ & ?\\
+\end{tabular}

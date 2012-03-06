@@ -14,7 +14,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.1 "
-   sodipodi:docname="simple-proof-tree3.svg">
+   sodipodi:docname="simple-proof-tree4.svg"
+   inkscape:export-filename="C:\LEdProjects\G0\simple-proof-tree4.png"
+   inkscape:export-xdpi="110"
+   inkscape:export-ydpi="110">
   <defs
      id="defs4">
     <marker
@@ -124,7 +127,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -166,35 +169,8 @@
            style="font-size:18px"
            id="flowPara3761-4">H</flowPara></flowRoot>    </g>
     <g
-       transform="translate(74.5,133.4)"
-       id="g3763-17">
-      <path
-         d="m 326,428.86218 c 0,10.21727 -8.28273,18.5 -18.5,18.5 -10.21727,0 -18.5,-8.28273 -18.5,-18.5 0,-10.21727 8.28273,-18.5 18.5,-18.5 10.21727,0 18.5,8.28273 18.5,18.5 z"
-         sodipodi:ry="18.5"
-         sodipodi:rx="18.5"
-         sodipodi:cy="428.86218"
-         sodipodi:cx="307.5"
-         id="path2985-1"
-         style="fill:none;stroke:#000000;stroke-width:1.10000002;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-         sodipodi:type="arc" />
-      <flowRoot
-         transform="translate(72,1)"
-         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         id="flowRoot3755-1"
-         xml:space="preserve"><flowRegion
-           id="flowRegion3757-5"><rect
-             y="418.36218"
-             x="228"
-             height="28"
-             width="40"
-             id="rect3759-2" /></flowRegion><flowPara
-           style="font-size:18px"
-           id="flowPara3761-7">X<flowSpan
-   style="font-size:10px"
-   id="flowSpan3849">3</flowSpan></flowPara></flowRoot>    </g>
-    <g
        id="g3851"
-       transform="translate(0,34)">
+       transform="translate(61,28)">
       <g
          id="g3763-8"
          transform="translate(-2.5000076,99.4)">
@@ -206,7 +182,7 @@
            sodipodi:cy="428.86218"
            sodipodi:rx="18.5"
            sodipodi:ry="18.5"
-           d="m 326,428.86218 c 0,10.21727 -8.28273,18.5 -18.5,18.5 -10.21727,0 -18.5,-8.28273 -18.5,-18.5 0,-10.21727 8.28273,-18.5 18.5,-18.5 10.21727,0 18.5,8.28273 18.5,18.5 z" />
+           d="m 326,428.86218 a 18.5,18.5 0 1 1 -37,0 18.5,18.5 0 1 1 37,0 z" />
         <flowRoot
            xml:space="preserve"
            id="flowRoot3755-2"
@@ -270,23 +246,13 @@
        inkscape:connection-end-point="d4" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 305.78486,509.36218 -0.51041,34.402"
+       d="m 319,508.16552 34.07023,34.8652"
        id="path3878"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
        inkscape:connection-start="#rect3864"
        inkscape:connection-start-point="d4"
        inkscape:connection-end="#g3851"
-       inkscape:connection-end-point="d4" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 368.15872,549.98715 319,506.39113"
-       id="path3880"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#g3763-17"
-       inkscape:connection-start-point="d4"
-       inkscape:connection-end="#rect3864"
        inkscape:connection-end-point="d4" />
     <flowRoot
        xml:space="preserve"
@@ -311,7 +277,7 @@
            x="76"
            y="483.36218" /></flowRegion><flowPara
          id="flowPara3896">rule</flowPara></flowRoot>    <g
-       transform="translate(-80,142)"
+       transform="translate(0,134)"
        id="g3979-3">
       <rect
          y="480.36218"
@@ -327,70 +293,18 @@
          xml:space="preserve"><flowRegion
            id="flowRegion3868-1"><rect
              style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
-             y="456.36218"
-             x="115"
-             height="33"
-             width="38"
+             y="459.36218"
+             x="119"
+             height="34"
+             width="35"
              id="rect3870-6" /></flowRegion><flowPara
            style="font-size:18px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
            id="flowPara3872-8">K<flowSpan
-   style="font-size:65%;baseline-shift:sub"
-   id="flowSpan3118">0</flowSpan></flowPara></flowRoot>    </g>
-    <g
-       transform="translate(-1.5000076,142)"
-       id="g3979-3-5">
-      <rect
-         y="480.36218"
-         x="293"
-         height="29"
-         width="26"
-         id="rect3864-2-7"
-         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.10000002;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
-      <flowRoot
-         transform="translate(181,27)"
-         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1;font-family:Sans"
-         id="flowRoot3866-2-6"
-         xml:space="preserve"><flowRegion
-           id="flowRegion3868-1-1"><rect
-             style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
-             y="457.36218"
-             x="116"
-             height="30"
-             width="33"
-             id="rect3870-6-8" /></flowRegion><flowPara
-           style="font-size:18px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
-           id="flowPara3872-8-9">K<flowSpan
    style="font-size:65.00091553%;baseline-shift:sub"
-   id="flowSpan3120">2</flowSpan></flowPara></flowRoot>    </g>
-    <g
-       transform="translate(77,142)"
-       id="g3979-3-2">
-      <rect
-         y="480.36218"
-         x="293"
-         height="29"
-         width="26"
-         id="rect3864-2-79"
-         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.10000002;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
-      <flowRoot
-         transform="translate(181,27)"
-         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1;font-family:Sans"
-         id="flowRoot3866-2-5"
-         xml:space="preserve"><flowRegion
-           id="flowRegion3868-1-4"><rect
-             style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
-             y="457.36218"
-             x="117"
-             height="31"
-             width="29"
-             id="rect3870-6-3" /></flowRegion><flowPara
-           style="font-size:18px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1"
-           id="flowPara3872-8-1">K<flowSpan
-   style="font-size:65%;baseline-shift:sub"
-   id="flowSpan3122">3</flowSpan></flowPara></flowRoot>    </g>
+   id="flowSpan3118" /></flowPara></flowRoot>    </g>
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 227.5042,580.75567 -1.11546,41.60651"
+       d="M 242.06941,574.27529 293,617.76218"
        id="path4069"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -400,24 +314,12 @@
        inkscape:connection-end-point="d4" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 304.876,580.76178 -0.27882,41.6004"
+       d="m 353.40892,569.81644 -48.81174,52.54574"
        id="path4071"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
        inkscape:connection-start="#g3851"
-       inkscape:connection-start-point="d4"
-       inkscape:connection-end="#g3979-3-5"
-       inkscape:connection-end-point="d4" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 382.24797,580.76055 0.55766,41.60163"
-       id="path4073"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#g3763-17"
-       inkscape:connection-start-point="d4"
-       inkscape:connection-end="#g3979-3-2"
-       inkscape:connection-end-point="d4" />
+       inkscape:connection-start-point="d4" />
     <path
        style="fill:none;marker-end:url(#Arrow2Lend);stroke:#ff0000;stroke-opacity:1"
        d="m 290,448.36218 c 18,39 -55,92 -55,92"
@@ -426,14 +328,8 @@
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;stroke:#ff0000;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
-       d="m 305.35465,543.21494 c -12,-21 -54,18 -54,18"
+       d="m 343.35465,552.21494 c -38,-66 -92,9 -92,9"
        id="path4151-3"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
-    <path
-       style="fill:none;stroke:#ff0000;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
-       d="m 372.35465,544.21494 c -57,-64 -122,8 -122,8"
-       id="path4151-1"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
     <flowRoot

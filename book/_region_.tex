@@ -1,4 +1,4 @@
-\documentclass[12pt, a4paper]{report}
+\message{ !name(AGI-book.tex)}\documentclass[12pt, a4paper]{report}
 
 %dvips OR pdftex
 \usepackage[pdftex, pdfauthor={YKY}, bookmarks, anchorcolor=blue, colorlinks, linkcolor=blue, citecolor=blue, urlcolor=blue, breaklinks, plainpages=false, pdfpagelabels, hypertexnames=false]{hyperref}
@@ -23,11 +23,9 @@
 \usepackage{caption}
 
 \definecolor{DarkGreen}{rgb}{0.1,0.4,0.1}
-\definecolor{DarkMagenta}  {rgb}{0.4,0.1,0.4}
 
-\newcommand{\code}   [1]{{\footnotesize{\ttfamily #1}}}
-\newcommand{\formula}[1]{\textcolor{DarkMagenta}{#1}}
-\newcommand{\todo}   [1]{\textcolor{DarkGreen}{\{ #1 \}}}
+\newcommand{\code}[1]{{\footnotesize{\ttfamily #1}}}
+\newcommand{\formula}[1]{\textcolor{DarkGreen}{#1}}
 \newcommand{\english}[1]{\rmfamily \textit{#1} \sffamily}
 \renewcommand{\star}{$* \;$}
 \newcommand{\app}{$\cdot \;$}
@@ -140,75 +138,25 @@ Pei Wang
 \makeglossary
 
 \begin{document}
-%\font\normalfont=cmss14
-\renewcommand{\normalsize}{\fontsize{13pt}{15pt}\selectfont}
-\fontsize{13pt}{15pt} \selectfont
 
-%\pagestyle{plain}
-%\newcommand\ps@plain{
-%\renewcommand\@oddhead{}
-%\let\@evenhead\@oddhead
-%\renewcommand\@evenfoot
-%    {\hfil{\thepage}}
-%\let\@oddfoot\@evenfoot
-%}
-
-\maketitle
-\dominitoc
-
-\setcounter{chapter}{-1}
-\chapter{Preface and to-do list}
+\message{ !name(AGI-book.tex) !offset(16) }
+\chapter{Preface}
 
 \begin{enumerate}
+
+$\pi = 1$
 
 \item  This book is a perpetual draft.
 
 \item  My personal reason for developing AGI is to achieve life extension.
 
-\item  The source code of $\mbox{Genifer}$ is hosted on \href{http://code.google.com/p/genifer/}{Google Code}, including some very easy \href{http://code.google.com/p/genifer/downloads/list}{tutorial slides}.  Also feel free to \href{mailto:Generic.Intelligence@Gmail.com}{contact me}!
+\item  The source code of $\mbox{Genifer}$ is hosted on \href{http://code.google.com/p/genifer/}{Google Code}, including some very nice \href{http://code.google.com/p/genifer/downloads/list}{tutorial slides}.  Also feel free to \href{mailto:Generic.Intelligence@Gmail.com}{contact me}!
 
 \end{enumerate}
 
 \begin{flushright}
 --- YKY
 \end{flushright}
-
-\color{DarkGreen}
-
-{\sffamily\bfseries\Huge To-do:}
-
-\begin{description}
-
-\item[Ch 1 (Introduction)]  Explain the new ideas that I learned about the relationship between propositional logic and topological logic.
-
-\item[Ch 2 (Architecture)]  Explain AIXI, algorithmic complexity, Solomonoff induction, etc.  Explain my distributive architecture.
-
-\item[Ch 3 (KR)]
-
-\item[Ch 4 (Logic)]  Idea of ``pre-logic'' seems no longer needed.  More on paradoxes.  New idea about equational unification and concepts.  Explain background notions.
-
-\item[Ch 5 (Z)]  Add new idea on the ``Java-girl paradox'', which is in my draft paper.
-
-\item[Ch 8 (Inference)]  Copy and paste Bayesian inference and factor graph stuff from the Lisp code to here.
-
-\item[Ch 9 (Pattern recognition)]  Brush up the definition of the similarity relation.
-
-\item[Ch 11 (Learning)]  A lot of new material is in the slides.
-
-\item[Ch 12 (NL)]  Improved Geniform -- revise all examples.
-
-\item[Ch 13 (Memory)]  Explain hierarchical clustering idea (from slides).
-
-\item[Ch 14 (Planning)]  May need re-think.
-
-\item[Appendix A]  Recommend more books for AGI sub-areas.  Especially math books.
-
-\end{description}
-
-%end of to-do
-\color{black}
-
-\tableofcontents
 
 \include{introduction}
 \include{architecture}
@@ -304,8 +252,6 @@ Pei Wang
 
 \phantomsection
 \addcontentsline{toc}{chapter}{Acknowledgements}
-\chapter*{Acknowledgements}
-
-In addition to the people listed on the title page, I'd like to thank the AGI mailing-list participants for years of discussions.
+\message{ !name(AGI-book.tex) !offset(18) }
 
 \end{document}

@@ -1,0 +1,25 @@
+\BOOKMARK [0][-]{chapter.2}{Preface}{}% 1
+\BOOKMARK [1][-]{section.3}{Literate programming}{chapter.2}% 2
+\BOOKMARK [0][-]{chapter.8}{Z deduction}{}% 3
+\BOOKMARK [1][-]{section.9}{To do}{chapter.8}% 4
+\BOOKMARK [1][-]{section.16}{Introduction}{chapter.8}% 5
+\BOOKMARK [1][-]{section.17}{Parameters}{chapter.8}% 6
+\BOOKMARK [1][-]{section.27}{Data structures}{chapter.8}% 7
+\BOOKMARK [1][-]{section.78}{Backward-chaining \205 best-first search}{chapter.8}% 8
+\BOOKMARK [1][-]{section.143}{Building the proof tree}{chapter.8}% 9
+\BOOKMARK [2][-]{subsection.144}{Processing a sub-goal}{section.143}% 10
+\BOOKMARK [2][-]{subsection.211}{Processing a fact node}{section.143}% 11
+\BOOKMARK [2][-]{subsection.239}{Processing a rule node}{section.143}% 12
+\BOOKMARK [2][-]{subsection.328}{Retracting a failed node}{section.143}% 13
+\BOOKMARK [1][-]{section.354}{Belief propagation}{chapter.8}% 14
+\BOOKMARK [2][-]{subsection.355}{Introduction}{section.354}% 15
+\BOOKMARK [2][-]{subsection.356}{Pearl's algorithm}{section.354}% 16
+\BOOKMARK [2][-]{subsection.362}{Factor graph algorithm}{section.354}% 17
+\BOOKMARK [2][-]{subsection.370}{Evaluating a single rule}{section.354}% 18
+\BOOKMARK [2][-]{subsection.373}{Combining multiple rules \205 Abram's method}{section.354}% 19
+\BOOKMARK [2][-]{subsection.381}{Code}{section.354}% 20
+\BOOKMARK [0][-]{chapter.545}{First-order logic}{}% 21
+\BOOKMARK [1][-]{section.546}{Unification}{chapter.545}% 22
+\BOOKMARK [1][-]{section.547}{Substitution management}{chapter.545}% 23
+\BOOKMARK [0][-]{chapter.548}{Inductive learning}{}% 24
+\BOOKMARK [0][-]{section*.549}{Bibliography}{}% 25

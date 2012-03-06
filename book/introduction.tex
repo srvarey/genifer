@@ -12,10 +12,10 @@ add my mite to help on the future worker who will attain final success.}\\
 --- Albert Einstein (rephrased)
 \end{flushright}
 
-\begin{flushright}
-\emph{An inventor is simply a fellow who doesn't take his education too seriously.}\\
---- Charles Kettering 
-\end{flushright}
+%\begin{flushright}
+%\emph{An inventor is simply a fellow who doesn't take his education too seriously.}\\
+%--- Charles Kettering 
+%\end{flushright}
 
 \begin{flushright}
 \emph{When a subject becomes totally obsolete we make it a required course.}\\
@@ -66,9 +66,9 @@ I started designing AGI using the neural network approach for a few years, until
 Logic-based AI went out of vogue beginning in the 1980s because of the advent of connectionism and later statistical learning methods.  As a result, many researchers nowadays are unfamiliar with even the basics of logic-based AI.  In order to understand my approach it is extremely important to be familiar with \textbf{first-order logic} (FOL) and to understand the difference between first-order representations and propositional ones.
 
 \textbf{Propositional vs first-order.}  This is a typical propositional statement:\\
-\hspace*{1cm} $ p \vee q \wedge r $\\
-and a typical first-order statement:\\
-\hspace*{1cm} $ p(X) \vee q(X,Y) \wedge r(w(Y,Z)) $\\
+\hspace*{1cm} $ p \vee q \wedge r $.\\
+Compare it with a typical first-order statement:\\
+\hspace*{1cm} $ p(X) \vee q(X,Y) \wedge r(w(Y,Z)) $.\\
 The chief distinction is the use of \emph{variables} in first-order logic, which greatly increases its expressiveness.
 
 The vast majority of statistical learning literature assumes that the data is represented by points in a high-dimensional space.  I call this the ``spatial'' approach which includes methods like nearest neighbor, support vector machines (SVMs), principal component analysis (PCA), and artificial neural networks (ANNs).  \textit{Spatial datasets are equivalent to propositional representations.}  First-order logic is a symbolic or relational\footnote{Relational representations are a subclass of first-order representations that do not allow functors and structured terms.} approach which is qualitatively very different.  There is strong evidence that some datasets can be easily learned by relational methods but are very difficult, if not impossible, to learn with spatial methods.  (\citep*{Thornton1996}, \citep*{Thornton2000}.\footnote{He demonstrated this with the example of a ``checkerboard'' pattern of 0's and 1's that can be easily learned by a logical formula, but would be very difficult for a neural-network learner.  This is actually the age-old debate between symbolic AI and connectionism, given a new twist in the context of machine learning.} provides an interesting and detailed analysis of this issue.)
