@@ -7,7 +7,7 @@ Note:  This chapter is transferred from my older web site (2006), and needs some
 \section{Design philosophy}
 
 The vision module has the following features:
-\begin{enumerate}[\textbullet ]
+\begin{itemize}
 
 \item \textbf{Analytical.} Visual recognition follows a reductionistic scheme in which visual objects are broken down into smaller components (3D $\rightarrow$ 2D $\rightarrow$ 1D $\rightarrow$ 0D). There is no "black-box" in this analytical scheme. 
 
@@ -16,14 +16,14 @@ The vision module has the following features:
 \item \textbf{Complete.} It has the complete range of visual functions to serve as the "eyes" of an intelligent agent. 
 
 \item \textbf{Cognitive.} Visual recognition often involves reasoning. Therefore, the vision module interacts closely with the cognitive aspects of the intelligent agent. 
-\end{enumerate}
+\end{itemize}
 
 \section{Relation between cognition and  vision}
 
-\begin{compactenum}
+\begin{compactenum-}
 	\item What Is general intelligence?
 	\item The GI-vision approach
-\end{compactenum}
+\end{compactenum-}
 
 \subsection{What is  general cognition?}
 
@@ -55,18 +55,18 @@ the object in the center can be recognized as a "face".
 GI is organized hierarchically, with higher abstraction at the top. At a very high level the Lena image may be compressed symbolically as "young woman wearing a hat".
 
 The internal representation of a GI may be a data structure containing:
-\begin{compactenum}
+\begin{compactenum-}
 	\item objects
 	\item properties of objects
 	\item relations between objects
-\end{compactenum}
+\end{compactenum-}
 
 Some examples:
-\begin{compactenum}
+\begin{compactenum-}
 	\item objects: "a face", "an apple", "the letter A"
 	\item properties: "face.sex = female", "apple.color = red", "letter\_A.font = Times New Roman"
 	\item relations: "hat \emph{above} face", "apple \emph{on} table"
-\end{compactenum}
+\end{compactenum-}
 
 AGI is a system that can automatically invent concepts of new objects, properties, and relations. These new concepts are in turn applied to the internal representation. For example it may learn the new property "rectangular" by looking at a lot of rectangular shapes.
 
@@ -82,28 +82,28 @@ Vision is basically the problem of compressing the sensory input stream in a mea
 But there may be several \emph{levels} of representation.
 
 As explained in the last section, each level of representation consists of:
-\begin{compactenum}
+\begin{compactenum-}
 	\item objects
 	\item properties
 	\item relations
-\end{compactenum}
+\end{compactenum-}
 
 The pixel level is level 0 (not a representation).
 
  Level 1 consists of basic \emph{syntactic} features:
-\begin{compactenum}
+\begin{compactenum-}
 	\item edges / lines (includes straight lines and curves)
 	\item regions of uniform color / intensity
 	\item gradients of color / intensity
 	\item textures
-\end{compactenum}
+\end{compactenum-}
 
 These features are represented as objects. For example:
-\begin{compactenum}
+\begin{compactenum-}
 	\item object: curve1
 	\item property: curve1.thickness = thin
 	\item relation: curve1 \emph{connected-to} curve2
-\end{compactenum}
+\end{compactenum-}
 
 At level 2 we may perform character recognition or 3D object recognition, and so on. 
 
@@ -234,14 +234,14 @@ Recognizing shading as 2D features will require special algorithms (so does reco
 Our approach to solving the general vision problem is to combine vision with GI (general intelligence). See \href{Vis-Cognition.htm}{an introduction to GI-vision}.
 
 The basic tenets of my vision theory are:
-\begin{compactenum}
+\begin{compactenum-}
 	\item  Break down the image via 3D-2D-1D-0D primitives
 	\item  Apply  machine learning to represent the image symbolically
-\end{compactenum}
+\end{compactenum-}
 
 I have thought about the vision problem for 1-2 years and studied many real images to conclude that "everything under the sun" can be recognized by this method. A  paper will be published to explain the theory in detail.
 \underconst
-\begin{compactenum}
+\begin{compactenum-}
 	\item \hyperlink{3210DReduction}{3-2-1-0D reduction}
 	\item \hyperlink{LogicalRepresentation}{Logical representation}
 	\item \hyperlink{MachineLearning}{Machine learning}
@@ -250,7 +250,7 @@ I have thought about the vision problem for 1-2 years and studied many real imag
 	\item \hyperlink{Attention}{Searchlight attention}
 	\item \hyperlink{Relations}{Relations between objects}
 	\item \hyperlink{Architecture}{Architecture of the vision module}
-\end{compactenum}
+\end{compactenum-}
 
 \subsection{3-2-1-0D reduction}
 
@@ -388,10 +388,10 @@ For example, in the image below, 2 edges and 1 vertex are almost invisible, yet 
 The feedback mechanism should work this way: When the Recognizer finds that a concept is "almost" recognized (eg with the majority of conjuncts being true), it will select the remaining features that are not yet matched and send them to the lower-level Recognizer, which would then lower its \emph{threshold} for recognizing those features.
 
 This requires 2 things:
-\begin{compactenum}
+\begin{compactenum-}
 	\item The Recognizer  should measure a \emph{degree of certainty} associated with each feature being recognized.
 	\item  The Recognizer  at the lower level should be able to use an feedback cue to look for certain features. This may require performing an "inversion" of the cue.
-\end{compactenum}
+\end{compactenum-}
 
 A detailed explanation of the feedback mechanism will be presented soon.
 \underconst
@@ -491,11 +491,11 @@ According to Marr, the primal sketch represents changes in light intensity occur
 Specifically, the primal sketch may include elements such as edges (curves or straight lines), color blobs, ends, junctions (of edges), texons, etc.
 
 Marr's vision scheme consists of 3 levels:
-\begin{compactenum}
+\begin{compactenum-}
 	\item primal sketch
 	\item 2.5D
 	\item 3D
-\end{compactenum}
+\end{compactenum-}
 
 My \href{Vis-BasicScheme.htm}{vision scheme} is slightly different which goes from 3D, 2D to 1D. This difference may not be all that important; what is important is how best to recognize features at various levels, from a computational viewpoint. The primal sketch is an essential stage of any complete vision system.
 
@@ -522,24 +522,24 @@ The goal of our project is to output attributed graphs similar to the above kind
 \subsubsection{3. Handover to intelligent agent}
 
 The following tasks may be handled by the intelligent agent:
-\begin{compactenum}
+\begin{compactenum-}
 	\item pattern recognition
 	\item attentional mechanism (eg focusing attention to various features or objects)
 	\item learning of concepts and facts (declarative and episodic memory)
 	\item complex inference (for example, a chair is "anything that can be sat on", may involve procedural memory)
-\end{compactenum}
+\end{compactenum-}
 
 The division of labor can avoid repeating these tasks for vision and for general cognition.
 
 Currently we are considering the following intelligent agents for integration with vision:
-\begin{compactenum}
+\begin{compactenum-}
 	\item Novamente (has an architecture integrating perception and cognition)
 	\item Soar (has provisions for sensory perception)
 	\item Cyc (depends on its proprietary inference engine)
 	\item ACT-R
 	\item EPIC
 	\item IDA (intelligent distribution agent, Stan Franklin)
-\end{compactenum}
+\end{compactenum-}
 
 Basically any general cognitive architecture that can handle sensory perception, can use our vision module.
 
@@ -777,14 +777,14 @@ Inductive logic programming seems to be the harder part of our project (in fact 
 \subsection{Background to ILP (inductive logic programming)}
 
 \subsubsection{Books and internet resources}
-\begin{compactenum}
+\begin{compactenum-}
 	\item \emph{Machine Learning} [Mitchell 1997] \emph{}has a chapter on "Learning Sets of Rules" which is a good introduction.
 	\item \emph{AI: A Modern Approach} talks about ILP in chapter 19
 	\item {\normalsize This 1994 book by N. Lavrac and S. Dzeroski is free for download: \textit{\href{http://www-ai.ijs.si/SasoDzeroski/ILPBook/}{Inductive Logic Programming: Techniques and Applications}.}}
 	\item Stephen H Muggleton's website on ILP: \href{http://www.doc.ic.ac.uk/~shm/}{www.doc.ic.ac.uk/\textasciitilde shm/}
 	\item Peter A Flach's website: \href{http://www.cs.bris.ac.uk/~flach/}{www.cs.bris.ac.uk/\textasciitilde flach} and his PowerPoint on \href{http://macflach.cs.bris.ac.uk/~flach/presentations/CL2000HTML/CL2000.ppt}{Knowledge Representation and ILP}.
 	\item many more...
-\end{compactenum}
+\end{compactenum-}
 
 \subsubsection{A simple ILP example}
 
@@ -812,14 +812,14 @@ After presenting a large number of such facts,this rule may be learned:
 \end{quote}
 
 \subsubsection{Existing ILP software}
-\begin{compactenum}
+\begin{compactenum-}
 	\item FOIL
 	\item  CIGOL ('logic' spelt backwards)
 	\item GOLEM
 	\item  PROGOL
 	\item LINUS
 	\item etc...
-\end{compactenum}
+\end{compactenum-}
 
 \subsection{Special concerns related to vision}
 
@@ -830,7 +830,7 @@ Low-level feature extraction has to use the searchlight mechanism to discover th
 \subsection{Why use logic?}
 
  Our scheme is to reduce 3D to 2D to 1D to 0D. Along this route, many concepts need to be defined:
-\begin{compactenum}
+\begin{compactenum-}
 	\item  First, we have the image decomposed into edgels, which are the lowest-level features.
 	\item  Then we define "lines" and "curves" as collections of contiguous edgels.
 \\
@@ -842,7 +842,7 @@ Low-level feature extraction has to use the searchlight mechanism to discover th
 \\
     (From 2D to 3D: volume = conjunction of surfaces)
 	\item Then we define objects such as "bicycles", "wheels", etc as composed of primitive geons.
-\end{compactenum}
+\end{compactenum-}
 
 If we can enter all these things as rules in a knowledgebase, we have a vision system that operates by the rules. Our strategy is to encode these rules as \emph{logical formulas}.
 
@@ -861,10 +861,10 @@ You may argue that the brain is a neural network and so they must be capable of 
 For a very simple vision system, inductive learning is not needed. All we need is to  patiently enter  definitions of shapes / objects into a logical knowledgebase. Then the system can recognize those things. 
 
 Inductive learning is needed for 2 purposes:
-\begin{compactenum}
+\begin{compactenum-}
 	\item  teaching by "show and tell";
 	\item  automatically discovering useful concepts.
-\end{compactenum}
+\end{compactenum-}
 
 \subsubsection{"Show and tell"}
 
