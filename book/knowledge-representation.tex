@@ -16,7 +16,7 @@ A common misconception is:  ``How can complex ideas such as `John loves Mary' be
 This is how I think of the issue of knowledge representation:\\
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7]{KR-functors.png}
+\includegraphics[scale=0.75]{KR-functors.png}
 % \caption{KR functors}
 \end{figure}
 
@@ -53,7 +53,7 @@ One of my latest insights is that the combination of concepts can be computed by
 
 In 1963 JA Robinson discovered resolution, which is really unification + propositional refutation.  Unification decides if 2 terms can be made equationally identical.  Propositional refutation is an inference step that deals with the "calculus of thinking" at the \textit{sentence} level.
 
-Around the 1900s, George Boole, CS Peirce, Gottlob Frege, amongst others, developed \textbf{predicate logic}, which is later popularized by people such Hilbert, Ackermann, Russell, and Whitehead.  Predacate logic has really been popular for only about 80 years, versus syllogistic logic that has been around since Aristotle's time.  Predicate logic differs from propositional logic by giving propositions \textit{internal structure} -- a proposition is broken down into a \textbf{predicate} and one or more \textbf{objects}.  However, this decomposition seems inadequate to deal with arbitrarily free combinations of concepts.
+Around the 1900s, George Boole, CS Peirce, Gottlob Frege, amongst others, developed \textbf{predicate logic}, which is later popularized by such people as Hilbert, Ackermann, Russell, and Whitehead.  Predacate logic has really been popular for only about 80 years, versus syllogistic logic that has been around since Aristotle's time.  Predicate logic differs from propositional logic by giving propositions \textit{internal structure} -- a proposition is broken down into a \textbf{predicate} and one or more \textbf{objects}.  However, this decomposition seems inadequate to deal with arbitrarily free combinations of concepts.
 
 Combinatory logic provides a free way to compose terms via "application".  The key is to regard terms as (compound) concepts.  For example, in Genifer's notation:\\
 \tab \english{tall handsome guy}\\
@@ -90,7 +90,7 @@ with the associative and distributive rules:
 $$ (a \circ b) \circ c = a \circ (b \circ c) $$
 $$ (a, b) \circ c = (a \circ b, a \circ c)$$
 
-One can recognize that this logic has the exactly form as a category.  \todo{I'm curious as to the role of exponentiation in this category?}
+One can recognize that this logic has the exact form as a category.  \todo{I'm curious as to the role of exponentiation in this category?}
 
 For more about how natural language sentences are translated into logical form, see the section on natural language and Geniform, \S\ref{sec:geniform}.
 
@@ -133,10 +133,78 @@ Geniform solves this problem by eliminating reification.
 As Einstein would have said, the representation scheme for space and time should be fundamentally the same.  As I have developed a vision theory (\S\ref{ch:vision}), I think temporal representations can follow a similar scheme.  OpenCog (http://www.opencog.org) is an AGI project more focused on embodiment, so we can also share their KR scheme.
 
 \section{Contexts}
+\label{sec:contexts}
 
 An excellent survey of contexts in logic-based AI is \citep*{Akman1996}.  The book \citep*{Sowa2000}, Chapter 5, is also excellent and contains additional insights about contexts.  Also the book \citep*{Bonzon2000}.
 
-In Genifer, a context is just a set of propositions that are \textit{true in that context}.  This idea is very useful in the clustering of the KB for inference speed-up (\S\ref{sec:hi-oracle}).
+In Genifer, a context can be regarded as a set of propositions that are \textit{true in that context}.  This idea is very useful in the clustering of the KB for inference speed-up (\S\ref{sec:hi-oracle}).
+
+In Genifer we represent contexts as a component of the truth value of formulas.  The reason we do so is due to:
+
+\subsection{Inference in contexts}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.75]{inference-in-context.png}
+% \caption{Inference in contexts}
+\end{figure}
+
+In general there are 4 possible cases:
+\begin{enumerate-}
+\item (\textcolor{Green}{Green}) An assertion in an outer context, without contradiction, can apply to an inner context.\\
+      For example:\\
+      \english{\underline{In children's stories}, animals can talk.}  (Inner context)\\
+      \english{Cats are animals.}  (Truth in outer context)\\
+      $\models$ \english{In children's stories, cats can talk.}
+\item (\textcolor{Red}{Red}) An assertion in an inner context, even without contradiction, cannot apply to outer contexts.\\
+      For example:\\
+      \english{\underline{John believes} he can fly.}  (Inner context)\\
+      $\not\models$ \english{John can fly.}  (Outer context)
+\item (\textcolor{Blue}{Blue}) When 2 assertions are in contradiction, the one in the \textbf{more-specific} context wins.\\
+      For example (cf Example \ref{ex:superman}):\\
+      \english{\underline{Mary does not know} Kent is Superman.}  (Inner context)\\
+      \english{Kent is Superman.}  (Outer context)\\
+      \english{Superman can fly.}  (Outer context)\\
+      $\models$ \english{Mary does not know Kent can fly.} (Inner context wins)
+\item (\textcolor{Purple}{Purple}) When 2 contexts are \textbf{incomparable}, an assertion cannot apply from one context to the other.\\
+      For example:\\
+      \english{\underline{In John's mind} Mary is dumb.}  (Inner context 1)\\
+      $\not\models$ \english{\underline{In Mary's mind} Mary is dumb.}  (Inner context 2)
+\end{enumerate-}
+
+These rules are stipulated only for the sake of facilitating compression;  indeed, the whole purpose of creating a logic is to facilitate algorithmic compression.
+
+Remember Pei Wang's idea (\S\ref{ch:confidence}) is to assign confidence to formulas that allows defeasible reasoning.  Basically, for 2 formulas $P, Q$:
+\begin{eqnarray}
+& \mbox{IF} & \mbox{confidence($P$) $>$ confidence($Q$)} \nonumber\\
+& \mbox{THEN} & \mbox{$P$ overrides $Q$}. \nonumber
+\end{eqnarray}
+
+Our general rules can be summarized as follows.  In context $c$:
+\begin{eqnarray}
+P > \emptyset & \mbox{IF} & \mbox{context$(P)$ $\supset$ context$(\emptyset)$} \nonumber\\
+\emptyset > P & \mbox{IF} & \mbox{context$(\emptyset)$ $\supset$ context$(P)$} \\
+P_A > P_B & \mbox{IF} & \mbox{context$(P_A)$ $\subset$ context$(P_B)$} \nonumber\\
+\emptyset > P & \mbox{IF} & \mbox{context$(\emptyset)$ $\supset\subset$ context$(P)$} \nonumber
+\end{eqnarray}
+where $>$ means ``overrides / defeats'', $\emptyset$ is the null formula, ie, the absence of any formula, context$(\emptyset)$ is the current context $c$, and $\supset\subset$ means incomparable.  Notice the reversal of sign in the 3rd rule, which is why I cannot compress them into a single rule.
+
+A problem is whether Pei Wang's NARS confidence can be merged with contexts --- it seems that they are independent as truth values.  Even if they can be merged, we still need to generalize confidence to \textbf{partial orders} so that $c(P)$ and $c(Q)$ may be incomparable.
+
+%This example seems to suggest that the inference rule:
+%\begin{equation}
+%\hspace{-4cm} \mbox{(entailment by rewriting)} \quad\quad
+%\frac{\Gamma, \Gamma \rightarrow_R \Gamma'}{\Gamma'}
+%\end{equation}
+%should be made \textit{defeasible}.
+
+\subsection{Context management}
+
+Contexts can be encoded by numeric labels of the form $n_1.n_2.n_3...$ where $n_i \in \mathbb{Z}$.  Now the question is how to assign contexts to formulas.
+
+The problem seems similar to reference resolution in natural language processing, but is complicated by the need to manipulate contexts with logical rules (if we want to use logic to parse natural language).
+
+\underconst
 
 \section{Assumptions and counterfactuals}
 

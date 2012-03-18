@@ -3,27 +3,29 @@
 %\end{flushright}
 \minitoc
 
-Note:  This chapter is currently very chaotic because of a re-organization effort.  $\mathcal{Z}$ is no longer considered a foundational part of the logic.
+Note:  This chapter is currently very chaotic because of a re-organization effort.  Fuzziness, $\mathcal{Z}$, is no longer considered a foundational part of the logic.
 
 \section{Background}
 
-\subsection{Turing completeness}
+\subsection{Turing universality}
 
-\textbf{Undecidability of FOL.}
+\subsubsection{Undecidability of FOL.}
 
-\subsection{$\lambda$ calculus}
+\subsection{$\lambda$-calculus}
 
 (See Wikipedia: \href{http://en.wikipedia.org/wiki/Lambda_calculus}{Lambda calculus}).
 
-\textbf{Bound variables:}  In the abstraction $(\lambda x.t)$ we call $x$ the bound variable and $t$ the body.  Every occurrence of $x$ in $t$ is \textbf{bound} by the abstraction.  Conversely, an occurrence of a variable $y$ is \textbf{free} if it is not bound, eg in $(\lambda z.(\lambda x.(yx)))$.
+\subsubsection{Bound variables:}  In the abstraction $(\lambda x.t)$ we call $x$ the bound variable and $t$ the body.  Every occurrence of $x$ in $t$ is \textbf{bound} by the abstraction.  Conversely, an occurrence of a variable $y$ is \textbf{free} if it is not bound, eg in $(\lambda z.(\lambda x.(yx)))$.
 
-\textbf{Head-normal form:}  A $\lambda$ term is in head-normal form if, for $m \geq 0$ and $n \geq 0$, it can be expressed as:
+\subsubsection{Head-normal form:}  A $\lambda$ term is in head-normal form if, for $m \geq 0$ and $n \geq 0$, it can be expressed as:
 $$\lambda x_1 ... x_m . \; x t_1 ... t_n.$$
 The variable $x$ may either be free or bound (one of $x_1,...,x_m$).
 
-\textbf{De Bruijn indexes.}
+\subsubsection{De Bruijn indexes.}
 
-\textbf{Director strings.}
+\subsubsection{Director strings.}
+
+\subsection{Functional programming}
 
 \subsection{Combinatory logic}
 
@@ -35,51 +37,53 @@ The variable $x$ may either be free or bound (one of $x_1,...,x_m$).
 
 \subsection{Higher-order logic}
 
-\textbf{Standard semantics and general semantics (of higher-order logic).}
+HOL is roughly synonymous with type theory, with the addition of axioms that define logical primitives.
 
-Why is Henkin semantics a reduction to FOL?
+\subsubsection{Standard semantics and general semantics (of higher-order logic).}
+
+How is Henkin semantics reducible to FOL?
 
 \subsection{Model theory}
+
+Model theory is the study of the truth of syntactic formulas defined via their correspondence to certain mathematical structures known as models.  Originated by Alfred Tarski.
 
 \subsection{Proof theory}
 
 \subsection{Deduction systems}
 
-\textbf{Hilbert systems.}
+\subsubsection{Hilbert systems.}
 
-\textbf{Natural deduction.}
+\subsubsection{Sequent calculus.}
 
-\textbf{Sequent calculus.}
+\subsubsection{Natural deduction.}
 
-\textbf{Tableau.}
+\subsubsection{Tableau.}
 
-\textbf{Resolution.}
+\subsubsection{Resolution.}
 
-\subsection{Functional programming}
-
-\section{Logic and pre-logic}
-
-Designing the perfect logic is nearly impossible, as witnessed by the proliferation of alternative logics in recent decades.  \textbf{Pre-logics}, or logical frameworks, are attempts to reduce logics to simpler computational mechanisms, and thus to tackle the problem in a general way.
-
-The candidates for pre-logics include:
-\begin{compactenum}[\textbullet ]
-\item $\lambda$ calculus
-\item combinatory logic
-\item term-rewriting systems
-\item grammars
-\item programs (such as genetic programs)
-\item etc
-\end{compactenum}
-
-The basic configuration of a system with pre-logic is like this:
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.7]{prelogic.png}
-% \caption{Prelogic}
-\end{figure}
-NL should be translated into logic because logic is closer to NL than pre-logic.  What really distinguishes ``logic'' from pre-logic is the notion of \textbf{propositions}, which is a unit of meaning to which we can attach \textbf{truth values}.  A proposition such as \formula{male(john)} is a ``complete'' entity of meaning, as opposed to the predicate \formula{male} which is incomplete, or ``syncategorematic''\footnote{The term syncategorematic has several meanings, here I mean any component of a sentence that is not a proposition.}.  This distinction is important because fuzziness and probabilities should be assigned to the logic rather than pre-logic.
-
-The problem with the above configuration is, if the pre-logic is fixed and the logic is allowed to be dynamically learned, then it may be difficult to work with such a dynamically changing logic, in particular to assign fuzzy-probabilistic truth values to it, or to translate NL to it.
+%\section{Logic and pre-logic}
+%
+%Designing the perfect logic is nearly impossible, as witnessed by the proliferation of alternative logics in recent decades.  \textbf{Pre-logics}, or logical frameworks, are attempts to reduce logics to simpler computational mechanisms, and thus to tackle the problem in a general way.
+%
+%The candidates for pre-logics include:
+%\begin{compactenum}[\textbullet ]
+%\item $\lambda$ calculus
+%\item combinatory logic
+%\item term-rewriting systems
+%\item grammars
+%\item programs (such as genetic programs)
+%\item etc
+%\end{compactenum}
+%
+%The basic configuration of a system with pre-logic is like this:
+%\begin{figure}[H]
+%\centering
+%\includegraphics[scale=0.7]{prelogic.png}
+%% \caption{Prelogic}
+%\end{figure}
+%NL should be translated into logic because logic is closer to NL than pre-logic.  What really distinguishes ``logic'' from pre-logic is the notion of \textbf{propositions}, which is a unit of meaning to which we can attach \textbf{truth values}.  A proposition such as \formula{male(john)} is a ``complete'' entity of meaning, as opposed to the predicate \formula{male} which is incomplete, or ``syncategorematic''\footnote{The term syncategorematic has several meanings, here I mean any component of a sentence that is not a proposition.}.  This distinction is important because fuzziness and probabilities should be assigned to the logic rather than pre-logic.
+%
+%The problem with the above configuration is, if the pre-logic is fixed and the logic is allowed to be dynamically learned, then it may be difficult to work with such a dynamically changing logic, in particular to assign fuzzy-probabilistic truth values to it, or to translate NL to it.
 
 \section{Uncertainty}
 
@@ -156,27 +160,93 @@ $$ (A|P,D) = \frac { (A \vert P) (P) (A \vert D) (D) } { (P, D) (A)^{2-1} } $$
 \section{Unification}
 \label{sec:unification}
 
-Unification is the process of making 2 terms identical via substitutions.
+Unification is the process of making 2 terms identical via substitutions.  For example, we can use a substitution:
+$$ \theta = \{ john/X, mary/Y \} $$
+to transform a term like this:
+$$ loves(X, Y) \stackrel{\theta}{\longrightarrow} loves(john, mary). $$
+Unification ($\bowtie$) is the process of finding the substitution given the initial and final terms.  So:
+$$ loves(X, Y) \; \bowtie \; loves(john, mary) = \theta .$$
+
+When we use logic to encode natural language and common-sense reasoning, terms are representations of (simple or compound) \textbf{concepts} (cf \S\ref{sec:composition}).  Thus unification plays the role of deciding if 2 concepts are the same; in other words, the unification algorithm embodies the \textbf{calculus of concepts}.
+
+Two important relations of concepts are:
+\begin{enumerate}
+\item Equality ($=$).  For example: \formula{clark-kent = superman}.  Can be generalized to fuzzy equality ($\approx$).   For example: \formula{cat $\approx$ dog} (cats are similar to dogs because they are both pet animals).
+\item Inclusion ($\subseteq$), in classical AI also known as the "is-a" relation.  For example: \formula{dog $\subseteq$ animal}.
+\end{enumerate}
+
+The $=$ relation affects unification because substitution of equals for equals is valid. We use a set of equations, called an equational \textbf{theory}, to define what are considered equal.  Then we have so-called \textbf{unification modulo equational theory}, or \textbf{E-unification}.  The algorithm for equational unification is called \textbf{narrowing}, see \S\ref{sec:narrowing} below.
+
+A complication is that $=$ should be replaced by the more general $\approx$, and we need to modify the traditional algorithms to handle diminishing fuzzy truth values when $\approx$ is repeatedly applied.
+
+\subsection{Higher-order unification}
+
+The standard algorithm for higher-order unification was formulated by Huet in 1974.
+
+\subsubsection{Huet's algorithm}
+
+\underconst
 
 \subsection{Equational unification / narrowing}
+\label{sec:narrowing}
 
-\textbf{Narrowing} is \textbf{term rewriting} combined with \textbf{unification}.  
+\textbf{Narrowing} is \textbf{term rewriting} with \textbf{unification}.  The matching process of rewriting is replaced by unification, where both the rewrite rule and the term to be rewritten can be instantiated.
+
+The equational theory $E$ is replaced by rewriting system $R$ by \textbf{orienting} the equations in a specific direction.
+
+The \textbf{one-step narrowing relation} $\leadsto_R$ is induced by a TRS (term rewriting system) $R$.  We write $(t \leadsto_R^\sigma t')$ to denote a substitution $\sigma$ that enables the term $t$ to be rewritten as $t'$ using one rewriting rule from $R$.
+
+%The one-step narrowing relation can be extended to equations as:
+%$$ (s \approx^?_E t ) \leadsto_R^\sigma (s' \approx^?_E t') $$
+
+\todo{For example....}
+
+Thus narrowing is a search process with high complexity because at each step, there are 2 kinds of choices to be made:
+\begin{compactenum-}
+\item which rewrite rule in $R$ to try; and
+\item which position within $t$ to try.
+\end{compactenum-}
 
 \section{Equality}
 \index{equality}  \index{identity|see{equality}}
 \label{sec:equality}
 
-A problem with equality is illustrated by the classic example ``Morning Star / Evening Star''.  This is a similar example and its rendition in logic:\\
+\subsection{Morning star / evening star problem}
+
+A problem with equality is illustrated by the classic example ``Morning Star / Evening Star''.  The following is a similar example with its rendition in logic:
+
+\begin{example}
+\label{ex:superman}
 \tab
 \begin{tabular}{l|l}
-\textit{``Clark Kent is Superman.''}               & \formula{clark-kent = superman} \\
-\textit{``Superman can fly.''}                     & \formula{can-fly(superman)} \\
-\textit{``Mary does not know that Clark Kent is Superman.''} & $\neg$ \formula{know(mary, "clark-kent = superman")} \\
-\textit{``Mary knows that Superman can fly.''}     & \formula{know(mary, can-fly(superman))} \\
-\textit{``Mary does not know that Clark Kent can fly.''} & $\neg$ \formula{know(mary, "can-fly(clark-kent)")}
+\english{Clark Kent is Superman.}            & \formula{clark-kent = superman} \\
+\english{Superman can fly.}                  & \formula{can-fly superman} \\
+\english{Mary does not know that Clark Kent is Superman.} & $\neg$ \formula{knows(mary, "clark-kent = superman")} \\
+\english{Mary knows that Superman can fly.}  & \formula{knows(mary, can-fly superman)} \\
+\english{Mary does not know that Clark Kent can fly.} & $\neg$ \formula{knows(mary, "can-fly clark-kent")}
+\end{tabular}
+\end{example}
+
+A possible solution is to distinguish \formula{"clark-kent"} (in quotes, ie, the Clark Kent that Mary knows) and \formula{clark-kent} (without quotes, ie, the real Clark Kent).  This idea is similar to the so-called "use / mention" distinction:\\
+\tab \begin{tabular}{ll}
+\textbf{Use:}      & Cheese is derived from milk.\\
+\textbf{Mention:}  & ``Cheese'' is derived from the old-English word ``cyse''.
 \end{tabular}
 
-Perhaps the solution is that \formula{"clark-kent"} (in quotes, ie, the Clark Kent that Mary knows) is not equal to \formula{clark-kent} (without quotes, ie, the real Clark Kent).
+%\begin{example}[\english{John thinks that he can fly.}]
+%We can render this in logical form (\S\ref{sec:geniform}):\\
+%\tab \formula{\kb{1} s$_2$ that thinks john}\\
+%\tab \formula{\kb{2} can-fly john} \quad \tv{with indefinite TV}\\
+%\tab \formula{\kb{3} can-fly john} \quad \tv{with low probability}\\
+%where s$_3$ is a fact we assume the agent already knows in its KB.  The agent will assign an indefinite fuzzy truth value (ie, a uniform probability distribution over $[0,1]$) to s$_2$, since it is a quoted statement.  This requires the ability to store  multiple copies of syntactically identical statements.
+%\end{example}
+
+The problem is in general due to the presence of ``contexts'' (cf \S\ref{sec:contexts}).  For example
+\begin{compactitem-}
+\item In the context of children's tales, animals can talk.
+\item In the context of Star Wars, Darth Vader is Luke's father.
+\item In the context of Mary's beliefs, Superman and Kent are different persons.
+\end{compactitem-}
 
 \section{Modal logic}
 \begin{flushright}
@@ -186,11 +256,11 @@ Perhaps the solution is that \formula{"clark-kent"} (in quotes, ie, the Clark Ke
 
 My view is to use predicates to represent modality instead of using modal logics.  This view was first advocated by \citep*{McCarthy1997}.
 
-One argument for the use of modal logic arises from the previous example:\\
+One argument for the use of modal logic arises from the previous Example \ref{ex:superman}:\\
 \begin{tabular}{l|l}
-\hspace*{1cm} \textit{``Mary believes Superman is dead.''} & \formula{believe(mary, dead(superman))}\\
-\hspace*{1cm} \textit{``Superman is Clark Kent.''} & \formula{superman = clark-ken}\\
-\hspace*{0.7cm} * \textit{``Mary believes Clark Kent is dead.''} & \formula{believe(mary, dead(clark-ken))}
+\tab \english{Mary knows Superman can fly.} & \formula{knows(mary, can-fly superman)}\\
+\tab \english{Superman is Clark Kent.} & \formula{superman = clark-ken}\\
+\hspace*{0.7cm} * \english{Mary knows Clark Kent can fly.} & \formula{knows(mary, can-fly clark-ken)}
 \end{tabular}\\
 but Mary may not know that Superman is Clark Kent.  This problem can be resolved as in the last section (\S\ref{sec:equality}).
 
@@ -199,15 +269,17 @@ but Mary may not know that Superman is Clark Kent.  This problem can be resolved
 
 \underconst
 
-\textbf{Liar's paradox.}
+\subsection{Russell's or Liar's paradox.}
 
-\textbf{Curry's paradox.}
+\subsection{Curry's paradox.}
 
-\textbf{Skolem's paradox.}
+\subsection{Skolem's paradox.}
 
-\textbf{Tarski's paradox.}
+\subsection{Tarski's paradox.}
 
-\textbf{Non-axiomatizability.}  ``First order logic has an effective notion of proof which is complete w.r.t. the intended interpretation.  This is the content of Godel's completeness theorem.  As a result, the set of (Godel numbers of) universally valid first-order formulas is recursively enumerable.''  But ``the set of second order validities is not arithmetically definable let alone recursively enumerable and hence that an effective and complete axiomatization of second-order validity is impossible'' \citep*{Benthem}.
+\subsection{Non-axiomatizability.}
+
+``First order logic has an effective notion of proof which is complete w.r.t. the intended interpretation.  This is the content of Godel's completeness theorem.  As a result, the set of (Godel numbers of) universally valid first-order formulas is recursively enumerable.''  But ``the set of second order validities is not arithmetically definable let alone recursively enumerable and hence that an effective and complete axiomatization of second-order validity is impossible'' \citep*{Benthem}.
 
 \section{Shortcomings of the current logic}
 
@@ -215,10 +287,10 @@ but Mary may not know that Superman is Clark Kent.  This problem can be resolved
 \footnote{Ie, binary logic makes programming easier}
 or computational reasons.  However, one unsolved problem is that many common-sense concepts appear to be binary but are fuzzy upon close inspection (eg male/female, dead/alive).  The question is how to let binary and fuzzy concepts coexist in the same logic.
 
-\section{$\mathcal{B}$: binary logic}
-\label{sec:binary-logic}
+%\section{$\mathcal{B}$: binary logic}
+%\label{sec:binary-logic}
 
-My intuition is that common-sense reasoning involves mainly $\mathcal{B}$, followed by $\mathcal{Z}$, and $\mathcal{P}$ is relatively rare.
+%My intuition is that common-sense reasoning involves mainly $\mathcal{B}$, followed by $\mathcal{Z}$, and $\mathcal{P}$ is relatively rare.
 
 %Horn clauses:  P and Z rules can be expressed in Horn form only.  But it seems that we can use general resolution for B rules, no?  Or, perhaps I want to use something similar to Horn resolution for P and Z?
 
@@ -249,9 +321,9 @@ Another example is the $B \leftrightarrow Z$ conversion of ``traitor'' and ``pat
 \section{Higher order logic}
 \label{sec:HOL}
 
-The HOL formulation that I am most familiar with is \citep*{Lloyd2003}.  It uses \textbf{typed lambda calculus} to represent logical formulae.  This representation is specifically developed for use as a logic programming language (Escher) and for inductive learning.
+\citep*{Lloyd2003} developed inductive learning based on HOL, a \textbf{typed lambda calculus}, and also a logic programming language (Escher).
 
-Interestingly, Lloyd uses a form of algebraic logic that is similar to what I do with $\mathcal{P(Z)C}$ logic, ie, its statements are of the form $H = B$ where $H$ is the head and $B$ is the body.  In essence this is the Prolog / Horn tradition.
+Lloyd uses a form of logic that is similar to what I do with $\mathcal{P(Z)C}$ logic, ie, its statements are of the form $H = B$ where $H$ is the head and $B$ is the body.  In essence this is the Prolog / Horn tradition.
 
 \{ TO-DO:  formulate a $\mathcal{P(Z)C}$ HOL \}
 
@@ -273,7 +345,8 @@ My motivation for studying algebraization is to speed up inference.  For all log
 
 My idea is:  perhaps we can ``map'' logic to some \textit{continuous} space, and somehow approximate the proof process by spatial computational techniques?
 
-One natural idea is:\\
+One natural idea is:
+
 \tab \begin{tabular}{rll}
 first-order objects & $\longrightarrow$ & points in space\\
 predicates          & $\longrightarrow$ & regions / shapes in space\\
@@ -296,7 +369,8 @@ One idea is to have multiple ``domain grids''.  We'd be sorting the source domai
 
 However, this idea only gives us a geometric interpretation, but it doesn't tell us how to compute the shapes of regions efficiently.  The only way to compute the regions is to go back to the basic inference rules of the logic, ie, iteratively and syntactically.
 
-Another idea is the ``dual'':\\
+Another idea is the ``dual'':
+
 \tab \begin{tabular}{rll}
 first-order objects & $\longrightarrow$ & shapes / regions in space\\
 predicates          & $\longrightarrow$ & points in space\\

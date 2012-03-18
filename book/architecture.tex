@@ -61,13 +61,13 @@ Key to BDI is the idea of \textbf{commitment}.  Once an agent commits to a plan,
 \end{figure}
 
 Figure \ref{fig:BDI-arch} is a schematic diagram of BDI.  The key processing steps are:
-\begin{compactenum}
+\begin{compactenum-}
 \item  This is the \textbf{Knowledge / Declarative Sub-system}, which we will consider at length in the rest of the book.
 \item  Changes in the environment cause changes in beliefs, which in turn reveal new possibilities to satisfy desires.  Thus the \textbf{Opportunity Analyzer} tries to propose new \textbf{options}.
 \item  Once the options are produced (either by the Opportunity Analyzer or the Means-end Reasoner), they are subject to \textbf{filtering}.  The \textbf{Compatibility Filter} checks if options are compatible with existing plans.
 \item  Surviving options are weighted against each other by the \textbf{Deliberation Process}, which produces intentions to be incorporated as plans.
 \item  The \textbf{Means-end Reasoner} searches for the next available options, taking into consideration the current plans.
-\end{compactenum}
+\end{compactenum-}
 
 \section{Evolutionary architecture}
 
@@ -76,14 +76,14 @@ Figure \ref{fig:BDI-arch} is a schematic diagram of BDI.  The key processing ste
 Hayek is an artificial economy proposed by Eric Baum (\citep*{Baum2004}) as an AGI architecture.  A slight variant of Hayek can be described as follows:
 \index{architecture!Hayek architecture (economic model)}
 
-\begin{compactenum}
+\begin{compactenum-}
 \item The AGI is composed of a large number of small programs.
 \item \textbf{Cooperativity}.  The programs may call each other.
 \item \textbf{Persistent memories}.  Individual programs can remember things across time slices.
 \item A \textbf{meta-controller} runs these programs according to some schedule, allotting each program a time slice.
 \item \textbf{Credit assignment}:  If the program answers a question correctly or performs a good action (judged by some external critic), the meta-controller will credit the programs that have contributed to the result.
-\item Human programmers may contribute to this pool of programs.\\
-\end{compactenum}
+\item Human programmers may contribute to this pool of programs.
+\end{compactenum-}
 
 A high-level programming language (such as Lisp) seems to be more suitable for this purpose.
 
@@ -95,21 +95,19 @@ Note that even very complex algorithms can be implemented in this architecture. 
 This is mathematically more elegant than the BDI architecture.
 
 Some important elements that should be present in the architecture:
-\begin{compactenum}[1.]
+\begin{compactenum-}
 \item  \textbf{percepts} are raw (unprocessed) sensory events
 \item  \textbf{beliefs} are the contents of the KB
 \item  \textbf{states} --- all possible \textit{perceived} states of the environment, including the current state.  States are special terms in the logic.
 \item  \textbf{actions}
 \item  \textbf{utility function} --- a function $U: \{state\} \rightarrow \mathbb{R}$.  Utilities may be defined implicitly, though.
-\\
-\end{compactenum}
+\end{compactenum-}
 
 This architecture may depend on a \textbf{logical sub-system} that:
-\begin{compactenum}[1.]
+\begin{compactenum-}
 \item  recognizes environmental states (eg \textit{``the apple is on the table''}) from raw percepts (eg pixel values from a camera)
 \item  recognizes possible actions (eg \textit{``I can put the apple on the plate''})
-\\
-\end{compactenum}
+\end{compactenum-}
 
 The goal is to maximize expected utility.  Planning becomes a discrete optimization problem in this setting.
 
@@ -142,37 +140,36 @@ A key question is how an initially-dumb AGI can \textit{improve} the performance
 The problem with this approach is that it does not exploit the advantages of machine program synthesis, and thus is likely to be sub-optimal.
 
 \textbf{2. Natural reasoning} (cf \S\ref{sec:natural-reasoning})
-\begin{compactenum}[(a)]
+\begin{compactenum-}[(a)]
 \item  The problem is that NR does not yet exist, but it is a \textit{sine-qua-non desideratum} of AGI.
 \item  So the question is how to enable an initially weak form of NR to synthesize programs.  One possibility is to use \textbf{creativity}:  the AGI will generate programs by partly reasoning and partly random acting.
 \item  An agent with NR is likely to have RL as well.
 \item  An NR agent can invoke ATP.
-\item  An NR agent can self-program (without invoking ATP), simply by \textbf{deductive planning} (\S\ref{sec:deductive-planning}).\\
-\end{compactenum}
+\item  An NR agent can self-program (without invoking ATP), simply by \textbf{deductive planning} (\S\ref{sec:deductive-planning}).
+\end{compactenum-}
 
 \textbf{3. ATP} \index{programming!ATP (automated theorem proving)}
-\begin{compactenum}[(a)]
+\begin{compactenum-}[(a)]
 \item  It requires \textit{formal} specifications of programs (or sub-routines), which are often very hard to write for humans.
 \item  Search in proof space can be very slow.
-\item  There already exists ATP-based program synthesis software, which can be used externally.\\
-\end{compactenum}
+\item  There already exists ATP-based program synthesis software, which can be used externally.
+\end{compactenum-}
 
 \textbf{4. Stochastic local search} \index{search!stochastic local search}
-\begin{compactenum}[(a)]
+\begin{compactenum-}[(a)]
 \item  Is based on generate-and-test.
 \item  ``Generate'' is random and the program space is typically huge.
 \item  ``Test'' is often slow because it requires the entire AGI to answer a large number of benchmark queries.  A possible remedy is to specify input-out benchmarks for AGI \textit{components}, but then the burden is on humans to design the modular architecture.
 \item  A large population of relatively low-score programs has to be maintained, in order to allow sufficient time for cooperativity to evolve.  For this reason I suspect that the evolutionary approach is rather slow.
-\item  2 further problems are:  How can an initially-dumb AGI improve the stochastic searcher?\footnote{In MOSES (cite) an attempt is made at ``representation building''.} And how can this transfer of rationality from the AGI to the Synthesizer be coded once and for all?\\
-\end{compactenum}
+\item  2 further problems are:  How can an initially-dumb AGI improve the stochastic searcher?\footnote{In MOSES (cite) an attempt is made at ``representation building''.} And how can this transfer of rationality from the AGI to the Synthesizer be coded once and for all?
+\end{compactenum-}
 
 \textbf{5. Reinforcement learning} \index{reinforcement learning}
-\begin{compactenum}[(a)]
+\begin{compactenum-}[(a)]
 \item  The goal of RL is to learn policies of how to act in certain environmental states.  It can synthesize programs if the environment is that of programming.
 \item  RL can be augmented with logical reasoning.
 \item  RL can implement the idea of expected utility maximization.
-\\
-\end{compactenum}
+\end{compactenum-}
 
 \textbf{Combining all methods}\\
 Apparently, we can combine all the above methodologies without conflict:
@@ -210,10 +207,10 @@ This is a distributive architecture for deduction:
 
 Each agent responds to queries and spits out solutions. For example, an agent may have a rule in its (local) KB that "professors who wear sandals are nice to students".  The agent listens to queries, trying to find something it can answer.  A query such as "who is nice to students?" would be a hit.  Then the agent either:
 
-\begin{compactenum}
+\begin{compactenum-}
 \item returns an answer, if it knows as a \textit{fact} that XYZ is nice to students.
 \item applys a rule and returns one of more sub-goals;  In this case, the sub-goal is "does XYZ wear sandals?"  Wait for other agents to answer that.
-\end{compactenum}
+\end{compactenum-}
 
 In case \#2, if another agent provides an answer "Professor Matt Mahoney wears sandals", say with TV = 0.9, and sends it back to the first agent, then the first agent decides how to calculate the TV of the conclusion given that TV of premise = 0.9.  The only calculation it needs to perform is for the rule that it owns.  Then it returns the answer to the asker.
 

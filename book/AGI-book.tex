@@ -16,25 +16,43 @@
 \usepackage[style=list,acronym=true,number=none]{glossary}
 \usepackage{alg}
 \usepackage{minitoc}
-\usepackage[pointedenum]{paralist}
 \usepackage[sf,bf,big,raggedright,compact]{titlesec}
 \usepackage{fancyhdr}
 \usepackage{movie15}
 \usepackage{caption}
+\usepackage{parskip}     % may not need
+\usepackage[pointedenum]{paralist}  % compactenum, compactitem etc
+\usepackage{enumitem}    % fixes para top seperation in {enumerate}
+\setlist{topsep=-1ex}
+\usepackage{amsthm}      % theorem style
+
+%\newenvironment{compactitem}[0]{\begin{enumerate}[label=\textbullet,noitemsep]}{\end{enumerate}}
+
+\newenvironment{compactenum-}[0]{\begin{compactenum}}{\end{compactenum}\vspace{3ex}}
+\newenvironment{compactitem-}[0]{\begin{compactitem}}{\end{compactitem}\vspace{3ex}}
+\newenvironment{enumerate-}[0]{\begin{enumerate}}{\end{enumerate}\vspace{3ex}}
+
+%\newenvironment{compactenuma}[0]{\begin{enumerate}[nosep,label=\alpha]}{\end{enumerate}}
 
 \definecolor{TodoColor}{rgb}{0.1,0.4,0.1}   % Dark Green
 \definecolor{LogicColor}{rgb}{0.4,0.1,0.4}  % Magenta
+\definecolor{Green} {rgb}{0.1,0.4,0.1}
+\definecolor{Red}   {rgb}{1.0,0.4,0.4}
+\definecolor{Blue}  {rgb}{0.1,0.1,0.6}
+\definecolor{Purple}{rgb}{0.4,0.1,0.3}
 
 \newcommand{\code}   [1]{{\footnotesize{\ttfamily #1}}}
 \newcommand{\formula}[1]{\textcolor{LogicColor}{#1}}
 \newcommand{\todo}   [1]{\textcolor{TodoColor}{\{ #1 \}}}
 \newcommand{\english}[1]{\rmfamily \textit{``#1''}\sffamily}
+\newcommand{\kb}     [1]{[s$_#1$]:}
 \renewcommand{\star}{$* \;$}
 \newcommand{\app}{$\circ \;$}
 \newcommand{\eg}{\textbf{Example:} }
 \newcommand{\tab}{\hspace*{1cm} }
-\newcommand{\underconst}{\includegraphics[scale=0.5]{UnderConst.png}}
 \renewcommand{\vec}[1]{\mathbf{#1}}
+
+\newcommand{\underconst}{\includegraphics[scale=0.5]{UnderConst.png}}
 
 %%%%%%%%%%%%%%%%% Symbols defined by me %%%%%%%%%%%%%%%%%%%
 \newcommand{\defeq}{\stackrel{def}{=}}
@@ -86,6 +104,9 @@
 \renewcommand{\mtctitle}{}
 \renewcommand{\chaptername}{Ch }
 
+\newtheoremstyle{examples}{}{}{\upshape}{}{\bfseries}{}{\newline}{#1 #2 \mdseries{#3}}
+\theoremstyle{examples} \newtheorem{example}{Example}[section]
+
 \titlespacing{\chapter}{0pt}{0pt}{0pt}
 \titleformat{\chapter}[hang]{\sffamily\bfseries\Huge\color{blue}}{\thechapter \hspace{30pt}}{0pt}{}
 \titleformat{\appendix}[hang]{\sffamily\bfseries\Huge\color{blue}}{\thechapter \hspace{30pt}}{0pt}{}
@@ -121,9 +142,10 @@ Pei Wang
 \setlength{\floatsep}{0cm}
 \setlength{\textfloatsep}{0.6cm}
 \setlength{\intextsep}{0.5cm}
-\setlength{\parindent}{0em}
-\setlength{\parskip}{7pt}
-\setlength{\pltopsep}{-5pt}   % for compact-enum
+\setlength{\parindent}{0em}   % em = width of capital M
+\setlength{\parskip}{2ex plus1ex minus1ex} % ex = height of lowercase letter x
+% \setlength{\topsep}{-1ex}
+\setlength{\pltopsep}{-3ex}   % for compact-enum
 
 \pagestyle{fancy}
 \renewcommand{\headrulewidth}{0pt}
@@ -183,9 +205,9 @@ Pei Wang
 
 \item[Ch 2 (Architecture)]  Explain AIXI, algorithmic complexity, Solomonoff induction, etc.  Explain my distributive architecture.
 
-\item[Ch 3 (KR)]
+\item[Ch 3 (KR)] --- ok ---
 
-\item[Ch 4 (Logic)]  Idea of ``pre-logic'' seems no longer needed.  More on paradoxes.  New idea about equational unification and concepts.  Explain background notions.
+\item[Ch 4 (Logic)]  New idea about equational unification and concepts.  Explain background notions, eg paradoxes.
 
 \item[Ch 5 (Z)]  Add new idea on the ``Java-girl paradox'', which is in my draft paper.
 
@@ -195,7 +217,7 @@ Pei Wang
 
 \item[Ch 11 (Learning)]  A lot of new material is in the slides.
 
-\item[Ch 12 (NL)]
+\item[Ch 12 (NL)] --- ok ---
 
 \item[Ch 13 (Memory)]  Explain hierarchical clustering idea (from slides).
 
@@ -278,7 +300,8 @@ Pei Wang
 \glossary{name={SLD},description={selective linear definite clause resolution}}
 \glossary{name={SLS},description={stochastic local search}}
 \glossary{name={SVM},description={support vector machines}}
-\glossary{name={term},description={in FOL, terms are the arguments of predicates;  a term can be a variable, a constant, or recursive applications of functions to terms}}
+\glossary{name={term},description={A terms is recursively defined as either a variable, a constant, or applications of functions to arguments which are terms}}
+\glossary{name={TRS},description={term rewriting system}}
 \glossary{name={TV},description={truth value}}
 \glossary{name={VP},description={verb phrase}}
 \glossary{name={WM},description={Working Memory, part of the KB that has faster processing speed}}
