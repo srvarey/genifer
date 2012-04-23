@@ -1,4 +1,4 @@
-;;; Genifer /forward-chaining.clj
+;;; Genifer /backward-chaining.clj
 ;;;;
 ;;;; Copyright (C) General Intelligence
 ;;;; All Rights Reserved
