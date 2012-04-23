@@ -22,7 +22,6 @@
 ;;;; ==========================================================
 
 (ns genifer)
-
 (require '[clojure.set :as set])		; for set/union
 
 (declare unify unify2 const? variable? fork-subs add-sub)
@@ -35,7 +34,7 @@
 	(unify2 t1 t2 0 []))
 
 ;; Main algorithm, will be explained in detail in the book
-;; -- at any point, a variable on one side would be consuming input on the other side
+;; -- at any point, at most 1 variable on one side would be consuming input from the other side
 ;; -- direction = which side has a consuming variable: 0 = none, 1 = left, -1 = right
 ;; -- sub = the partial substitution of the consuming variable
 ;; -- a substitution is a list [X,A,B,C...] representing { ABC... / X }
@@ -117,13 +116,14 @@
 					(add-sub sub
 						(unify2 r1 r2 1 [a2, a1])))
 			:else
-				;; X consumes a2, a1 consumes a2, or a2 consumes a1
+				;; X consumes a2, OR a1 consumes a2, OR a2 consumes a1
 				(fork-subs
 					(unify2 t1 r2 1 (cons a2 sub))
-					(add-sub sub
-						(unify2 r1 r2 1 [a2, a1]))
-					(add-sub sub
-						(unify2 r1 r2 -1 [a1, a2]))))
+					(fork-subs
+						(add-sub sub
+							(unify2 r1 r2 1 [a2, a1]))
+						(add-sub sub
+							(unify2 r1 r2 -1 [a1, a2])))))
 		;; A variable (Y) on the right is consuming -- mirrors case 1
 		-1	(cond
 			(and (const? a1) (const? a2) (= a1 a2))
@@ -154,10 +154,11 @@
 				;; Y consumes a1, a1 consumes a2, or a2 consumes a1
 				(fork-subs
 					(unify2 r1 t2 -1 (cons a1 sub))
-					(add-sub sub
-						(unify2 r1 r2 1 [a2, a1]))
-					(add-sub sub
-						(unify2 r1 r2 -1 [a1, a2]))))
+					(fork-subs
+						(add-sub sub
+							(unify2 r1 r2 1 [a2, a1]))
+						(add-sub sub
+							(unify2 r1 r2 -1 [a1, a2])))))
 		))))
 
 ;; Is x a constant?  Yes if name of x begins with lower-case		
