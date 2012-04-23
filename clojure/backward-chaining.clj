@@ -42,7 +42,7 @@
 ;;   but the basic structure is the same.
 ;; ------------------------------------------------------
 
-(ns backward)
+(ns genifer)
 (import '(java.util.concurrent Executors ExecutorCompletionService))
 
 (declare start solve-goal solve-rule skip-while)
