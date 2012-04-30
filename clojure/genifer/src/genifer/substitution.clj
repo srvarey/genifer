@@ -3,7 +3,7 @@
 ;;; Copyright (C) General Intelligence
 ;;; All Rights Reserved
 ;;;
-;;; Written by William Taysom, YKY
+;;; Written by YKY
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU Affero General Public License v3 as
@@ -27,28 +27,24 @@
 (declare substitute substitute-atomic compatible? atomic-compatible?)
 
 ;; Apply a compound substitution to a term
-;; INPUT: sub = compound sub
+;; INPUT: subs = compound sub
 ;;		 term, as list
-;; OUTPUT: term
+;; OUTPUT: new term
 (defn substitute [subs term]
-	(if (empty? subs)
-		term
-		(substitute-atomic (first subs)
-			(substitute (rest subs) term))))
+	(reduce #(substitute-atomic %2 %1) term subs))
 
-;; Make an atomic substitution
+;; Make an atomic substitution, returns new term
 (defn substitute-atomic [sub term]
-	(if (empty? term)
-		()
-		(let [old (first sub)
-			  new (rest sub)]
+	(let [old (first sub)
+		  new (rest sub)]
+		(reduce
 			;; Scan term for old
-			;; If match, replace with new
-			(concat
-				(if (= (first term) old)
+			;; If match, replace old with new
+			#(concat %1
+				(if (= %2 old)
 					new
-					(list (first term)))
-				(substitute-atomic sub (rest term))))))
+					(list %2)))
+			() term)))
 
 ;; Test a list of atomic subs against each other
 ;; Returns:  true if compatible, false if not

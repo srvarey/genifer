@@ -3,7 +3,7 @@
 ;;; Copyright (C) General Intelligence
 ;;; All Rights Reserved
 ;;;
-;;; Written by William Taysom, YKY
+;;; Written by YKY
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU Affero General Public License v3 as
@@ -34,13 +34,13 @@
 ;; output: a compound substitution unifying t1, t2
 ;;         false if fail
 (defn unify [t1 t2]
-	(unify2 t1 t2 0 []))
+	(unify2 t1 t2 0 ()))
 
 ;; Main algorithm, will be explained in detail in the book
 ;; -- at any point, at most 1 variable on one side would be consuming input from the other side
 ;; -- direction = which side has a consuming variable: 0 = none, 1 = left, -1 = right
 ;; -- sub = the partial substitution of the consuming variable
-;; -- a substitution is a list [X,A,B,C...] representing { ABC... / X }
+;; -- a substitution is a list (X,A,B,C...) representing { ABC... / X }
 ;; OUTPUT: a list of compound substitutions, each compound substitution is a set, ie, #{...}
 (defn unify2 [t1 t2 direction sub]
 	(let [a1 (first t1)
@@ -52,21 +52,21 @@
 		;; If either side is exhausted:
 		(cond
 		(and (nil? a1) (nil? a2))
-			[#{(reverse sub)}]		; success, regardless of direction
+			(list #{(reverse sub)})		; success, regardless of direction
 		(nil? a1)
 			(if (== direction 1)
 				(unify2 t1 r2 1 (cons a2 sub))
 				(if (const? a2)
 					false
 					(add-sub sub
-						(unify2 t1 r2 -1 [a2]))))
+						(unify2 t1 r2 -1 (list a2)))))
 		(nil? a2)
 			(if (== direction -1)
 				(unify2 r1 t2 -1 (cons a1 sub))
 				(if (const? a1)
 					false
 					(add-sub sub
-						(unify2 r1 t2 1 [a1]))))
+						(unify2 r1 t2 1 (list a1)))))
 		:else		; continue to main course, don't wanna ident
 
 		(case direction
@@ -78,27 +78,27 @@
 				false
 			(and (variable? a1) (const? a2))
 				(fork-subs
-					(add-sub [a1]
-						(unify2 r1 t2 0 []))
+					(add-sub (list a1)
+						(unify2 r1 t2 0 ()))
 					;; Begin substitution { a2... / a1 }
-					(unify2 r1 r2 1 [a2, a1]))
+					(unify2 r1 r2 1 (list a2,a1)))
 			(and (const? a1) (variable? a2))
 				(fork-subs
 					(add-sub [a2]
-						(unify2 t1 r2 0 []))
+						(unify2 t1 r2 0 ()))
 					;; Begin substitution { a1... / a2 }
-					(unify2 r1 r2 -1 [a1, a2]))
+					(unify2 r1 r2 -1 (list a1,a2)))
 			:else
 				;; Either a1 consumes a2 or vice versa
-				(fork-subs (unify2 r1 r2  1 [a2, a1])
-					   (unify2 r1 r2 -1 [a1, a2])))
+				(fork-subs (unify2 r1 r2  1 (list a2,a1))
+					   (unify2 r1 r2 -1 (list a1,a2))))
 		;; A variable (X) on the left is consuming
 		1	(cond
 			(and (const? a1) (const? a2) (= a1 a2))
 				(fork-subs
 					;; X ends and return to freshness
 					(add-sub sub
-						(unify2 r1 r2 0 []))
+						(unify2 r1 r2 0 ()))
 					;; X consumes a2
 					(unify2 t1 r2 1 (cons a2 sub)))
 			(and (const? a1) (const? a2) (not= a1 a2))
@@ -110,30 +110,30 @@
 					(unify2 t1 r2 1 (cons a2 sub))
 					;; X ends, a2 consumes a1
 					(add-sub sub
-						(unify2 r1 r2 -1 [a1, a2])))
+						(unify2 r1 r2 -1 (list a1,a2))))
 			(and (variable? a1) (const? a2))
 				(fork-subs
 					;; X consumes a2
 					(unify2 t1 r2 1 (cons a2 sub))
 					;; X ends, a1 consumes a2
 					(add-sub sub
-						(unify2 r1 r2 1 [a2, a1])))
+						(unify2 r1 r2 1 (list a2,a1))))
 			:else
 				;; X consumes a2, OR a1 consumes a2, OR a2 consumes a1
 				(fork-subs
 					(unify2 t1 r2 1 (cons a2 sub))
 					(fork-subs
 						(add-sub sub
-							(unify2 r1 r2 1 [a2, a1]))
+							(unify2 r1 r2 1 (list a2,a1)))
 						(add-sub sub
-							(unify2 r1 r2 -1 [a1, a2])))))
+							(unify2 r1 r2 -1 (list a1,a2))))))
 		;; A variable (Y) on the right is consuming -- mirrors case 1
 		-1	(cond
 			(and (const? a1) (const? a2) (= a1 a2))
 				(fork-subs
 					;; Y ends and return to freshness
 					(add-sub sub
-						(unify2 r1 r2 0 []))
+						(unify2 r1 r2 0 ()))
 					;; Y consumes a1
 					(unify2 r1 t2 -1 (cons a1 sub)))
 			(and (const? a1) (const? a2) (not= a1 a2))
@@ -145,23 +145,23 @@
 					(unify2 r1 t2 -1 (cons a1 sub))
 					;; Y ends, a2 consumes a1
 					(add-sub sub
-						(unify2 r1 r2 -1 [a1, a2])))
+						(unify2 r1 r2 -1 (list a1,a2))))
 			(and (variable? a1) (const? a2))
 				(fork-subs
 					;; Y consumes a1
 					(unify2 r1 t2 -1 (cons a1 sub))
 					;; Y ends, a1 consumes a2
 					(add-sub sub
-						(unify2 r1 r2 1 [a2, a1])))
+						(unify2 r1 r2 1 (list a2,a1))))
 			:else
 				;; Y consumes a1, a1 consumes a2, or a2 consumes a1
 				(fork-subs
 					(unify2 r1 t2 -1 (cons a1 sub))
 					(fork-subs
 						(add-sub sub
-							(unify2 r1 r2 1 [a2, a1]))
+							(unify2 r1 r2 1 (list a2,a1)))
 						(add-sub sub
-							(unify2 r1 r2 -1 [a1, a2])))))
+							(unify2 r1 r2 -1 (list a1,a2))))))
 		))))
 
 ;; Is x a constant?  Yes if name of x begins with lower-case		
@@ -203,7 +203,7 @@
 	(empty? x)
 		y
 	(empty? y)
-		[#{(reverse x)}]
+		(list #{(reverse x)})
 	:else
 		(for [y1 y]		; for each compound sub in y
 			(if (empty? (first y1))
