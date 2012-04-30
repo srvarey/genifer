@@ -42,7 +42,7 @@
 	(:use [clojure.math.combinatorics :only [cartesian-product]])
 )
 
-(declare forward satisfy-rule satisfy-literal)
+(declare forward satisfy-rule satisfy-goal)
 
 ;; For parallel execution -- not used yet
   (import '(java.util.concurrent Executors ExecutorCompletionService))
@@ -62,7 +62,7 @@
 ;; Returns a list of compound subs
 (defn satisfy-rule [rule]
 	(let [body (rest rule)
-		  subs-list (map satisfy-literal body)	; list of lists of compound subs
+		  subs-list (map satisfy-goal body)		; list of lists of compound subs
 		  solutions (apply cartesian-product subs-list)
 		  ;; solutions = list of lists of compound subs
 		  ;; Semantics is AND -- each list of compounds are flattened to atomic subs
@@ -74,7 +74,7 @@
 
 ;; Find all facts that satisfy literal
 ;; Returns a list of compound subs
-(defn satisfy-literal [literal]
+(defn satisfy-goal [goal]
 	(apply concat				; flatten results of map
 		(remove false?
-			(map #(unify/unify % literal) @knowledge/work-mem))))
+			(map #(unify/unify % goal) @knowledge/work-mem))))
