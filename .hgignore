@@ -1,5 +1,6 @@
 syntax: glob
 *.tgz
+*.bak
 ayane.jar
 build
 private
@@ -17,3 +18,12 @@ haskell\*.out
 haskell\*.toc
 haskell\*.bat
 haskell\*.tex
+clojure\.gitignore
+clojure\pom.xml
+clojure\lib\*.jar
+clojure\lib
+clojure\classes
+clojure\native
+clojure\.lein-failures
+clojure\checkouts
+clojure\.lein-deps-cum

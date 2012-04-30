@@ -1,4 +1,4 @@
-;;; Genifer /backward-chaining.clj
+;;; Genifer /backward_chaining.clj
 ;;;;
 ;;;; Copyright (C) General Intelligence
 ;;;; All Rights Reserved
@@ -42,46 +42,53 @@
 ;;   but the basic structure is the same.
 ;; ------------------------------------------------------
 
-(ns genifer)
+(ns genifer.backward_chaining
+	(:require [genifer.unification  :as unify])
+	(:require [genifer.substitution :as subst])
+	(:require [genifer.knowledge    :as knowledge])
+)
 (import '(java.util.concurrent Executors ExecutorCompletionService))
 
 (declare start solve-goal solve-rule skip-while)
 
+(def executor
+    "No harm in sharing one executor for all races."
+	(Executors/newCachedThreadPool))
+
 (defn start []
 	(loop []
 		(print "Enter query: ") (flush)
-		(let [query (read-line)
-			  truth (solve-goal (symbol query))]
+		(let [query (read)
+			  truth (solve-goal query)]
 			(printf "Answer is: %s\n" truth))
 		(recur)))
 
-;; The rule base
-(defn fetch-rules [goal]
-	(case goal
-		goal '[[job1,job2,job3,job4],[job5,job6,job7,job8,job9,job10,job11]]
-		job1 '[[job2,job3,job4]]
-		job2 '[[job3,job4]]
-		job3 '[[job4]]
-		;; job4 = undefined, making this branch a dead end
-		job5 '[[job6,job7,job8,job9,job10,job11]]
-		job6 '[[job7,job8,job9,job10,job11]]
-		job7 '[[job8,job9,job10,job11]]
-		job8 '[[job9,job10,job11]]
-		job9 '[[job10,job11]]
-		job10 '[[job11]]
-		job11 '[[]]
-		'[]))
+;; Find all facts (in working memory) that unifies with goal.
+;; Because our logic allows rewriting, it is difficult to predict from syntax alone which facts will unify with goal.  So we are forced to try unify with all facts (at least in working memory).  In the future we can use contexts to select subsets of the KB to try unify.
+;; Returns a lazy sequence of subs
+(defn fetch-facts [goal]
+	(remove false?
+		(map #(unify/unify % goal) knowledge/work-mem)))
 
+;; Find rules that unifies with goal, returns a lazy sequence of subs
+(defn fetch-rules [goal]
+	(remove false?
+		(map #(unify/unify (first %) goal) knowledge/rules)))
+
+;; For facts, we just return the subs (and the TVs if fuzzy-probabilistic)
+;; For rules, we find the rules that unify with the goal via some subs, apply those subs to the rule's premises (sub-goals), and solve the sub-goals recursively.
+;; Then we get the sequence of subs, check compatibility, and return viable solutions.
 (defn solve-goal [goal]
+	(let [solutions (fetch-facts goal)]
+		(if (not (empty? solutions))
+			solutions))		; return answers
 	(let [rules (fetch-rules goal)]
 		(cond
 		(empty? rules)
 			nil		; no applicable rules, return nil
-		(some empty? rules)
-			1.0		; it's a fact of truth 1.0 when rule body is []
 		:else
-			(let [comp-service (ExecutorCompletionService.
-						(Executors/newCachedThreadPool))
+			;; Spawn new concurrent processes
+			(let [comp-service (ExecutorCompletionService. executor)
 				  futures (doseq [rule rules]
 						(.submit comp-service #(solve-rule rule)))
 				  ;; Get the 1st result that's not nil

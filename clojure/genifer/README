@@ -1,0 +1,35 @@
+Genifer in Clojure
+==================
+
+Genifer is a general inference engine based on a new untyped combinatory logic with fuzzy-probabilistic Bayesian belief propagation.  It can perform deduction (both forward- and backward- chaining), abduction, and inductive learning.
+
+Installation
+============
+
+1. The easiest way is to install Leiningen.
+
+2. Then check out the repository to your local directory.
+
+3. Run:
+	lein deps
+
+4. Then use one of:
+	lein test
+	lein test :forward
+	lein test :unify
+	lein test :backward    (work under progress)
+to play around.
+
+{ To-do:  I will provide instructions for running without Leiningen. }
+
+Usage
+=====
+
+Feel free to modify the knowledge base to include any fact or rule you want.
+
+{ To-do .... }
+
+License
+=======
+Copyright (C) General Intelligence
+Distributed under the GNU Affero General Public License v3.
