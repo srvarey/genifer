@@ -37,8 +37,7 @@
 (defn substitute-atomic [sub term]
 	(let [old (first sub)
 		  new (rest sub)]
-		(reduce
-			;; Scan term for old
+		(reduce			; Scan term for old
 			;; If match, replace old with new
 			#(concat %1
 				(if (= %2 old)
