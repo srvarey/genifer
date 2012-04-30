@@ -1,34 +1,37 @@
-;;; Genifer /unify.clj
-;;;;
-;;;; Copyright (C) General Intelligence
-;;;; All Rights Reserved
-;;;;
-;;;; Written by William Taysom, YKY
-;;;;
-;;;; This program is free software; you can redistribute it and/or modify
-;;;; it under the terms of the GNU Affero General Public License v3 as
-;;;; published by the Free Software Foundation and including the exceptions
-;;;; at http://opencog.org/wiki/Licenses
-;;;;
-;;;; This program is distributed in the hope that it will be useful,
-;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;;; GNU General Public License for more details.
-;;;;
-;;;; You should have received a copy of the GNU Affero General Public License
-;;;; along with this program; if not, write to:
-;;;; Free Software Foundation, Inc.,
-;;;; 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-;;;; ==========================================================
+;;; Genifer /unification.clj
+;;;
+;;; Copyright (C) General Intelligence
+;;; All Rights Reserved
+;;;
+;;; Written by William Taysom, YKY
+;;;
+;;; This program is free software; you can redistribute it and/or modify
+;;; it under the terms of the GNU Affero General Public License v3 as
+;;; published by the Free Software Foundation and including the exceptions
+;;; at http://opencog.org/wiki/Licenses
+;;;
+;;; This program is distributed in the hope that it will be useful,
+;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU Affero General Public License
+;;; along with this program; if not, write to:
+;;; Free Software Foundation, Inc.,
+;;; 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-(ns genifer)
+;;; ==========================================================
+;;; ***** Syntactic unification, without rewriting yet
+
+(ns genifer.unification)
+
 (require '[clojure.set :as set])		; for set/union
 
-(declare unify unify2 const? variable? fork-subs add-sub)
+(declare unify unify2 const? variable? fork-subs add-sub substitute substitute-atomic)
 
 ;; Syntactic unify
 ;; input: 2 terms t1 and t2
-;; output: a substitution unifying t1, t2
+;; output: a compound substitution unifying t1, t2
 ;;         false if fail
 (defn unify [t1 t2]
 	(unify2 t1 t2 0 []))
@@ -38,7 +41,7 @@
 ;; -- direction = which side has a consuming variable: 0 = none, 1 = left, -1 = right
 ;; -- sub = the partial substitution of the consuming variable
 ;; -- a substitution is a list [X,A,B,C...] representing { ABC... / X }
-;; OUTPUT: a set (#{...}) of compound substitutions
+;; OUTPUT: a list of compound substitutions, each compound substitution is a set, ie, #{...}
 (defn unify2 [t1 t2 direction sub]
 	(let [a1 (first t1)
 		  a2 (first t2)
@@ -49,7 +52,7 @@
 		;; If either side is exhausted:
 		(cond
 		(and (nil? a1) (nil? a2))
-			(reverse sub)			; success, regardless of direction
+			[#{(reverse sub)}]		; success, regardless of direction
 		(nil? a1)
 			(if (== direction 1)
 				(unify2 t1 r2 1 (cons a2 sub))
@@ -169,9 +172,12 @@
 (defn variable? [x]
 	(Character/isUpperCase (first (name x))))
 
-;; Add a compound substitution to the set of compound substitutions
+;; Merge 2 lists of compound substitutions
 ;; -- semantics is OR
-(defn fork-subs [x y]
+;; -- INPUT: each of x, y is a list of compound subs
+;; -- a compound sub is a set
+;; -- OUTPUT: a list of compound subs
+(defn fork-subs [x y] 
 	;(println "fork: " x ", " y)
 	(cond
 	(false? x)
@@ -179,11 +185,14 @@
 	(false? y)
 		x
 	:else
-		(set/union #{x} #{y})))
+		(concat x y)))
 
-;; Add an atomic substitution to a compound substitution
-;; -- semantics is AND
-;; -- on input, x needs to be reversed because it was built up via cons
+;; Add an atomic substitution to a list of compound substitutions
+;; -- semantics is AND, distributed into the list
+;; -- INPUT: x is an atomic sub, as a list (not set)
+;;           y is a list of compound subs, ie, a list of sets
+;;           On input, x needs to be reversed because it was built up via cons
+;; -- OUTPUT: a list of compound subs
 (defn add-sub [x y]
 	;(println "add: " x ", " y)
 	(cond
@@ -194,51 +203,10 @@
 	(empty? x)
 		y
 	(empty? y)
-		(reverse x)
+		[#{(reverse x)}]
 	:else
-		(set/union #{(reverse x)} #{y})))
-
-(def tests '[
-	[john loves mary]   	[john loves mary]
-		[]
-	[john loves mary]   	[john hates mary]
-		false
-	[john loves mary X]		[john loves mary obsessively]
-		[X obsessively]
-	[john loves X]      	[john loves mary obsessively]
-		[X mary obsessively]
-	[john X]            	[john loves mary obsessively]
-		[X loves mary obsessively]
-	[john X possessively]	[john loves mary obsessively]
-		false
-	[john X obsessively]	[john loves mary obsessively]
-		[X loves mary]
-	[X]						[love]
-		[X love]
-	[love]                 	[Y]
-		[Y love]
-	[]						[love]
-		false
-	[X loves mary]			[john loves mary]
-		[X john]
-	[X loves Y]				[john loves mary]
-		#{[X john] [Y mary]}
-	[X loves Y Z]			[john loves mary]
-		#{ #{[X john] [Y mary] [Z]}
-	       #{[X john] [Y] [Z mary]} }
-	[X loves Y Z]			[john loves mary obsessively]
-		#{ #{[X john] [Y mary] [Z obsessively]}
-	       #{[X john] [Y mary obsessively] [Z]}
-	       #{[X john] [Y] [Z mary obsessively]} }
-	])
-
-(defn run-tests []
-	(loop [test tests]
-		(let [t1 (first test)
-			  t2 (second test)
-			  answer (nth test 2)]
-			(println "Expected: " answer)
-			(println "     ===> " (unify t1 t2))
-			(println)
-			(if (not (empty? (rest (rest (rest test)))))
-				(recur (rest (rest (rest test))))))))
+		(for [y1 y]		; for each compound sub in y
+			(if (empty? (first y1))
+				#{(reverse x)}
+				;; do the set union
+				(set/union #{(reverse x)} y1)))))
