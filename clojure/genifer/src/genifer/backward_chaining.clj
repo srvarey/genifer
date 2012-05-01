@@ -43,9 +43,9 @@
 ;;; ------------------------------------------------------
 
 (ns genifer.backward_chaining
-	(:require [genifer.unification  :as unify])
-	(:require [genifer.substitution :as subst])
-	(:require [genifer.knowledge    :as knowledge])
+	(:require [genifer.unification				:as unify])
+	(:require [genifer.substitution				:as subst])
+	(:require [genifer.knowledge_representation	:as knowledge])
 )
 (import '(java.util.concurrent Executors ExecutorCompletionService))
 
@@ -81,10 +81,10 @@
 ;; Try to match one rule, if success apply substitution to rule body and return it, otherwise return false.
 (defn match-1-rule [rule goal]
 	(let [subs (unify/unify (first rule) goal)]
-		(println "The sub =" sub)
-		(if (empty? sub)
+		(println "The sub =" subs)
+		(if (empty? subs)
 			false
-			(subst/substitute sub (rest rule)))))
+			(subst/substitute subs (rest rule)))))
 
 ;; For facts, we just return the subs (and the TVs if fuzzy-probabilistic)
 ;; For rules, we find the rules that unify with the goal via some subs, apply those subs to the rule's premises (sub-goals), and solve the sub-goals recursively.

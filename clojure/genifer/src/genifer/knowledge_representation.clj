@@ -1,4 +1,4 @@
-;;; Genifer/knowledge.clj
+;;; Genifer/knowledge_representation.clj
 ;;;
 ;;; Copyright (C) General Intelligence
 ;;; All Rights Reserved
@@ -23,7 +23,7 @@
 ;;; ==========================================================
 ;;; ***** Definitions of logic, knowledge representation, and memory systems
 
-(ns genifer.knowledge)
+(ns genifer.knowledge_representation)
 
 ;;;; ======================== Logic ===========================
 ;; formula := atom |
@@ -74,11 +74,11 @@
 (def rewrite-sys1 '(
 ;;	Left			===>		Right
 	((very X)			(X))
-)
+))
 
 ;; System 2 is reversible
 (def rewrite-sys2 '(
-;;	Left			===>		Right
+;;	Left			<==>		Right
 	((loves)			(likes))
 	((clark kent)		(superman))
-)
+))

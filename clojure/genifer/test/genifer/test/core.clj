@@ -69,7 +69,7 @@
 	      #{(X john) (Y) (Z mary obsessively)} )
 	))
 
-(deftest test_unify ; Unify
+(deftest ^:unify test_unify
 	(loop [test unify-tests
 		   count 1]
 		(let [t1 (first test)
