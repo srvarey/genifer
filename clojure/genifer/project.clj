@@ -5,8 +5,10 @@
 	[org.clojure/math.combinatorics "0.0.2"]
 	]
   :main genifer.core
-  :test-selectors {:default (complement :forward :backward)
-                   :forward :forward
-				   :backward :backward
-                   :all (fn [_] true)}
+  :test-selectors {	:default :unify
+					:forward :forward
+					:backward :backward
+					:unify :unify
+					:all (fn [_] true)
+				  }
 )

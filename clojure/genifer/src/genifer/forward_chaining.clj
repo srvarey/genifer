@@ -36,9 +36,9 @@
 ;;;				  apply substitutions to the head and add it to KB
 
 (ns genifer.forward_chaining
-	(:require [genifer.unification  :as unify])
-	(:require [genifer.substitution :as subst])
-	(:require [genifer.knowledge    :as knowledge])
+	(:require [genifer.unification				:as unify])
+	(:require [genifer.substitution				:as subst])
+	(:require [genifer.knowledge_representation :as knowledge])
 	(:use [clojure.math.combinatorics :only [cartesian-product]])
 )
 
