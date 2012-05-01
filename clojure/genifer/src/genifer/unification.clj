@@ -21,7 +21,7 @@
 ;;; 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 ;;; ==========================================================
-;;; ***** Syntactic unification, without rewriting yet
+;;; ***** Syntactic unification
 
 (ns genifer.unification)
 
@@ -177,7 +177,7 @@
 ;; -- INPUT: each of x, y is a list of compound subs
 ;; -- a compound sub is a set
 ;; -- OUTPUT: a list of compound subs
-(defn fork-subs [x y] 
+(defn fork-subs [x y]
 	;(println "fork: " x ", " y)
 	(cond
 	(false? x)

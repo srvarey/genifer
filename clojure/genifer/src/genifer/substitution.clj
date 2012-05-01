@@ -1,4 +1,4 @@
-;;; Genifer /unification.clj
+;;; Genifer /substitution.clj
 ;;;
 ;;; Copyright (C) General Intelligence
 ;;; All Rights Reserved
@@ -21,13 +21,13 @@
 ;;; 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 ;;; ==========================================================
-;;; ***** Syntactic unification, without rewriting yet
+;;; ***** Substitution management
 
 (ns genifer.substitution)
 (declare substitute substitute-atomic compatible? atomic-compatible?)
 
 ;; Apply a compound substitution to a term
-;; INPUT: subs = compound sub
+;; INPUT: subs = compound sub = list of atomic subs
 ;;		 term, as list
 ;; OUTPUT: new term
 (defn substitute [subs term]
@@ -37,24 +37,22 @@
 (defn substitute-atomic [sub term]
 	(let [old (first sub)
 		  new (rest sub)]
-		(reduce			; Scan term for old
-			;; If match, replace old with new
-			#(concat %1
-				(if (= %2 old)
-					new
-					(list %2)))
-			() term)))
+		(reduce #(concat %1				; Reduce with concatenations
+					(if (= %2 old)		; If match, replace old with new
+						new
+						(list %2)))
+				() term)))
 
 ;; Test a list of atomic subs against each other
 ;; Returns:  true if compatible, false if not
+;; -- For example, {john /X} and {joe /X} are incompatible
 (defn compatible? [subs-list]
 	(every? #(= % true)
 		(for [sub1 subs-list		; This generates all possible pairs
 			  sub2 subs-list]
 			(atomic-compatible? sub1 sub2))))
 
-;; Check if 2 atomic subs are compatible
-;; Returns:  true if OK,  false if incompatible
+;; Check if 2 atomic subs are compatible, returns true if OK
 (defn atomic-compatible? [sub1 sub2]
 	(or
 		;; Same variables?  If not that's good
