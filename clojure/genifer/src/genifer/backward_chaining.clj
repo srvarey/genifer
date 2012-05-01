@@ -19,28 +19,28 @@
 ;;; along with this program; if not, write to:
 ;;; Free Software Foundation, Inc.,
 ;;; 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 ;;; ==========================================================
-
-;; Backward chaining
-;; -- implemented as a parallel search
-;; -- the search tree interleaves calling of solve-goal and solve-rule
-;; -- solveGoal takes the first result available (OR)
-;; -- solveRule collects all results before calculating an answer (AND)
-;; -- technically this is called an AND-OR tree
-
-;; For example, to solve a goal G, we may have 2 rules:
-;;   G <- A, B, C           (rule 1)
-;;   G <- D, E, F, G.       (rule 2)
-;; Both rules are applicable (ie, could provide a correct answer),
-;;   so we can accept either one (OR).
-;; For each rule, we have to wait till all the sub-goals come back
-;;   in order to calculate a result, so it is a conjunction (AND).
-
-;; This type of AND-OR tree search arises naturally in all rule-based /
-;;   logical systems.  Some variations are possible (for example, wait
-;;   for a specific time and then choose the best answer for OR-parallelism),
-;;   but the basic structure is the same.
-;; ------------------------------------------------------
+;;; ***** Backward chaining
+;;; -- implemented as a parallel search
+;;; -- the search tree interleaves calling of solve-goal and solve-rule
+;;; -- solveGoal takes the first result available (OR)
+;;; -- solveRule collects all results before calculating an answer (AND)
+;;; -- technically this is called an AND-OR tree
+;;;
+;;; For example, to solve a goal G, we may have 2 rules:
+;;;   G <- A, B, C           (rule 1)
+;;;   G <- D, E, F, G.       (rule 2)
+;;; Both rules are applicable (ie, could provide a correct answer),
+;;;   so we can accept either one (OR).
+;;; For each rule, we have to wait till all the sub-goals come back
+;;;   in order to calculate a result, so it is a conjunction (AND).
+;;;
+;;; This type of AND-OR tree search arises naturally in all rule-based /
+;;;   logical systems.  Some variations are possible (for example, wait
+;;;   for a specific time and then choose the best answer for OR-parallelism),
+;;;   but the basic structure is the same.
+;;; ------------------------------------------------------
 
 (ns genifer.backward_chaining
 	(:require [genifer.unification  :as unify])
@@ -49,7 +49,7 @@
 )
 (import '(java.util.concurrent Executors ExecutorCompletionService))
 
-(declare start solve-goal solve-rule skip-while)
+(declare start solve-goal solve-rule skip-while match-facts match-rules match-1-rule)
 
 (def executor
     "No harm in sharing one executor for all races."
@@ -58,7 +58,7 @@
 (defn start []
 	(loop []
 		(print "Enter query: ") (flush)
-		(let [query (read)
+		(let [query (read *in*)
 			  truth (solve-goal query)]
 			(printf "Answer is: %s\n" truth))
 		(recur)))
@@ -66,48 +66,65 @@
 ;; Find all facts (in working memory) that unifies with goal.
 ;; Because our logic allows rewriting, it is difficult to predict from syntax alone which facts will unify with goal.  So we are forced to try unify with all facts (at least in working memory).  In the future we can use contexts to select subsets of the KB to try unify.
 ;; Returns a lazy sequence of subs
-(defn fetch-facts [goal]
+(defn match-facts [goal]
 	(remove false?
-		(map #(unify/unify % goal) knowledge/work-mem)))
+		(map #(unify/unify % goal) @knowledge/work-mem)))
 
-;; Find rules that unifies with goal, returns a lazy sequence of subs
-;; Need to return the premises for each rule with subs applied
-(defn fetch-rules [goal]
+;; Find rules that unifies with goal
+;; OUTPUT:	a lazy sequence of rule bodies with subs applied
+(defn match-rules [goal]
+	;; For each rule, unify rule head with goal, if fail then nothing,
+	;; Otherwise apply subs to rule body
 	(remove false?
-		(map #(unify/unify (first %) goal) knowledge/rules)))
+		(map #(match-1-rule % goal) knowledge/rules)))
+
+;; Try to match one rule, if success apply substitution to rule body and return it, otherwise return false.
+(defn match-1-rule [rule goal]
+	(let [subs (unify/unify (first rule) goal)]
+		(println "The sub =" sub)
+		(if (empty? sub)
+			false
+			(subst/substitute sub (rest rule)))))
 
 ;; For facts, we just return the subs (and the TVs if fuzzy-probabilistic)
 ;; For rules, we find the rules that unify with the goal via some subs, apply those subs to the rule's premises (sub-goals), and solve the sub-goals recursively.
 ;; Then we get the sequence of subs, check compatibility, and return viable solutions.
 (defn solve-goal [goal]
-	(let [solutions (fetch-facts goal)]
+	(let [solutions (match-facts goal)]
 		(if (not (empty? solutions))
-			solutions))		; return answers
-	(let [rules (fetch-rules goal)]
-		(cond
-		(empty? rules)
-			nil		; no applicable rules, return nil
-		:else
+			solutions		; return answers
+			;; Else -- don't wanna indent
+
+	(let [rule-bodies (match-rules goal)]
+		(if (empty? rule-bodies)
+			false		; no applicable rules, return false
 			;; Spawn new concurrent processes
 			(let [comp-service (ExecutorCompletionService. executor)
-				  futures (doseq [rule rules]
-						(.submit comp-service #(solve-rule rule)))
+				  futures (doseq [rule-body rule-bodies]
+						(.submit comp-service #(solve-rule rule-body)))
 				  ;; Get the 1st result that's not nil
 				  result (skip-while nil? #(.get (.take comp-service)))]
 				;; Cancel remaining tasks
 				(doseq [future futures]
 					(.cancel future true))
-				result))))
+				result))))))
 
-;; Keeps calling fun until (pred fun) is false
-(defn skip-while [pred fun]
+;; Keeps calling fun until (predicate result) is false
+(defn skip-while [predicate fun]
 	(let [result (apply fun [])]
-		(if (pred result)
-			(skip-while pred fun)
+		(if (predicate result)
+			(skip-while predicate fun)
 			result)))
 
-(defn solve-rule [rule-tail]
-	(let [truths (pmap solve-goal rule-tail)]
-		(if (some nil? truths)		; if some sub-goals failed
-			nil
-			(apply + truths))))		; sum up truth values -- for testing
+;; INPUT:	rule body = list of literals to be satisfied
+;; OUTPUT:	substitutions (and truth values)
+;; -- All substitutions need to be checked for compatibility
+(defn solve-rule [rule-body]
+	(let [solutions (pmap solve-goal rule-body)]		; note use of parallel map
+		;; At this point solutions is a list of lists of compound subs
+		(if (some false? solutions)						; if some sub-goals failed
+			false
+			;; else: merge solutions and return only compatible ones
+			(let [solutions2 (map #(apply concat %)		; flatten the seqs
+					(map #(map seq %) solutions))]		; convert compound subs to seqs
+				(take-while subst/compatible? solutions2)))))

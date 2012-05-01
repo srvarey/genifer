@@ -44,11 +44,12 @@
 
 ;;;; ========================= KB =============================
 ;; KB (knowledge-base)
-;; -- implemented as a hash-table, ie, a hash-map with vector values
+;; -- perhaps should be implemented as a hash-table, ie, a hash-map with vector values
 ;; (get {:a 1 :a 2 :b 3} :a) ?
 ;; (merge-with vector {:a 1 :b 2} {:a 1})
 ;; ==> {:a [1 1], :b 2}
-;(def rules (hash-map 'goal '[premises]))
+;; (def rules (hash-map 'goal '[premises]))
+
 (def rules '(
 ;;	Conclusion        <=== 	Premises .....
 	((X and Y are happy)	(X loves Y) (Y loves X))
@@ -64,4 +65,20 @@
 	(pete loves ann)
 	(paul loves ann)
 	(ann loves paul)
+	(superman can fly)
 )))
+
+;; Rewrite systems
+
+;; System 1 is oreinted from left to right
+(def rewrite-sys1 '(
+;;	Left			===>		Right
+	((very X)			(X))
+)
+
+;; System 2 is reversible
+(def rewrite-sys2 '(
+;;	Left			===>		Right
+	((loves)			(likes))
+	((clark kent)		(superman))
+)

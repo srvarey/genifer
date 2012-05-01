@@ -21,7 +21,7 @@
 ;;; 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 ;;; ==========================================================
-;;; ***** Forward-Chaining
+;;; ***** Forward-chaining
 ;;; Algorithm:
 ;;;   0.  REPEAT until no new conclusion can be generated
 ;;;   1.      FOR each rule in KB
@@ -45,14 +45,14 @@
 (declare forward satisfy-rule satisfy-goal)
 
 ;; For parallel execution -- not used yet
-  (import '(java.util.concurrent Executors ExecutorCompletionService))
-  (def executor (Executors/newCachedThreadPool))
+;(import '(java.util.concurrent Executors ExecutorCompletionService))
+;(def executor (Executors/newCachedThreadPool))
 
 (defn forward [incoming]
 	;; On entry, the incoming fact is added to working memory
 	(println "Adding: " incoming)
 	(send knowledge/work-mem conj incoming)
-	;; Match new fact with rules, using indexed fetch
+	;; Match new fact with rules;  will use indexed fetch in the future
 	;; Find all rules that matches incoming
 	(doseq [rule knowledge/rules]
 		(doseq [sub (satisfy-rule rule)]		; For each solution
@@ -68,9 +68,9 @@
 		  ;; Semantics is AND -- each list of compounds are flattened to atomic subs
 		  ;;  and then the atomic subs are checked against each other
 		  solutions2 (map #(apply concat %)		; flatten the seqs
-				(map #(map seq %) solutions))	; convert compound subs to seqs
-		  solutions3 (map distinct solutions2)] ; remove duplicates
-	    (filter subst/compatible? solutions3)))
+				(map #(map seq %) solutions))]	; convert compound subs to seqs
+		  ;solutions3 (map distinct solutions2) 	; remove duplicates (optional)
+	    (filter subst/compatible? solutions2)))
 
 ;; Find all facts that satisfy literal
 ;; Returns a list of compound subs

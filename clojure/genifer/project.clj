@@ -5,7 +5,8 @@
 	[org.clojure/math.combinatorics "0.0.2"]
 	]
   :main genifer.core
-  :test-selectors {:default (complement :forward)
-                 :forward :forward
-                 :all (fn [_] true)}
+  :test-selectors {:default (complement :forward :backward)
+                   :forward :forward
+				   :backward :backward
+                   :all (fn [_] true)}
 )

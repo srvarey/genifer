@@ -2,6 +2,7 @@
   (:use [genifer.core])
   (:use [clojure.test])
   (:use [genifer.forward_chaining])
+  (:use [genifer.backward_chaining])
   (:use [genifer.unification])
 )
 
@@ -11,6 +12,12 @@
 	;(println "Working memory: " @work-mem)
 	(println "Testing forward: "
 		(forward '(john hates mary)))
+	true
+)
+
+(deftest ^:backward test_backward ; Backward-chaining
+	(println "Testing backward: "
+		(solve-goal '(john loves mary)))
 	true
 )
 
