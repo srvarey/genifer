@@ -24,7 +24,7 @@
 ;;; ***** Inductive learner #1 (bottom-up)
 
 ;;; Some historical bottom-up learners:
-;;; 1. rlgg (Plotkin 1970, is dual to unification)
+;;; 1. rlgg (Plotkin 1970, = anti-unification)
 ;;; 2. Lopster (Lapointe & Matwin 1992, based on inverse implication)
 ;;; 3. Clint (de Raedt 1991)
 ;;; 4. Golem (Muggleton 1990, based on rlgg)
@@ -34,9 +34,10 @@
 
 (declare anti-unify)
 
-;; Let's implement the algorithm from "Simply Logical" by Peter Flach (1994)
+;; Let's implement the bottom-up learner from "Simply Logical" by Peter Flach (1994)
 
-;; Anti-unification = calculate lgg of 2 terms;  lgg = least general generalization
-;; 
+;; Anti-unification forms the basis of generalizing from examples in a bottom-up manner.
+;; Unification and anti-unification are dual to each other, both searching the lattice spanning the general-to-specific order.  Unification finds the "greatest lower bound" (aka "most general unifier"), whereas anti-unification finds the "least upper bound" (aka "least general generalization", or lgg).
+;; Their algorithms are very similar. The difference is when unification crashes, anti-unification will create new variables to absorb the crashes.
 (defn anti-unify [t1 t2]
 )

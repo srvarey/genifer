@@ -17,15 +17,15 @@
 )
 
 (deftest ^:backward test_backward ; Backward-chaining
-	(printf "\n**** match facts: john love mary ==> \n\t")
+	(printf "\n**** match facts: john loves mary ==> \n\t")
 	(println
-		(match-facts '(john love mary)))
+		(match-facts '(john loves mary)))
 	(printf "\n**** john loves mary ==> \n\t")
 	(println
-		(solve-goal '(john love mary)))
+		(solve-goal '(john loves mary)))
 	(printf "\n**** X loves mary ==> \n\t")
 	(println
-		(solve-goal '(X love mary)))
+		(solve-goal '(X loves mary)))
 	(printf "\n**** match rules: joe is sad ==> \n\t")
 	(println
 		(match-rules '(joe is sad)))
@@ -37,13 +37,13 @@
 		(solve-goal '(U is sad)))
 	(printf "\n**** match rules: Q and R is happy ==> \n\t")
 	(println
-		(match-rules '(Q and R is happy)))
-	(printf "\n**** solve rule: Q love R and R love Q ==> \n\t")
+		(match-rules '(Q and R are happy)))
+	(printf "\n**** solve rule: Q loves R and R loves Q ==> \n\t")
 	(println
-		(solve-rule '((Q love R) (R love Q))))
+		(solve-rule '((Q loves R) (R loves Q))))
 	(printf "\n**** Q and R is happy ==> \n\t")
 	(println
-		(solve-goal '(Q and R is happy)))
+		(solve-goal '(Q and R are happy)))
 	true
 )
 
