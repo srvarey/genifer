@@ -62,15 +62,17 @@
 ;; Returns a list of compound subs
 (defn satisfy-rule [rule]
 	(let [body (rest rule)
-		  subs-list (map satisfy-goal body)		; list of lists of compound subs
-		  solutions (apply cartesian-product subs-list)
-		  ;; solutions = list of lists of compound subs
-		  ;; Semantics is AND -- each list of compounds are flattened to atomic subs
-		  ;;  and then the atomic subs are checked against each other
-		  solutions2 (map #(apply concat %)		; flatten the seqs
-				(map #(map seq %) solutions))]	; convert compound subs to seqs
-		  ;solutions3 (map distinct solutions2) 	; remove duplicates (optional)
-	    (filter subst/compatible? solutions2)))
+		  ;; solutions1 = list of list of compound subs
+		  ;; solutions2 = cartesian product of 1 = list of list of compound subs
+		  ;; For each list of compound subs, semantics is AND
+		  ;;   so each list is flattened to atomic subs => solutions3
+		  ;;   and then the atomic subs are checked against each other for compatibility
+		  solutions1 (map satisfy-goal body)
+		  solutions2 (apply cartesian-product solutions1)
+		  solutions3 (map #(apply concat %)		; flatten the list
+				(map #(map seq %) solutions2))]	; convert compound subs to seqs
+		  ;solutions4 (map distinct solutions3) 	; remove duplicates (optional)
+	    (filter subst/compatible? solutions3)))
 
 ;; Find all facts that satisfy literal
 ;; Returns a list of compound subs

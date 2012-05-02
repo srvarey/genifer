@@ -27,7 +27,7 @@
 (declare substitute substitute-atomic compatible? atomic-compatible?)
 
 ;; Apply a compound substitution to a term
-;; INPUT: subs = compound sub = list of atomic subs
+;; INPUT: subs = a single compound sub = list of atomic subs
 ;;		 term, as list
 ;; OUTPUT: new term
 (defn substitute [subs term]
