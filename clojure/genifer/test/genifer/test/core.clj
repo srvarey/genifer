@@ -4,6 +4,7 @@
   (:use [genifer.forward_chaining])
   (:use [genifer.backward_chaining])
   (:use [genifer.unification])
+  (:use [genifer.substitution])
 )
 
 (deftest ^:forward test_forward ; Forward-chaining
@@ -16,8 +17,41 @@
 )
 
 (deftest ^:backward test_backward ; Backward-chaining
-	(println "Testing backward: "
-		(solve-goal '(john loves mary)))
+	(printf "\n**** match facts: john love mary ==> \n\t")
+	(println
+		(match-facts '(john love mary)))
+	(printf "\n**** john loves mary ==> \n\t")
+	(println
+		(solve-goal '(john love mary)))
+	(printf "\n**** X loves mary ==> \n\t")
+	(println
+		(solve-goal '(X love mary)))
+	(printf "\n**** match rules: joe is sad ==> \n\t")
+	(println
+		(match-rules '(joe is sad)))
+	(printf "\n**** joe is sad ==> \n\t")
+	(println
+		(solve-goal '(joe is sad)))
+	(printf "\n**** U is sad ==> \n\t")
+	(println
+		(solve-goal '(U is sad)))
+	(printf "\n**** match rules: Q and R is happy ==> \n\t")
+	(println
+		(match-rules '(Q and R is happy)))
+	(printf "\n**** solve rule: Q love R and R love Q ==> \n\t")
+	(println
+		(solve-rule '((Q love R) (R love Q))))
+	(printf "\n**** Q and R is happy ==> \n\t")
+	(println
+		(solve-goal '(Q and R is happy)))
+	true
+)
+
+(deftest ^:subst test_subst ; Substitution
+	(println "compatible? ==> "
+		(compatible? '((R paul) (Q ann) (R paul) (Q ann))))
+	(println "compatible? ==> "
+		(compatible? '((R paul) (Q ann) (R ron) (Q ann))))
 	true
 )
 

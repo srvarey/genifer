@@ -46,6 +46,7 @@
 	(:require [genifer.unification				:as unify])
 	(:require [genifer.substitution				:as subst])
 	(:require [genifer.knowledge_representation	:as knowledge])
+	(:use [clojure.math.combinatorics :only [cartesian-product]])
 )
 (import '(java.util.concurrent Executors ExecutorCompletionService))
 
@@ -65,30 +66,33 @@
 
 ;; Find all facts (in working memory) that unifies with goal.
 ;; Because our logic allows rewriting, it is difficult to predict from syntax alone which facts will unify with goal.  So we are forced to try unify with all facts (at least in working memory).  In the future we can use contexts to select subsets of the KB to try unify.
-;; Returns a lazy sequence of subs
+;; OUTPUT:  list of compound subs, could be ()
 (defn match-facts [goal]
-	(remove false?
-		(map #(unify/unify % goal) @knowledge/work-mem)))
+	(apply concat
+		(remove false?
+			(map #(unify/unify % goal) @knowledge/work-mem))))
 
 ;; Find rules that unifies with goal
-;; OUTPUT:	a lazy sequence of rule bodies with subs applied
+;; OUTPUT:	a lazy sequence of rule bodies with subs applied, can be ()
 (defn match-rules [goal]
 	;; For each rule, unify rule head with goal, if fail then nothing,
 	;; Otherwise apply subs to rule body
-	(remove false?
+	(apply concat
 		(map #(match-1-rule % goal) knowledge/rules)))
 
-;; Try to match one rule, if success apply substitution to rule body and return it, otherwise return false.
+;; Try to match one rule, if success apply substitution to rule body(s) and return them, otherwise return false.
+;; OUTPUT:  list of rule bodies, can be ()
 (defn match-1-rule [rule goal]
-	(let [subs (unify/unify (first rule) goal)]
-		(println "The sub =" subs)
-		(if (empty? subs)
-			false
-			(subst/substitute subs (rest rule)))))
+	(let [subs (unify/unify (first rule) goal)]		; subs = list of compound subs
+		(if (false? subs)
+			()
+			(for [sub subs]
+				(map #(subst/substitute sub %) (rest rule))))))
 
 ;; For facts, we just return the subs (and the TVs if fuzzy-probabilistic)
 ;; For rules, we find the rules that unify with the goal via some subs, apply those subs to the rule's premises (sub-goals), and solve the sub-goals recursively.
 ;; Then we get the sequence of subs, check compatibility, and return viable solutions.
+;; OUTPUT:  list of compound substitutions, or ()
 (defn solve-goal [goal]
 	(let [solutions (match-facts goal)]
 		(if (not (empty? solutions))
@@ -97,17 +101,17 @@
 
 	(let [rule-bodies (match-rules goal)]
 		(if (empty? rule-bodies)
-			false		; no applicable rules, return false
+			()		; no applicable rules, return ()
 			;; Spawn new concurrent processes
 			(let [comp-service (ExecutorCompletionService. executor)
 				  futures (doseq [rule-body rule-bodies]
 						(.submit comp-service #(solve-rule rule-body)))
 				  ;; Get the 1st result that's not nil
-				  result (skip-while nil? #(.get (.take comp-service)))]
+				  solution (skip-while empty? #(.get (.take comp-service)))]
 				;; Cancel remaining tasks
 				(doseq [future futures]
 					(.cancel future true))
-				result))))))
+				solution))))))
 
 ;; Keeps calling fun until (predicate result) is false
 (defn skip-while [predicate fun]
@@ -117,14 +121,16 @@
 			result)))
 
 ;; INPUT:	rule body = list of literals to be satisfied
-;; OUTPUT:	substitutions (and truth values)
-;; -- All substitutions need to be checked for compatibility
-(defn solve-rule [rule-body]
-	(let [solutions (pmap solve-goal rule-body)]		; note use of parallel map
-		;; At this point solutions is a list of lists of compound subs
-		(if (some false? solutions)						; if some sub-goals failed
-			false
+;; OUTPUT:	list of compound substitutions (and truth values), can be ()
+;; -- Every compound sub needs to be checked for compatibility
+;; -- This function is analogous to satisfy-rule in forward_chaining
+(defn solve-rule [body]
+	(let [solutions1 (map solve-goal body)]				; note use of parallel map
+		;; solutions1 is a list of lists of compound subs
+		(if (some empty? solutions1)					; if some sub-goals failed
+			()
 			;; else: merge solutions and return only compatible ones
-			(let [solutions2 (map #(apply concat %)		; flatten the seqs
-					(map #(map seq %) solutions))]		; convert compound subs to seqs
-				(take-while subst/compatible? solutions2)))))
+			(let [solutions2 (apply cartesian-product solutions1)
+				  solutions3 (map #(apply concat %)		; flatten the list
+					(map #(map seq %) solutions2))]		; convert compound subs to seqs
+				(filter subst/compatible? solutions3)))))

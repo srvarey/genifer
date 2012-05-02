@@ -27,12 +27,13 @@
 
 (require '[clojure.set :as set])		; for set/union
 
-(declare unify unify2 const? variable? fork-subs add-sub substitute substitute-atomic)
+(declare unify unify2 const? variable? fork-subs add-sub)
 
 ;; Syntactic unify
 ;; input: 2 terms t1 and t2
-;; output: a compound substitution unifying t1, t2
-;;         false if fail
+;; output: a list of compound substitutions, each compound sub can unify t1, t2
+;;         false if no sub can be found
+;; -- Note: a list containing a single compound sub (#{()}) means that t1, t2 can be trivially unified, so it means success
 (defn unify [t1 t2]
 	(unify2 t1 t2 0 ()))
 

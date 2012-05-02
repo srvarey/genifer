@@ -9,6 +9,7 @@
 					:forward :forward
 					:backward :backward
 					:unify :unify
+					:subst :subst
 					:all (fn [_] true)
 				  }
 )
