@@ -52,8 +52,8 @@
 
 (def rules '(
 ;;	Conclusion        <=== 	Premises .....
-	((X and Y is happy)		(X love Y) (Y love X))
-	((W is sad)				(Z hate W))
+	((X and Y are happy)	(X loves Y) (Y loves X))
+	((W is sad)				(Z hates W))
 ))
 
 ;; Working memory
@@ -61,15 +61,15 @@
 ;; -- use clojure "agent" model because transactions can be asynchronous & uncoordinated
 (def work-mem (agent
 '(
-	(john love mary)
-	(john love jane)
-	(pete love ann)
-	(paul love ann)
-	(ann love paul)
-	(john hate joe)
+	(john loves mary)
+	(john loves jane)
+	(pete loves ann)
+	(paul loves ann)
+	(ann  loves paul)
+	(john hates joe)
 	(superman can fly)
 	(clark kent is superman)
-	(rose is red)
+	(roses are red)
 )))
 
 ;; Rewrite system
