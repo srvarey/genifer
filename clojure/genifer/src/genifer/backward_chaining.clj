@@ -48,19 +48,19 @@
 	(:require [genifer.knowledge_representation	:as knowledge])
 	(:use [clojure.math.combinatorics :only [cartesian-product]])
 )
+
 (import '(java.util.concurrent Executors ExecutorCompletionService))
-
-(declare start solve-goal solve-rule skip-while match-facts match-rules match-1-rule)
-
 (def executor
     "No harm in sharing one executor for all races."
 	(Executors/newCachedThreadPool))
 
+(declare start solve-goal solve-rule skip-while match-facts match-rules match-1-rule)
+
 (defn start []
 	(loop []
 		(print "Enter query: ") (flush)
-		(let [query (read *in*)
-			  truth (solve-goal query)]
+		(let [	query (read *in*)
+				truth (solve-goal query)]
 			(printf "Answer is: %s\n" truth))
 		(recur)))
 
@@ -103,11 +103,11 @@
 		(if (empty? rule-bodies)
 			()		; no applicable rules, return ()
 			;; Spawn new concurrent processes
-			(let [comp-service (ExecutorCompletionService. executor)
-				  futures (doseq [rule-body rule-bodies]
-						(.submit comp-service #(solve-rule rule-body)))
+			(let [	comp-service (ExecutorCompletionService. executor)
+					futures (doseq [rule-body rule-bodies]
+							(.submit comp-service #(solve-rule rule-body)))
 				  ;; Get the 1st result that's not nil
-				  solution (skip-while empty? #(.get (.take comp-service)))]
+					solution (skip-while empty? #(.get (.take comp-service)))]
 				;; Cancel remaining tasks
 				(doseq [future futures]
 					(.cancel future true))
@@ -130,7 +130,7 @@
 		(if (some empty? solutions1)					; if some sub-goals failed
 			()
 			;; else: merge solutions and return only compatible ones
-			(let [solutions2 (apply cartesian-product solutions1)
-				  solutions3 (map #(apply concat %)		; flatten the list
-					(map #(map seq %) solutions2))]		; convert compound subs to seqs
+			(let [	solutions2 (apply cartesian-product solutions1)
+					solutions3 (map #(apply concat %)	; flatten the list
+						(map #(map seq %) solutions2))]	; convert compound subs to seqs
 				(filter subst/compatible? solutions3)))))

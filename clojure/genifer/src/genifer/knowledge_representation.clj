@@ -72,18 +72,16 @@
 	(rose is red)
 )))
 
-;; Rewrite systems
+;; Rewrite system
+;; -- The system is oriented, following these general rules:
+;;		* from uncommon to common (frequent)
+;;		* from complex to simpler
+;;		* from longer to shorter
 
-;; System 1 is oreinted from left to right
 (def rewrite-sys1 '(
 ;;	Left			===>		Right
 	((very X)			(X))
 	((unhappy)			(not happy))
-))
-
-;; System 2 is reversible
-(def rewrite-sys2 '(
-;;	Left			<==>		Right
 	((love)				(like))
 	((jealous)			(envy))
 	((sad)				(unhappy))
