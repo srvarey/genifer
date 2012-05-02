@@ -32,8 +32,11 @@
 
 (ns genifer.induction_1)
 
+(declare anti-unify)
+
 ;; Let's implement the algorithm from "Simply Logical" by Peter Flach (1994)
 
-;; calculate rlgg of 2 terms
-(defn rlgg [t1 t2]
+;; Anti-unification = calculate lgg of 2 terms;  lgg = least general generalization
+;; 
+(defn anti-unify [t1 t2]
 )
