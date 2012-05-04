@@ -54,15 +54,7 @@
     "No harm in sharing one executor for all races."
 	(Executors/newCachedThreadPool))
 
-(declare start solve-goal solve-rule skip-while match-facts match-rules match-1-rule)
-
-(defn start []
-	(loop []
-		(print "Enter query: ") (flush)
-		(let [	query (read *in*)
-				truth (solve-goal query)]
-			(printf "Answer is: %s\n" truth))
-		(recur)))
+(declare solve-goal solve-rule skip-while match-facts match-rules match-1-rule)
 
 ;; Find all facts (in working memory) that unifies with goal.
 ;; Because our logic allows rewriting, it is difficult to predict from syntax alone which facts will unify with goal.  So we are forced to try unify with all facts (at least in working memory).  In the future we can use contexts to select subsets of the KB to try unify.

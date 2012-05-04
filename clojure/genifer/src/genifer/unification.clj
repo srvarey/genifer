@@ -167,12 +167,16 @@
 
 ;; Is x a constant?  Yes if name of x begins with lower-case		
 (defn const? [x]
-	(Character/isLowerCase (first (name x))))
+	(if (symbol? x)
+		(Character/isLowerCase (first (name x)))
+		true))
 
 ;; Is x a variable?  Yes if name of x begins with upper-case
 (defn variable? [x]
-	(Character/isUpperCase (first (name x))))
-
+	(if (symbol? x)
+		 (Character/isUpperCase (first (name x)))
+		false))
+	
 ;; Merge 2 lists of compound substitutions
 ;; -- semantics is OR
 ;; -- INPUT: each of x, y is a list of compound subs

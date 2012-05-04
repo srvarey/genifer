@@ -68,8 +68,9 @@
 	(ann  loves paul)
 	(john hates joe)
 	(superman can fly)
-	(clark kent is superman)
+	("clark kent" is superman)
 	(roses are red)
+	(27 is not prime)
 )))
 
 ;; Rewrite system

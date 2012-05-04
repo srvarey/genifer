@@ -12,7 +12,7 @@
 	;(satisfy-rule '[[X and Y are happy] [X loves Y] [Y loves X]])
 	;(println "Working memory: " @work-mem)
 	(println "Testing forward: "
-		(forward '(john hates mary)))
+		(forward-chain '(john hates mary)))
 	true
 )
 

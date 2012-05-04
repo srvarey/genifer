@@ -32,7 +32,7 @@
 (import '(java.util.concurrent Executors ExecutorCompletionService))
 (def executor (Executors/newCachedThreadPool))
 
-(declare narrow rewrite)
+(declare narrow rewrite sub-term fetch-rewrite-rule)
 
 ;; Narrowing:  unify 2 terms, 'left' and 'right', modulo a rewriting system
 ;; The algorithm starts with the pair {left =? right} and incrementally "narrows" the equation by applying *one* rewrite rule either to left or right.  Continue such a sequence, until it ends with an equation {left* =? right*} that can be syntactically unified, thus returning success.
@@ -53,14 +53,14 @@
 
 	;; Pick a term to try;  term2 will be the 'other' term, ie dummy
 	(doseq [[term term2] '[[left right] [right left]]]
-		(doseq [position (range	(length term))]	; for each position in term
+		(doseq [position (range	(count term))]	; for each position in term
 			;; Unless the position is at a variable, then rewriting possibilities are unlimited...  What do we do in this case???
 			;; Find rewrite rules that may apply
-			(let [rules (fetch-rewrite-rule (sub-term position term))]
+			(let [rules (fetch-rewrite-rule (sub-term term position))]
 				(doseq [[old new] '[ [(first  rule) (second rule)]
 									 [(second rule) (first  rule)] ]]
 					;; Try unify
-					(let [sub (unify/unify (sub-term position term) old)]
+					(let [sub (unify/unify (sub-term term position) old)]
 						(if (not (false? sub))
 									;; apply subs to term and dummy
 							(let [	term*	(subst/substitute sub term)
@@ -72,11 +72,12 @@
 
 ;; Search term for old, replace with new
 ;; -- Cannot use substitute because "old" can consist of multiple atoms
+;; -- A problem arises when rewrite is possible at multiple positions
 (defn rewrite [old new term]
 )
 
-(defn sub-term [position term]
-)
+;; Just return (lazily) the sub-term starting at position
+(def sub-term nthrest)
 
 (defn fetch-rewrite-rule [key]
 )
