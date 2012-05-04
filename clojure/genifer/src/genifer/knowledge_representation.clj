@@ -79,12 +79,13 @@
 ;;		* from complex to simpler
 ;;		* from longer to shorter
 
-(def rewrite-sys1 '(
+;; -- We can use a hash-map with the first element of "left" as key.  This may be done later.
+(def rewrite-sys '(
 ;;	Left			===>		Right
-	((very X)			(X))
+	((very X)			(X)        )
 	((unhappy)			(not happy))
-	((love)				(like))
-	((jealous)			(envy))
-	((sad)				(unhappy))
-	((clark kent)		(superman))
+	((love)				(like)     )
+	((jealous)			(envy)     )
+	((sad)				(unhappy)  )
+	((clark kent)		(superman) )
 ))

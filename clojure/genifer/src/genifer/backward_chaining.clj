@@ -97,27 +97,19 @@
 			;; Spawn new concurrent processes
 			(let [	comp-service (ExecutorCompletionService. executor)
 					futures (doseq [rule-body rule-bodies]
-							(.submit comp-service #(solve-rule rule-body)))
-				  ;; Get the 1st result that's not nil
-					solution (skip-while empty? #(.get (.take comp-service)))]
+								(.submit comp-service #(solve-rule rule-body)))
+				  ;; Get the 1st result that's not ()
+					solution (first (drop-while empty? (.get (.take comp-service))))]
 				;; Cancel remaining tasks
 				(doseq [future futures]
 					(.cancel future true))
 				solution))))))
 
-;; Keeps calling fun until (predicate result) is false
-(defn skip-while [predicate fun]
-	(let [result (apply fun [])]
-		(if (predicate result)
-			(skip-while predicate fun)
-			result)))
-
 ;; INPUT:	rule body = list of literals to be satisfied
 ;; OUTPUT:	list of compound substitutions (and truth values), can be ()
-;; -- Every compound sub needs to be checked for compatibility
-;; -- This function is analogous to satisfy-rule in forward_chaining
+;; -- This function is analogous to satisfy-rule in forward_chaining.  The rule body has a bunch of literals to be satisfied.  We need to test the compatibility of all combinations of solutions to each literal, hence the Cartesian product is used.  Imagine each literal has a lazy sequence of solutions attached to it, like vertical sausages.  After the Cartesian product we have a sequence of horizontal sausages.
 (defn solve-rule [body]
-	(let [solutions1 (map solve-goal body)]				; note use of parallel map
+	(let [solutions1 (pmap solve-goal body)]			; note use of parallel map
 		;; solutions1 is a list of lists of compound subs
 		(if (some empty? solutions1)					; if some sub-goals failed
 			()
