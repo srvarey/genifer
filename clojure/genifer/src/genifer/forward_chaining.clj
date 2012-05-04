@@ -42,13 +42,13 @@
 	(:use [clojure.math.combinatorics :only [cartesian-product]])
 )
 
-(declare forward satisfy-rule satisfy-goal)
+(declare forward-chain satisfy-rule satisfy-goal)
 
 ;; For parallel execution -- not used yet
 ;(import '(java.util.concurrent Executors ExecutorCompletionService))
 ;(def executor (Executors/newCachedThreadPool))
 
-(defn forward [incoming]
+(defn forward-chain [incoming]
 	;; On entry, the incoming fact is added to working memory
 	(println "Adding: " incoming)
 	(send knowledge/work-mem conj incoming)
