@@ -81,6 +81,8 @@
 			(for [sub subs]
 				(map #(subst/substitute sub %) (rest rule))))))
 
+;; Main algorithm -- solve-goal and solve-rule are completely analogous to the same functions in forward-chaining.
+
 ;; For facts, we just return the subs (and the TVs if fuzzy-probabilistic)
 ;; For rules, we find the rules that unify with the goal via some subs, apply those subs to the rule's premises (sub-goals), and solve the sub-goals recursively.
 ;; Then we get the sequence of subs, check compatibility, and return viable solutions.
@@ -96,8 +98,8 @@
 			()		; no applicable rules, return ()
 			;; Spawn new concurrent processes
 			(let [	comp-service (ExecutorCompletionService. executor)
-					futures (doseq [rule-body rule-bodies]
-								(.submit comp-service #(solve-rule rule-body)))
+					futures (doall (for [rule-body rule-bodies]
+								(.submit comp-service #(solve-rule rule-body))))
 				  ;; Get the 1st result that's not ()
 					solution (first (drop-while empty? (.get (.take comp-service))))]
 				;; Cancel remaining tasks
@@ -107,12 +109,12 @@
 
 ;; INPUT:	rule body = list of literals to be satisfied
 ;; OUTPUT:	list of compound substitutions (and truth values), can be ()
-;; -- This function is analogous to satisfy-rule in forward_chaining.  The rule body has a bunch of literals to be satisfied.  We need to test the compatibility of all combinations of solutions to each literal, hence the Cartesian product is used.  Imagine each literal has a lazy sequence of solutions attached to it, like vertical sausages.  After the Cartesian product we have a sequence of horizontal sausages.
+;; -- The rule body has a bunch of literals to be satisfied.  We need to test the compatibility of all combinations of solutions to each literal, hence the Cartesian product is used.  Imagine each literal has a lazy sequence of solutions attached to it, like vertical sausages.  After the Cartesian product we have a sequence of horizontal sausages.
 (defn solve-rule [body]
 	(let [solutions1 (pmap solve-goal body)]			; note use of parallel map
 		;; solutions1 is a list of lists of compound subs
 		(if (some empty? solutions1)					; if some sub-goals failed
-			()
+			()											; return failure
 			;; else: merge solutions and return only compatible ones
 			(let [	solutions2 (apply cartesian-product solutions1)
 					solutions3 (map #(apply concat %)	; flatten the list

@@ -1,10 +1,10 @@
 (ns genifer.test.core
-  (:use [genifer.core])
-  (:use [clojure.test])
-  (:use [genifer.forward_chaining])
-  (:use [genifer.backward_chaining])
-  (:use [genifer.unification])
-  (:use [genifer.substitution])
+	(:use [genifer.core])
+	(:use [clojure.test])
+	(:require [genifer.forward_chaining :as forward])
+	(:require [genifer.backward_chaining :as backward])
+	(:use [genifer.unification])
+	(:use [genifer.substitution])
 )
 
 (deftest ^:forward test_forward ; Forward-chaining
@@ -12,38 +12,38 @@
 	;(satisfy-rule '[[X and Y are happy] [X loves Y] [Y loves X]])
 	;(println "Working memory: " @work-mem)
 	(println "Testing forward: "
-		(forward-chain '(john hates mary)))
+		(forward/forward-chain '(john hates mary)))
 	true
 )
 
 (deftest ^:backward test_backward ; Backward-chaining
 	(printf "\n**** match facts: john loves mary ==> \n\t")
 	(println
-		(match-facts '(john loves mary)))
+		(backward/match-facts '(john loves mary)))
 	(printf "\n**** john loves mary ==> \n\t")
 	(println
-		(solve-goal '(john loves mary)))
+		(backward/solve-goal '(john loves mary)))
 	(printf "\n**** X loves mary ==> \n\t")
 	(println
-		(solve-goal '(X loves mary)))
+		(backward/solve-goal '(X loves mary)))
 	(printf "\n**** match rules: joe is sad ==> \n\t")
 	(println
-		(match-rules '(joe is sad)))
+		(backward/match-rules '(joe is sad)))
 	(printf "\n**** joe is sad ==> \n\t")
 	(println
-		(solve-goal '(joe is sad)))
+		(backward/solve-goal '(joe is sad)))
 	(printf "\n**** U is sad ==> \n\t")
 	(println
-		(solve-goal '(U is sad)))
+		(backward/solve-goal '(U is sad)))
 	(printf "\n**** match rules: Q and R is happy ==> \n\t")
 	(println
-		(match-rules '(Q and R are happy)))
+		(backward/match-rules '(Q and R are happy)))
 	(printf "\n**** solve rule: Q loves R and R loves Q ==> \n\t")
 	(println
-		(solve-rule '((Q loves R) (R loves Q))))
+		(backward/solve-rule '((Q loves R) (R loves Q))))
 	(printf "\n**** Q and R is happy ==> \n\t")
 	(println
-		(solve-goal '(Q and R are happy)))
+		(backward/solve-goal '(Q and R are happy)))
 	true
 )
 

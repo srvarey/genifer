@@ -54,7 +54,7 @@
 ([left right subs]								; full set of arguments
 	(let [sub (unify/unify left right)]
 		(if (not (false? sub))
-			(concat (list sub) subs)			; Success, return sub + subs
+			(concat sub subs)					; Success, return sub + subs
 			;; Else: try rewriting -- don't wanna indent
 
 	;; Pick a term to try;  term2 will be the 'other' term, ie dummy
