@@ -30,8 +30,10 @@
 ;;; 	   "!" in Genifer input escapes one Clojure term, eg: ![1,2,[3,4]]
 
 (ns genifer.core
-	(:use [genifer.forward_chaining])
-	(:use [genifer.backward_chaining])
+	(:require [genifer.forward_chaining :as forward])
+	(:require [genifer.backward_chaining :as backward])
+	;(:use [genifer.forward_chaining])
+	;(:use [genifer.backward_chaining])
 	(:use [genifer.unification])
 	(:use [genifer.substitution])
 	(:use [clojure.string :only [split triml]])
@@ -85,12 +87,12 @@
 		\?										; Question?
 			;; Call backward-chaining
 			(println
-				(solve-goal sentence))
+				(backward/solve-goal sentence))
 		\.										; Statement?
 			;; Call forward-chaining
-			(forward-chain sentence)
-												; Statement without "." is fine
-			(forward-chain sentence))))
+			(forward/forward-chain sentence)
+		;; Statement without "." is fine
+			(forward/forward-chain sentence))))
 
 ;; Scan for Clojure terms, replace it with the Clojure object
 ;; "!" is the escape sequence to Clojure, not needed if a term begins with special character 

@@ -40,7 +40,7 @@
 
 ;; Anti-unification forms the basis of generalizing from examples in a bottom-up manner.
 ;; Unification and anti-unification are dual to each other, both searching the lattice spanning the general-to-specific order.  Unification finds the "greatest lower bound" (aka "most general unifier"), whereas anti-unification finds the "least upper bound" (aka "least general generalization", or lgg).
-;; Their algorithms are very similar. The difference is when unification crashes, anti-unification will create new variables to absorb the conflicts.
+;; Their algorithms are very similar. The difference is when unification clashes, anti-unification will create new variables to absorb the conflicts.
 (defn anti-unify [t1 t2]
 	(anti-unify2 t1 t2 0 ()))
 

@@ -42,7 +42,7 @@
 	(:use [clojure.math.combinatorics :only [cartesian-product]])
 )
 
-(declare forward-chain satisfy-rule satisfy-goal)
+(declare forward-chain solve-rule solve-goal)
 
 ;; For parallel execution -- not used yet
 ;(import '(java.util.concurrent Executors ExecutorCompletionService))
@@ -55,19 +55,19 @@
 	;; Match new fact with rules;  will use indexed fetch in the future
 	;; Find all rules that matches incoming
 	(doseq [rule knowledge/rules]
-		(doseq [sub (satisfy-rule rule)]		; For each solution
+		(doseq [sub (solve-rule rule)]		; For each solution
 			(println (subst/substitute sub (first rule))))))
 
 ;; Try to satisfy rule with facts in KB
-;; Returns a list of compound subs
-(defn satisfy-rule [rule]
+;; OUTPUT:  a list of compound subs
+(defn solve-rule [rule]
 	(let [	body (rest rule)
 			;; solutions1 = list of list of compound subs
 			;; solutions2 = cartesian product of 1 = list of list of compound subs
 			;; For each list of compound subs, semantics is AND
 			;;   so each list is flattened to atomic subs => solutions3
 			;;   and then the atomic subs are checked against each other for compatibility
-			solutions1 (map satisfy-goal body)
+			solutions1 (map solve-goal body)
 			solutions2 (apply cartesian-product solutions1)
 			solutions3 (map #(apply concat %)		; flatten the list
 				(map #(map seq %) solutions2))]	; convert compound subs to seqs
@@ -75,8 +75,8 @@
 	    (filter subst/compatible? solutions3)))
 
 ;; Find all facts that satisfy literal
-;; Returns a list of compound subs
-(defn satisfy-goal [goal]
+;; OUTPUT:  a list of compound subs
+(defn solve-goal [goal]
 	(apply concat				; flatten results of map
 		(remove false?
 			(map #(unify/unify % goal) @knowledge/work-mem))))
