@@ -58,4 +58,6 @@
 		;; Same variables?  If not that's good
 		(not= (first sub1) (first sub2))
 		;; Otherwise, if substituents are the same that's OK too
-		(= (rest sub1) (rest sub2))))
+		(= (rest sub1) (rest sub2)))
+		;; Another possibility is if sub1 unifies with sub2 -- To-do
+)

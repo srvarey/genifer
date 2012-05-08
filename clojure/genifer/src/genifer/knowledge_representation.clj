@@ -54,6 +54,7 @@
 ;;	Conclusion        <=== 	Premises .....
 	((X and Y are happy)	(X loves Y) (Y loves X))
 	((W is sad)				(Z hates W))
+	((genifer cries)		(X is sad))
 ))
 
 ;; Working memory
@@ -82,10 +83,13 @@
 ;; -- We can use a hash-map with the first element of "left" as key.  This may be done later.
 (def rewrite-sys '(
 ;;	Left			===>		Right
-	((very X)			(X)        )
+	((very X)			(X))
 	((unhappy)			(not happy))
-	((love)				(like)     )
-	((jealous)			(envy)     )
-	((sad)				(unhappy)  )
-	((clark kent)		(superman) )
+	((love)				(like))
+	((envy)				(jealousy))
+	((sad)				(unhappy))
+	((clark kent)		(superman))
+	((yan king yin)		(yky))
+	((is jealous of Y), (envies Y))
+	((gives Y the creeps), (disgusts Y))
 ))

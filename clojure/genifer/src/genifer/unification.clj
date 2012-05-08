@@ -23,9 +23,8 @@
 ;;; ==========================================================
 ;;; ***** Syntactic unification
 
-(ns genifer.unification)
-
-(require '[clojure.set :as set])		; for set/union
+(ns genifer.unification
+	(:require [clojure.set :as set]))		; for set/union
 
 (declare unify const? variable? fork-subs add-sub)
 
@@ -35,7 +34,8 @@
 ;;         false if no sub can be found
 ;; -- Note: a list containing a single compound sub (#{()}) means that t1, t2 can be trivially unified, so it means success
 (defn unify
-([t1 t2] (unify t1 t2 0 ()))			; call with default arguments
+([t1 t2]								; call with default arguments
+	(unify t1 t2 0 ()))
 
 ;; Main algorithm, will be explained in detail in the book:
 ;; -- at any point, at most 1 variable on one side would be consuming input from the other side
@@ -215,3 +215,21 @@
 				#{(reverse x)}
 				;; do the set union
 				(set/union #{(reverse x)} y1)))))
+
+;; Create fresh variables in rule
+;; -- this is a standard procedure in logic
+;; -- every time a new rule is introduced, this must be called first to avoid variable clashes
+(defn standardize-apart [rule]
+	;; Create a map of fresh variable substitutions for all unique vars
+	(let [subs-map (apply hash-map
+		(interleave
+			; find distinct vars
+			(distinct (concat	(filter variable? (first  rule))
+								(filter variable? (second rule))))
+			(repeatedly #(gensym "V__"))))]
+		;; Change all variables
+		(for [term rule]				; for head and body of rule
+			(for [atom term]
+				(if (variable? atom)
+					(subs-map atom)		; look up the map
+					atom)))))

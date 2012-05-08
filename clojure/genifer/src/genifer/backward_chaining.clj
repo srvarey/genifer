@@ -101,7 +101,8 @@
 					futures (doall (for [rule-body rule-bodies]
 								(.submit comp-service #(solve-rule rule-body))))
 				  ;; Get the 1st result that's not ()
-					solution (first (drop-while empty? (.get (.take comp-service))))]
+					solution (first (drop-while empty?
+						(repeatedly #(.get (.take comp-service)))))]
 				;; Cancel remaining tasks
 				(doseq [future futures]
 					(.cancel future true))

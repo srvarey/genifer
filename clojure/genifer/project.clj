@@ -11,6 +11,7 @@
 					:backward :backward
 					:unify :unify
 					:subst :subst
+					:narrow :narrow
 					:all (fn [_] true)
 				  }
 )
