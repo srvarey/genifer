@@ -32,8 +32,8 @@
 (ns genifer.core
 	(:require [genifer.forward_chaining :as forward])
 	(:require [genifer.backward_chaining :as backward])
-	;(:use [genifer.forward_chaining])
-	;(:use [genifer.backward_chaining])
+	(:require [genifer.core :as core])
+	(:require [clojure.main])
 	(:use [genifer.unification])
 	(:use [genifer.substitution])
 	(:use [clojure.string :only [split triml]])
@@ -42,15 +42,9 @@
 (import '(java.io PushbackReader StringReader))
 (def pushback-stream (java.io.PushbackReader. (java.io.StringReader. "\n") 1024))
 
-(declare repl process escape-clojure escape-1-clojure tokenize)
+(declare repl process escape-clojure escape-1-clojure tokenize help)
 
 (defn -main []
-	(repl))
-
-;; Just a simple REPL
-;; -- if the input line can be evaluated by Clojure, eval it and print result
-;; -- otherwise pass on to Genifer to process
-(defn repl []
 	;; ASCII rose drawn by Joan Stark, http://www.geocities.com/spunk1111/flowers.htm
 	(println "             __                       ") 
 	(println "        _   /  |                      ")
@@ -62,13 +56,27 @@
 	(println "  jgs      __/\\_            '--=.\\}/  ")
 	(println "          /_/ |\\\\                     ")
 	(println "               \\/                     ")
+	(println "               \\/                     ")
 	(println)
+	(println "Type (help) for help, Ctrl-C to exit.")
+	(println)
+	(repl))
+
+;; Evaluate Clojure expression in Genifer namespace
+(defn eval-in-ns [exp]
+	(binding [*ns* (the-ns 'genifer.core)]
+		(eval exp)))
+
+;; Just a simple REPL
+;; -- if the input line can be evaluated by Clojure, eval it and print result
+;; -- otherwise pass on to Genifer to process
+(defn repl []
 	(loop []
 		(print "Genifer> ") (flush)
 		(let [	line (read-line)
 				clojure-term (read-string line)]	; read line as Clojure term
 			(try
-				(prn (eval clojure-term))
+				(prn (eval-in-ns clojure-term))
 				(catch RuntimeException e
 					(let [message (.getMessage e)]
 						(if (and (<= 0 (.indexOf message "Unable to resolve symbol"))
@@ -107,6 +115,11 @@
 			(tokenize line)
 			(escape-1-clojure line (apply min (remove neg? indexes))))))
 
+; (defmacro eval-data[ & body ]
+	; (defonce this-current-context (get-thread-bindings) )
+	; `(do (push-thread-bindings this-current-context)
+	; (try (eval ~@body) (finally (pop-thread-bindings)))))
+
 ;; Escape one Clojure object
 ;; -- the Clojure object will be evaluated before insertion
 (defn escape-1-clojure [line index]
@@ -115,7 +128,8 @@
 			length	(count tail)]
 		;; Pushback the line into Reader, read it, and see how many chars remain.
 		(.unread pushback-stream (char-array length tail))
-		(let [	clojure-term	(eval (read pushback-stream))	; eval the object
+		(let [	;; eval the object:
+				clojure-term	(eval-in-ns (read pushback-stream))
 				num-remaining	(.skip pushback-stream length)]
 			(if (== num-remaining 0)
 				(concat
@@ -131,3 +145,36 @@
 	(map symbol								; Convert strings to symbols
 		(remove #(= % "")
 			(split line #"[\s\.\?]"))))		; Split the line on spaces, ".", and "?"
+
+(defn help []
+	(printf "\n<><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n")
+	(printf "You can evaluate any Clojure expression, eg:\n")
+	(printf "    (+ 1 2)\n")
+	(printf "    (defn triple [x] (+ x x x))\n")
+	(printf "    (triple 7)\n")
+	(printf "    [1,2,3,4]\n")
+	(printf "Simple Genifer logic statements (fullstop is optional):\n")
+	(printf "    john loves mary.\n")
+	(printf "    john loves mary obsessively\n")
+	(printf "Simple statements will be added to KB, then forward-chaining will be called.\n")
+	(printf "Questions end with '?', eg:\n")
+	(printf "    john loves mary?\n")
+	(printf "    mary is happy?\n")
+	(printf "Questions invoke backward-chaining\n")
+	(printf "Clojure objects can be included in Genifer logic, eg:\n")
+	(printf "    john loves number (+ 10 3)\n")
+	(printf "    \"Clark Kent\" is string\n")
+	(printf "    [1,2,3,4] is list\n")
+	(printf "More functions (such as learning) will be added later.\n")
+	(printf "<><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n\n")
+true)
+
+;; ==============================================================
+;; This may be a simpler way to invoke the Clojure REPL, will explore later when I have time
+
+;(defn repl2 []
+;	(binding [*ns* (the-ns 'genifer.core)]
+;		(clojure.main/repl :caught process-error)))
+;
+;(defn process-error [e]
+;	(println "Exception thrown"))
