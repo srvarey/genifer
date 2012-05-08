@@ -68,11 +68,11 @@
 		(let [	line (read-line)
 				clojure-term (read-string line)]	; read line as Clojure term
 			(try
-				(println (eval clojure-term))
+				(prn (eval clojure-term))
 				(catch RuntimeException e
 					(let [message (.getMessage e)]
-						(if (and (>= (.indexOf message "Unable to resolve symbol") 0)
-								(not= (get line 0) \u0028))		; not beginning with "("
+						(if (and (<= 0 (.indexOf message "Unable to resolve symbol"))
+								(Character/isLetterOrDigit (get line 0)))
 							(process line)
 							(println message))))))
 		(recur)))
@@ -86,7 +86,7 @@
 		(case (last line)
 		\?										; Question?
 			;; Call backward-chaining
-			(println
+			(prn
 				(backward/solve-goal sentence))
 		\.										; Statement?
 			;; Call forward-chaining

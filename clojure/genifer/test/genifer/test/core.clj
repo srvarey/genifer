@@ -3,8 +3,46 @@
 	(:use [clojure.test])
 	(:require [genifer.forward_chaining :as forward])
 	(:require [genifer.backward_chaining :as backward])
+	(:require [genifer.narrowing :as narrow])
 	(:use [genifer.unification])
 	(:use [genifer.substitution])
+)
+
+(deftest ^:narrow test_narrow ; Narrowing
+	(printf "============================ NARROWING =========================\n")
+
+	(printf "\n**** '(chalk) '(cheese) ==> \n\t")
+	(println
+		(narrow/narrow '(chalk) '(cheese)))
+
+	(printf "\n**** '(bob eats cheese) '(bob eats cheese) ==> \n\t")
+	(println
+		(narrow/narrow '(bob eats cheese) '(bob eats cheese)))
+
+	(printf "\n**** '(love) '(cheese) ==> \n\t")
+	(println
+		(narrow/narrow '(love) '(cheese)))
+
+	(printf "\n**** '(i love cheese) '(i love cheese) ==> \n\t")
+	(println
+		(narrow/narrow '(i love cheese) '(i love cheese)))
+
+	(printf "\n**** '(love cheese) '(like cheese) ==> \n\t")
+	(println
+		(narrow/narrow '(love cheese) '(like cheese)))
+
+	(printf "\n**** '(i love cheese) '(i like cheese) ==> \n\t")
+	(println
+		(narrow/narrow '(i love cheese) '(i like cheese)))
+
+	(printf "\n**** '(i love cheese) '(X like Y) ==> \n\t")
+	(println
+		(narrow/narrow '(i love cheese) '(X like Y)))
+
+	(printf "\n**** '(mark is jealous of kent) '(X envies Y) ==> \n\t")
+	(println "<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>" 
+		(narrow/narrow '(mark is jealous of kent) '(X envies Y)))
+	true
 )
 
 (deftest ^:forward test_forward ; Forward-chaining
@@ -20,30 +58,43 @@
 	(printf "\n**** match facts: john loves mary ==> \n\t")
 	(println
 		(backward/match-facts '(john loves mary)))
+
 	(printf "\n**** john loves mary ==> \n\t")
 	(println
 		(backward/solve-goal '(john loves mary)))
+
 	(printf "\n**** X loves mary ==> \n\t")
 	(println
 		(backward/solve-goal '(X loves mary)))
+
 	(printf "\n**** match rules: joe is sad ==> \n\t")
 	(println
 		(backward/match-rules '(joe is sad)))
+
 	(printf "\n**** joe is sad ==> \n\t")
 	(println
 		(backward/solve-goal '(joe is sad)))
+
 	(printf "\n**** U is sad ==> \n\t")
 	(println
 		(backward/solve-goal '(U is sad)))
+
 	(printf "\n**** match rules: Q and R is happy ==> \n\t")
 	(println
 		(backward/match-rules '(Q and R are happy)))
+
 	(printf "\n**** solve rule: Q loves R and R loves Q ==> \n\t")
 	(println
 		(backward/solve-rule '((Q loves R) (R loves Q))))
+
 	(printf "\n**** Q and R is happy ==> \n\t")
 	(println
 		(backward/solve-goal '(Q and R are happy)))
+
+	(printf "\n**** genifer cries ==> \n\t")
+	(println
+		(backward/solve-goal '(genifer cries)))
+
 	true
 )
 
@@ -101,6 +152,23 @@
 		( #{(X john) (Y mary) (Z obsessively)}
 	      #{(X john) (Y mary obsessively) (Z)}
 	      #{(X john) (Y) (Z mary obsessively)} )
+	;15
+	(X loves Y)				(Z loves mary obsessively)
+		( #{(X Z) (Y mary obsessively)}
+		  #{(Z X) (Y mary obsessively)}
+		  #{(Z X loves) (Y loves mary obsessively)} )
+	;16
+	(X loves Y)				(john Z mary)
+		( #{(X john) (Z loves) (Y mary)} )
+	;17
+	(X loves Y)				(john loves Z)
+		( #{(X john) (Y Z)}
+		  #{(X john) (Z Y)}
+		  #{(X john loves) (Z loves Y)}
+		)
+	;18  This example shows that subs on left and right may be incompatible -- consistency is not checked by unify.
+	(X Y Z)					(Z mary)
+		( #{(X mary) (Y) (Z mary)} __et_cetera__ )
 	))
 
 (deftest ^:unify test_unify

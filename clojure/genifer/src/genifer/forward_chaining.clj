@@ -50,7 +50,7 @@
 
 (defn forward-chain [incoming]
 	;; On entry, the incoming fact is added to working memory
-	(println "Adding: " incoming)
+	(prn incoming) (printf " added\n")
 	(send knowledge/work-mem conj incoming)
 	;; Match new fact with rules;  will use indexed fetch in the future
 	;; Find all rules that matches incoming
