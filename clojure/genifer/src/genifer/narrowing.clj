@@ -1,27 +1,5 @@
-;;; Genifer /narrowing.clj
-;;;
-;;; Copyright (C) General Intelligence
-;;; All Rights Reserved
-;;;
-;;; Written by YKY
-;;;
-;;; This program is free software; you can redistribute it and/or modify
-;;; it under the terms of the GNU Affero General Public License v3 as
-;;; published by the Free Software Foundation and including the exceptions
-;;; at http://opencog.org/wiki/Licenses
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU Affero General Public License
-;;; along with this program; if not, write to:
-;;; Free Software Foundation, Inc.,
-;;; 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-;;; ==========================================================
 ;;; ***** Narrowing = unification modulo a rewriting system
+;;; ==========================================================
 
 (ns genifer.narrowing
 	(:require [genifer.unification				:as unify])
@@ -33,50 +11,10 @@
 
 (import '(java.util.concurrent Executors ExecutorCompletionService CancellationException))
 (def executor2
-    "No harm in sharing one executor for all races."
+	"No harm in sharing one executor for all races."
 	(Executors/newCachedThreadPool))
 
 (declare narrow rewrite find-sublist check-prefix fetch-rewrite-rule find-index merge-subs)
-
-(defn find-futures [left right]
-	(printf "\n<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n")
-	(println "left right = " left ", " right)
-
-	(let [futures
-		(for [	[term term2]	[[left right] [right left]]
-				:let [rules+	(fetch-rewrite-rule term)]
-				rule+			rules+
-				:let [[indexes rule_] rule+]
-				index			indexes
-				:let [	rule	(unify/standardize-apart rule_)
-						index2	(.indexOf term (nth (first rule) index))
-						term-R	(nthrest term index2)
-						term-L	(reverse (take index2 term))
-						head	(first rule)			; head of rule
-						head-R	(nthrest head index)
-						head-L	(reverse (take index head))
-						subs-R	(unify2/unify-R head-R term-R)
-						subs-L	(unify2/unify-L head-L term-L)
-					]
-				]
-			(do
-			(println "term1&2==> " term term2)
-			(println "rule==> " rule)
-			(println "index==> " index)
-			(println "term-R&L==> " term-R " & " term-L)
-			(println "head-R&L==> " head-R " & " head-L)
-			(println "subs-R&L==> " subs-R " & " subs-L)
-			)
-)]
-
-	(println "futures = " futures)))
-
-		; (do ; ***** DEBUG
-		; (println "trying rule==> " rule)
-		; (println "term, term2 = " term ", " term2)
-		; (println "left, right = " left ", " right)
-		; (println "types==> " (type subs-R) (type subs-L))
-		; ))))))))
 
 ;; Narrowing:  unify 2 terms, 'left' and 'right', modulo a rewriting system
 ;; The algorithm starts with the pair {left =? right} and incrementally "narrows" the equation by applying *one* rewrite rule either to left or right.  Continue such a sequence, until it ends with an equation {left* =? right*} that can be syntactically unified, thus returning success.
@@ -91,7 +29,7 @@
 ;; 7.		Spawn sub-processes to continue search (recurse)
 ;; OUTPUT:  a list of compound subs
 (defn narrow
-([left right]									; call with default arguments
+([left right]											; call with default arguments
 	(narrow left right ())
 )
 ([left right subs]								; full set of arguments

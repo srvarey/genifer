@@ -1,27 +1,5 @@
-;;; Genifer /induction_1.clj
-;;;
-;;; Copyright (C) General Intelligence
-;;; All Rights Reserved
-;;;
-;;; Written by YKY
-;;;
-;;; This program is free software; you can redistribute it and/or modify
-;;; it under the terms of the GNU Affero General Public License v3 as
-;;; published by the Free Software Foundation and including the exceptions
-;;; at http://opencog.org/wiki/Licenses
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU Affero General Public License
-;;; along with this program; if not, write to:
-;;; Free Software Foundation, Inc.,
-;;; 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-;;; ==========================================================
 ;;; ***** Inductive learner #1 (bottom-up)
+;;; ==========================================================
 
 ;;; Some historical bottom-up learners:
 ;;; 1. rlgg (Plotkin 1970, = anti-unification)
@@ -34,28 +12,37 @@
 
 (require '[clojure.set :as set])		; for set/union
 
-(declare anti-unify anti-unify2 const? variable? add-sub fork-subs)
+(declare anti-unify const? variable? add-sub fork-subs)
 
 ;; Let's implement the bottom-up learner from "Simply Logical" by Peter Flach (1994)
 
 ;; Anti-unification forms the basis of generalizing from examples in a bottom-up manner.
 ;; Unification and anti-unification are dual to each other, both searching the lattice spanning the general-to-specific order.  Unification finds the "greatest lower bound" (aka "most general unifier"), whereas anti-unification finds the "least upper bound" (aka "least general generalization", or lgg).
 ;; Their algorithms are very similar. The difference is when unification clashes, anti-unification will create new variables to absorb the conflicts.
-(defn anti-unify [t1 t2]
-	(anti-unify2 t1 t2 0 ()))
+(defn anti-unify
+([t1 t2]								; if called with default arguments
+	(anti-unify t1 t2 0 () ()))
 
-; Replace unify with anti-unify
-;		unify2 with anti-unify2
 ; Seems no need to change case 1 and -1:
 ;	if consuming, keep consuming
 ;	consumption will never lead to conflicts
+; Add a case '2' where the top guy's current variable is consuming
 ; Seems that all I need to do is to deal with the "false" cases
-; When crash happens, need to 
+; When crash happens, need to add variable to top guy
+; Even if plain unify works, the top guy may be different:  love(X,Y) > love(j,Y), love(X,m)
+; The top should have the variable if either side has one
+; Problem remains that there may be several tops and we need to find the least one
+; but the least may not even exist...  
+; There's no need to keep track of subs if we just want to LGG, but we'll keep the subs anyway.
+
+; So I decided we just return multiple LGGs if found...
+
 
 ;; Main algorithm, modified from unify
 ;; -- sub = the partial substitution of the consuming variable
-;; OUTPUT: a list of compound substitutions, each compound substitution is a set, ie, #{...}
-(defn anti-unify2 [t1 t2 direction sub]
+;; OUTPUT:  the lgg as a term
+;; -- a list of compound substitutions is calculated but not returned, for future extension
+([t1 t2 direction sub lgg]				; with full set of arguments
 	(let [a1 (first t1)
 		  a2 (first t2)
 		  r1 (rest t1)
@@ -175,7 +162,7 @@
 							(anti-unify2 r1 r2 1 (list a2,a1)))
 						(add-sub sub
 							(anti-unify2 r1 r2 -1 (list a1,a2))))))
-		))))
+		)))))
 
 ;; Is x a constant?  Yes if name of x begins with lower-case		
 (defn const? [x]

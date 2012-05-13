@@ -1,27 +1,5 @@
-;;; Genifer /core.clj
-;;;
-;;; Copyright (C) General Intelligence
-;;; All Rights Reserved
-;;;
-;;; Written by YKY
-;;;
-;;; This program is free software; you can redistribute it and/or modify
-;;; it under the terms of the GNU Affero General Public License v3 as
-;;; published by the Free Software Foundation and including the exceptions
-;;; at http://opencog.org/wiki/Licenses
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU Affero General Public License
-;;; along with this program; if not, write to:
-;;; Free Software Foundation, Inc.,
-;;; 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
+;;; Genifer interpreter
 ;;; ==========================================================
-;;; ***** Genifer interpreter
 ;;; 1. Processing Genifer logic terms in Clojure:
 ;;; 	   A Genifer logic term can be referred by Clojure simply as a list: '(atom atom...).
 ;;; 	   Processing of Genifer logic terms is performed by Clojure functions processing lists.
@@ -160,11 +138,15 @@
 	(printf "Questions end with '?', eg:\n")
 	(printf "    john loves mary?\n")
 	(printf "    mary is happy?\n")
+	(printf "    X is sad?\n")
+	(printf "(Variable names begin with uppercase)\n")
 	(printf "Questions invoke backward-chaining\n")
 	(printf "Clojure objects can be included in Genifer logic, eg:\n")
 	(printf "    john loves number (+ 10 3)\n")
 	(printf "    \"Clark Kent\" is string\n")
 	(printf "    [1,2,3,4] is list\n")
+	(printf "'!' escapes a Clojure term explicitly, eg:\n")
+	(printf "    namespace is !*ns*\n")
 	(printf "More functions (such as learning) will be added later.\n")
 	(printf "<><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n\n")
 true)
