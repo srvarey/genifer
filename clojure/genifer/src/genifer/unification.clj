@@ -1,27 +1,5 @@
-;;; Genifer /unification.clj
-;;;
-;;; Copyright (C) General Intelligence
-;;; All Rights Reserved
-;;;
-;;; Written by YKY
-;;;
-;;; This program is free software; you can redistribute it and/or modify
-;;; it under the terms of the GNU Affero General Public License v3 as
-;;; published by the Free Software Foundation and including the exceptions
-;;; at http://opencog.org/wiki/Licenses
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU Affero General Public License
-;;; along with this program; if not, write to:
-;;; Free Software Foundation, Inc.,
-;;; 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-;;; ==========================================================
 ;;; ***** Syntactic unification
+;;; ==========================================================
 
 (ns genifer.unification
 	(:require [clojure.set :as set]))		; for set/union
@@ -34,7 +12,7 @@
 ;;         false if no sub can be found
 ;; -- Note: a list containing a single compound sub (#{()}) means that t1, t2 can be trivially unified, so it means success
 (defn unify
-([t1 t2]								; call with default arguments
+([t1 t2]								; if called with default arguments
 	(unify t1 t2 0 ()))
 
 ;; Main algorithm, will be explained in detail in the book:

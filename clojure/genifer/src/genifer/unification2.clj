@@ -1,27 +1,5 @@
-;;; Genifer /unification2.clj
-;;;
-;;; Copyright (C) General Intelligence
-;;; All Rights Reserved
-;;;
-;;; Written by YKY
-;;;
-;;; This program is free software; you can redistribute it and/or modify
-;;; it under the terms of the GNU Affero General Public License v3 as
-;;; published by the Free Software Foundation and including the exceptions
-;;; at http://opencog.org/wiki/Licenses
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU Affero General Public License
-;;; along with this program; if not, write to:
-;;; Free Software Foundation, Inc.,
-;;; 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
+;;; Special unification for narrowing
 ;;; ==========================================================
-;;; ***** Special unification for narrowing
 ;;; (unify-R t1,t2) unifies flexibly on t1 till t1 is exhausted
 ;;; (unify-L t1,t2) unifies flexibly on t1 in the reverse direction
 ;;; Both are designed to make unify more efficient for narrowing, nothing more
@@ -168,7 +146,7 @@
 ;; output: a list of compound substitutions, each compound sub can unify t1, t2
 ;;         false if no sub can be found
 (defn unify-L
-([t1 t2]								; call with default arguments
+([t1 t2]								; if called with default arguments
 	(unify-L t1 t2 0 ()))
 
 ;; OUTPUT: a list of compound substitutions, each compound substitution is a set, ie, #{...}

@@ -1,4 +1,4 @@
-(defproject genifer "1.0.0"
+(defproject genifer "1.0.2"
   :description "Genifer logic engine"
   :dependencies [
 	[org.clojure/clojure "1.3.0"]
