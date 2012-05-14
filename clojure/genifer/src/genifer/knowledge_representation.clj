@@ -39,17 +39,17 @@
 ;; -- just a list of facts
 ;; -- use clojure "agent" model because transactions can be asynchronous & uncoordinated
 (def work-mem (agent
-'(
-	(john loves mary)
-	(john loves jane)
-	(pete loves ann)
-	(paul loves ann)
-	(ann  loves paul)
-	(john hates joe)
-	(superman can fly)
-	("Clark Kent" is superman)
-	(roses are red)
-	(27 is not prime)
+(list
+	'(john loves mary)
+	'(john loves jane)
+	'(pete loves ann)
+	'(paul loves ann)
+	'(ann  loves paul)
+	'(john hates joe)
+	'(superman can fly)
+	'("Clark Kent" is superman)
+	'(roses are red)
+	'(27 is not prime)
 )))
 
 ;; Rewrite system
