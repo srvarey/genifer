@@ -15,7 +15,9 @@
 	(:use [genifer.unification])
 	(:use [genifer.substitution])
 	(:use [clojure.string :only [split triml]])
-	(:gen-class)
+	(:gen-class
+		:name genifer.core
+		:methods [#^{:static true} [process [String] String]])
 )
 (import '(java.io PushbackReader StringReader))
 (def pushback-stream (java.io.PushbackReader. (java.io.StringReader. "\n") 1024))
@@ -62,6 +64,9 @@
 							(process line)
 							(println message))))))
 		(recur)))
+
+(defn -process [line]
+	(process line))
 
 ;; Genifer logic interpreter
 ;; 0. Scan for "(" and "!", if found, escape with Clojure objects

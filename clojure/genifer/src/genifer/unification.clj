@@ -1,9 +1,10 @@
-;;; ***** Syntactic unification
+;;; ***** Syntactic unification, ie, unification without considering an equational theory
 ;;; ==========================================================
+;;; We assume the 2 terms are normalized (to sum of products) and standardized apart prior to calling unify.
 
 (ns genifer.unification
-	(:require [clojure.set :as set]))		; for set/union
-
+	(:require [clojure.set :as set])		; for set/union
+)
 (declare unify const? variable? fork-subs add-sub)
 
 ;; Syntactic unify
@@ -13,7 +14,20 @@
 ;; -- Note: a list containing a single compound sub (#{()}) means that t1, t2 can be trivially unified, so it means success
 (defn unify
 ([t1 t2]								; if called with default arguments
-	(unify t1 t2 0 ()))
+	(cond
+	(and (set? t1) (set? t2))
+		;; If 2 sums unify, they must have the same number of terms
+		(if (== (count t1) (count t2))
+			;; Try all combinations of sub-terms in t1 and t2, due to the commutativity of +
+			(for [s1 t1 s2 t2]
+				(unify s1 s2))
+			false)
+	(or (set? t1) (set? t2))
+		;; A sum is only unifiable with another sum
+		false
+	:else
+		;; Unify 2 plain terms (ie, pure compositions)
+		(unify t1 t2 0 ())))
 
 ;; Main algorithm, will be explained in detail in the book:
 ;; -- at any point, at most 1 variable on one side would be consuming input from the other side
@@ -26,7 +40,6 @@
 		  a2 (first t2)
 		  r1 (rest t1)
 		  r2 (rest t2)]
-		;(println "unify: " a1 a2 r1 r2 direction)
 
 		;; If either side is exhausted:
 		(cond
@@ -161,7 +174,6 @@
 ;; -- a compound sub is a set
 ;; -- OUTPUT: a list of compound subs
 (defn fork-subs [x y]
-	;(println "fork: " x ", " y)
 	(cond
 	(false? x)
 		y
@@ -177,7 +189,6 @@
 ;;           On input, x needs to be reversed because it was built up via cons
 ;; -- OUTPUT: a list of compound subs
 (defn add-sub [x y]
-	;(println "add: " x ", " y)
 	(cond
 	(false? x)
 		false
