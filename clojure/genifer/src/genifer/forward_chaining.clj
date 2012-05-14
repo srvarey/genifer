@@ -18,6 +18,7 @@
 	(:require [genifer.substitution				:as subst])
 	(:require [genifer.knowledge_representation :as knowledge])
 	(:use [clojure.math.combinatorics :only [cartesian-product]])
+	(:require [clojure.string :as string :only [join]])
 )
 
 (declare forward-chain solve-rule solve-goal)
@@ -28,13 +29,15 @@
 
 (defn forward-chain [incoming]
 	;; On entry, the incoming fact is added to working memory
-	(prn incoming) (printf " added\n")
-	(send knowledge/work-mem conj incoming)
+	(send-off knowledge/work-mem conj incoming)
+	(let [	result1 (string/join (list "Added: " (prn-str incoming)))
 	;; Match new fact with rules;  will use indexed fetch in the future
 	;; Find all rules that matches incoming
-	(doseq [rule knowledge/rules]
-		(doseq [sub (solve-rule rule)]		; For each solution
-			(println (subst/substitute sub (first rule))))))
+			result2 (apply concat
+				(for [rule knowledge/rules]
+					(for [sub (solve-rule rule)]		; For each solution
+						(println-str (subst/substitute sub (first rule))))))]
+		(string/join (list result1 (string/join result2)))))
 
 ;; Try to satisfy rule with facts in KB
 ;; OUTPUT:  a list of compound subs

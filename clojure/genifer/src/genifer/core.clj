@@ -15,14 +15,14 @@
 	(:use [genifer.unification])
 	(:use [genifer.substitution])
 	(:use [clojure.string :only [split triml]])
-	(:gen-class
-		:name genifer.core
-		:methods [#^{:static true} [process [String] String]])
+	(:gen-class)
+		; :name genifer.core
+		; :methods [#^{:static true} [repl1 [String] String]]
 )
 (import '(java.io PushbackReader StringReader))
 (def pushback-stream (java.io.PushbackReader. (java.io.StringReader. "\n") 1024))
 
-(declare repl process escape-clojure escape-1-clojure tokenize help)
+(declare repl repl1 process escape-clojure escape-1-clojure tokenize help)
 
 (defn -main []
 	;; ASCII rose drawn by Joan Stark, http://www.geocities.com/spunk1111/flowers.htm
@@ -40,7 +40,9 @@
 	(println)
 	(println "Type (help) for help, Ctrl-C to exit.")
 	(println)
-	(repl))
+	(loop []
+		(println (repl1))
+		(recur)))
 
 ;; Evaluate Clojure expression in Genifer namespace
 (defn eval-in-ns [exp]
@@ -65,8 +67,19 @@
 							(println message))))))
 		(recur)))
 
-(defn -process [line]
-	(process line))
+;; **** 1-line REPL
+;; OUTPUT:  a string, either error message or results
+(defn repl1 []
+	(let [	line (read-line)
+			clojure-term (read-string line)]	; read line as Clojure term
+		(try
+			(prn-str (eval-in-ns clojure-term))
+			(catch RuntimeException e
+				(let [message (.getMessage e)]
+					(if (and (<= 0 (.indexOf message "Unable to resolve symbol"))
+							(Character/isLetterOrDigit (get line 0)))
+						(process line)
+						(println-str message)))))))
 
 ;; Genifer logic interpreter
 ;; 0. Scan for "(" and "!", if found, escape with Clojure objects
@@ -77,7 +90,7 @@
 		(case (last line)
 		\?										; Question?
 			;; Call backward-chaining
-			(prn
+			(prn-str
 				(backward/solve-goal sentence))
 		\.										; Statement?
 			;; Call forward-chaining
