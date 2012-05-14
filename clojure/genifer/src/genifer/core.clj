@@ -41,7 +41,7 @@
 	(println "Type (help) for help, Ctrl-C to exit.")
 	(println)
 	(loop []
-		(println (repl1))
+		(println (repl1 (read-line)))
 		(recur)))
 
 ;; Evaluate Clojure expression in Genifer namespace
@@ -69,8 +69,8 @@
 
 ;; **** 1-line REPL
 ;; OUTPUT:  a string, either error message or results
-(defn repl1 []
-	(let [	line (read-line)
+(defn repl1 [line]
+	(let [	; line (read-line)
 			clojure-term (read-string line)]	; read line as Clojure term
 		(try
 			(prn-str (eval-in-ns clojure-term))
