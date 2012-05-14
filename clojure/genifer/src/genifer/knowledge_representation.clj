@@ -29,7 +29,7 @@
 ;; (def rules (hash-map 'goal '[premises]))
 
 (def rules '(
-;;	Conclusion        <=== 	Premises .....
+;;	Conclusion    		    <=== 	Premises .....
 	((X and Y are happy)	(X loves Y) (Y loves X))
 	((W is sad)				(Z hates W))
 	((genifer cries)		(X is sad))
