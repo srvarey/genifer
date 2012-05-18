@@ -1,11 +1,11 @@
 (ns genifer.test.core
-	(:use [genifer.core])
 	(:use [clojure.test])
+	(:require [genifer.core])
 	(:require [genifer.forward_chaining :as forward])
 	(:require [genifer.backward_chaining :as backward])
 	(:require [genifer.narrowing :as narrow])
-	(:use [genifer.unification])
-	(:use [genifer.substitution])
+	(:require [genifer.unification :as unify])
+	(:require [genifer.substitution :as subst])
 )
 
 (deftest ^:narrow test_narrow ; Narrowing
@@ -100,9 +100,9 @@
 
 (deftest ^:subst test_subst ; Substitution
 	(println "compatible? ==> "
-		(compatible? '((R paul) (Q ann) (R paul) (Q ann))))
+		(subst/compatible? '((R paul) (Q ann) (R paul) (Q ann))))
 	(println "compatible? ==> "
-		(compatible? '((R paul) (Q ann) (R ron) (Q ann))))
+		(subst/compatible? '((R paul) (Q ann) (R ron) (Q ann))))
 	true
 )
 
@@ -169,6 +169,9 @@
 	;18  This example shows that subs on left and right may be incompatible -- consistency is not checked by unify.
 	(X Y Z)					(Z mary)
 		( #{(X mary) (Y) (Z mary)} __et_cetera__ )
+	; 19
+	(13 is "Thirteen !!!")		(X is Y)
+		( #{(X 13) (Y "Thirteen !!!")} )
 	))
 
 (deftest ^:unify test_unify
@@ -179,7 +182,7 @@
 			  answer (nth test 2)]
 			(println count ".")
 			(println "Expected: " answer)
-			(println "     ===> " (unify t1 t2))
+			(println "     ===> " (unify/unify t1 t2))
 			(if (empty? (rest (rest (rest test))))
 				true
 				(recur (rest (rest (rest test)))

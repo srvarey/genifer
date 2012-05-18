@@ -1,4 +1,4 @@
-(defproject genifer "1.0.4"
+(defproject genifer "1.0.5"
   :description "Genifer logic engine"
   :dependencies [
 	[org.clojure/clojure "1.3.0"]
@@ -6,7 +6,7 @@
 	]
   :main genifer.core
   :test-selectors {
-					:default :unify
+					:default (fn [_] true)
 					:forward :forward
 					:backward :backward
 					:unify :unify

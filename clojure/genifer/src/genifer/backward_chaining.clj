@@ -24,7 +24,7 @@
 	(:require [genifer.unification				:as unify])
 	(:require [genifer.substitution				:as subst])
 	(:require [genifer.knowledge_representation	:as knowledge])
-	(:use [clojure.math.combinatorics :only [cartesian-product]])
+	(:require [clojure.math.combinatorics		:as combinatorics :only cartesian-product])
 )
 
 (import '(java.util.concurrent Executors ExecutorCompletionService))
@@ -90,12 +90,12 @@
 ;; OUTPUT:	list of compound substitutions (and truth values), can be ()
 ;; -- The rule body has a bunch of literals to be satisfied.  We need to test the compatibility of all combinations of solutions to each literal, hence the Cartesian product is used.  Imagine each literal has a lazy sequence of solutions attached to it, like vertical sausages.  After the Cartesian product we have a sequence of horizontal sausages.
 (defn solve-rule [body]
-	(let [solutions1 (pmap solve-goal body)]			; note use of parallel map
+	(let [results1 (pmap solve-goal body)]				; note use of parallel map
 		;; solutions1 is a list of lists of compound subs
-		(if (some empty? solutions1)					; if some sub-goals failed
+		(if (some empty? results1)						; if some sub-goals failed
 			()											; return failure
 			;; else: merge solutions and return only compatible ones
-			(let [	solutions2 (apply cartesian-product solutions1)
-					solutions3 (map #(apply concat %)	; flatten the list
-						(map #(map seq %) solutions2))]	; convert compound subs to seqs
-				(filter subst/compatible? solutions3)))))
+			(let [	results2 (apply combinatorics/cartesian-product results1)
+					results3 (map #(apply concat %)	; flatten the list
+						(map #(map seq %) results2))]	; convert compound subs to seqs
+				(filter subst/compatible? results3)))))

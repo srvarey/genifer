@@ -4,7 +4,7 @@
 ;;;; In Clojure, we implement tuples as sets and compositions as lists.  This is justified because for tuples, a+a = a, so they behave like sets.
 
 (ns genifer.tuples
-	(:require [clojure.set						:as set])
+	(:require [clojure.set						:as set :only union])
 )
 (declare normalize multiple-concat)
 

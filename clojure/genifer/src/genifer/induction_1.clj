@@ -10,7 +10,7 @@
 
 (ns genifer.induction_1)
 
-(require '[clojure.set :as set])		; for set/union
+(require '[clojure.set :as set :only union])
 
 (declare anti-unify const? variable? add-sub fork-subs)
 
@@ -36,7 +36,6 @@
 ; There's no need to keep track of subs if we just want to LGG, but we'll keep the subs anyway.
 
 ; So I decided we just return multiple LGGs if found...
-
 
 ;; Main algorithm, modified from unify
 ;; -- sub = the partial substitution of the consuming variable
