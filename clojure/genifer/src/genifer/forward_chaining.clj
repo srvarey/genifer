@@ -17,8 +17,8 @@
 	(:require [genifer.unification				:as unify])
 	(:require [genifer.substitution				:as subst])
 	(:require [genifer.knowledge_representation :as knowledge])
-	(:use [clojure.math.combinatorics :only [cartesian-product]])
-	(:require [clojure.string :as string :only [join]])
+	(:require [clojure.math.combinatorics 		:as combinatorics :only cartesian-product])
+	(:require [clojure.string					:as string :only join])
 )
 
 (declare forward-chain solve-rule solve-goal)
@@ -37,7 +37,7 @@
 				(for [rule knowledge/rules]
 					(for [sub (solve-rule rule)]		; For each solution
 						(println-str (subst/substitute sub (first rule))))))]
-		(string/join (list result1 (string/join result2)))))
+		(string/join "\n" (list result1 (string/join "\n" result2)))))
 
 ;; Try to satisfy rule with facts in KB
 ;; OUTPUT:  a list of compound subs
@@ -49,7 +49,7 @@
 			;;   so each list is flattened to atomic subs => solutions3
 			;;   and then the atomic subs are checked against each other for compatibility
 			solutions1 (map solve-goal body)
-			solutions2 (apply cartesian-product solutions1)
+			solutions2 (apply combinatorics/cartesian-product solutions1)
 			solutions3 (map #(apply concat %)		; flatten the list
 				(map #(map seq %) solutions2))]	; convert compound subs to seqs
 			;;solutions4 (map distinct solutions3) 	; remove duplicates (optional)

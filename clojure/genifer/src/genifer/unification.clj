@@ -3,7 +3,7 @@
 ;;; We assume the 2 terms are normalized (to sum of products) and standardized apart prior to calling unify.
 
 (ns genifer.unification
-	(:require [clojure.set :as set])		; for set/union
+	(:require [clojure.set :as set :only union])
 )
 (declare unify const? variable? fork-subs add-sub)
 
@@ -19,8 +19,10 @@
 		;; If 2 sums unify, they must have the same number of terms
 		(if (== (count t1) (count t2))
 			;; Try all combinations of sub-terms in t1 and t2, due to the commutativity of +
-			(for [s1 t1 s2 t2]
-				(unify s1 s2))
+			;; Collect and flatten all solutions
+			(apply concat
+				(for [s1 t1 s2 t2]
+					(unify s1 s2)))
 			false)
 	(or (set? t1) (set? t2))
 		;; A sum is only unifiable with another sum
@@ -167,7 +169,7 @@
 	(if (symbol? x)
 		 (Character/isUpperCase (first (name x)))
 		false))
-	
+
 ;; Merge 2 lists of compound substitutions
 ;; -- semantics is OR
 ;; -- INPUT: each of x, y is a list of compound subs

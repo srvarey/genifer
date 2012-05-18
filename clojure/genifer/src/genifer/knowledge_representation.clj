@@ -17,8 +17,8 @@
 ;; In other words:
 ;; rule := formula <- formula, formula, ...
 
-;; So a formula would be [a b c ...]
-;; A rule would be ([a b c...] [a b c...] [a b c...] ...)
+;; So a formula would be (a b c ...)
+;; A rule would be ((a1 b1 c1...) (a2 b2 c2...) (a3 b3 c3...) ...)
 
 ;;;; ========================= KB =============================
 ;; KB (knowledge-base)
@@ -35,7 +35,7 @@
 	((genifer cries)		(X is sad))
 ))
 
-;; Working memory
+;; ***** Working memory
 ;; -- just a list of facts
 ;; -- use clojure "agent" model because transactions can be asynchronous & uncoordinated
 (def work-mem (agent
@@ -49,10 +49,10 @@
 	'(superman can fly)
 	'("Clark Kent" is superman)
 	'(roses are red)
-	'(27 is not prime)
+	'(13 is prime)
 )))
 
-;; Rewrite system
+;; ***** Rewrite system
 ;; -- The system is oriented, following these general rules:
 ;;		* from uncommon to common (frequent)
 ;;		* from complex to simpler
@@ -71,3 +71,9 @@
 	((is jealous of Y), (envies Y))
 	((gives Y the creeps), (disgusts Y))
 ))
+
+;; ***** Dump memory
+(defn dump-mem []
+	(doseq [item @work-mem]
+		(prn item)
+		(println)))

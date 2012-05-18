@@ -12,9 +12,7 @@
 	(:require [genifer.backward_chaining :as backward])
 	(:require [genifer.core :as core])
 	(:require [clojure.main])
-	(:use [genifer.unification])
-	(:use [genifer.substitution])
-	(:use [clojure.string :only [split triml]])
+	(:require [clojure.string :as string :only [split triml join]])
 	(:gen-class)
 		; :name genifer.core
 		; :methods [#^{:static true} [repl1 [String] String]]
@@ -26,7 +24,7 @@
 
 (defn -main []
 	;; ASCII rose drawn by Joan Stark, http://www.geocities.com/spunk1111/flowers.htm
-	(println "             __                       ") 
+	(println "             __                       ")
 	(println "        _   /  |                      ")
 	(println "       | \\  \\/_/                      ")
 	(println "       \\_\\| / __                      ")
@@ -41,7 +39,9 @@
 	(println "Type (help) for help, Ctrl-C to exit.")
 	(println)
 	(loop []
-		(println (repl1 (read-line)))
+		(print "Genifer> ") (flush)
+		(printf (repl1 (read-line)))
+		(println)
 		(recur)))
 
 ;; Evaluate Clojure expression in Genifer namespace
@@ -102,13 +102,25 @@
 ;; "!" is the escape sequence to Clojure, not needed if a term begins with special character 
 (defn escape-clojure [line]
 	(let [indexes [		(.indexOf line "!")
+				   (dec (.indexOf line "0"))
+				   (dec (.indexOf line "1"))
+				   (dec (.indexOf line "2"))
+				   (dec (.indexOf line "3"))
+				   (dec (.indexOf line "4"))
+				   (dec (.indexOf line "5"))
+				   (dec (.indexOf line "6"))
+				   (dec (.indexOf line "7"))
+				   (dec (.indexOf line "8"))
+				   (dec (.indexOf line "9"))
 				   (dec (.indexOf line "["))
+				   (dec (.indexOf line "'"))
 				   (dec (.indexOf line "#"))
 				   (dec (.indexOf line "("))
 				   (dec (.indexOf line "\""))
 				   (dec (.indexOf line ":")) ]]
 		(if (every? #(< % 0) indexes)
 			(tokenize line)
+			;; Escape the first occurrence of clojure item
 			(escape-1-clojure line (apply min (remove neg? indexes))))))
 
 ; (defmacro eval-data[ & body ]
@@ -135,39 +147,40 @@
 					(tokenize head)
 					(list clojure-term)
 					(escape-clojure
-						(triml (subs tail (inc (- length num-remaining))))))))))
+						(string/triml (subs tail (inc (- length num-remaining))))))))))
 
 (defn tokenize [line]
 	(map symbol								; Convert strings to symbols
 		(remove #(= % "")
-			(split line #"[\s\.\?]"))))		; Split the line on spaces, ".", and "?"
+			(string/split line #"[\s\.\?]"))))	; Split the line on spaces, ".", and "?"
 
 (defn help []
-	(printf "\n<><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n")
-	(printf "You can evaluate any Clojure expression, eg:\n")
-	(printf "    (+ 1 2)\n")
-	(printf "    (defn triple [x] (+ x x x))\n")
-	(printf "    (triple 7)\n")
-	(printf "    [1,2,3,4]\n")
-	(printf "Simple Genifer logic statements (fullstop is optional):\n")
-	(printf "    john loves mary.\n")
-	(printf "    john loves mary obsessively\n")
-	(printf "Simple statements will be added to KB, then forward-chaining will be called.\n")
-	(printf "Questions end with '?', eg:\n")
-	(printf "    john loves mary?\n")
-	(printf "    mary is happy?\n")
-	(printf "    X is sad?\n")
-	(printf "(Variable names begin with uppercase)\n")
-	(printf "Questions invoke backward-chaining\n")
-	(printf "Clojure objects can be included in Genifer logic, eg:\n")
-	(printf "    john loves number (+ 10 3)\n")
-	(printf "    \"Clark Kent\" is string\n")
-	(printf "    [1,2,3,4] is list\n")
-	(printf "'!' escapes a Clojure term explicitly, eg:\n")
-	(printf "    namespace is !*ns*\n")
-	(printf "More functions (such as learning) will be added later.\n")
-	(printf "<><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n\n")
-true)
+	(string/join '(
+	"\n<><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n"
+	"You can evaluate any Clojure expression, eg:\n"
+	"    (+ 1 2)\n"
+	"    (defn triple [x] (+ x x x))\n"
+	"    (triple 7)\n"
+	"    [1,2,3,4]\n"
+	"Simple Genifer logic statements (fullstop is optional):\n"
+	"    john loves mary.\n"
+	"    john loves mary obsessively\n"
+	"Simple statements will be added to KB, then forward-chaining will be called.\n"
+	"Questions end with '?', eg:\n"
+	"    john loves mary?\n"
+	"    mary is happy?\n"
+	"    X is sad?\n"
+	"(Variable names begin with uppercase)\n"
+	"Questions invoke backward-chaining\n"
+	"Clojure objects can be included in Genifer logic, eg:\n"
+	"    john loves number (+ 10 3)\n"
+	"    \"Clark Kent\" is string\n"
+	"    [1,2,3,4] is list\n"
+	"'!' escapes a Clojure term explicitly, eg:\n"
+	"    namespace is !*ns*\n"
+	"More functions (such as learning) will be added later.\n"
+	"<><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n\n"
+)))
 
 ;; ==============================================================
 ;; This may be a simpler way to invoke the Clojure REPL, will explore later when I have time

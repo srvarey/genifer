@@ -3,13 +3,20 @@
 ;;;; An implementation of MINI-HYPER and HYPER from Ivan Bratko's 2001 book
 ;;;; "Prolog Programming for Artificial Intelligence" 3rd ed, ch.19
 
-;;; Some historical top-down learners:
-;;; 1. FOIL
-;;; 2. FOCL
-;;; 3. MIS
-;;; 4. Progol
-;;; 5. Tracy
-;;; 6. HYPER
+;; Some historical top-down learners:
+;; 1. FOIL
+;; 2. FOCL
+;; 3. MIS
+;; 4. Progol
+;; 5. Tracy
+;; 6. HYPER
+
+;; The most expensive step is the refinement of hypothesis that changes a variable into a new structural term, because there are a huge number of constants that can be composed with the old variable.
+;; Possible optimizations:
+;;	1. create only terms that "make sense" -- call composition semantics
+;;	2. use "idioms", ie, compositions that appear frequently
+;;	3. use atoms or compositions that are currently under attention in Working Memory
+;;	4. make use of the "type" of X, for example if X "is-a" man, etc
 
 ;;; ************************************* TO-DO *****************************************
 ;;; Examples should be stored as facts in "main memory".  For induction, we ask the prover if
@@ -23,7 +30,8 @@
 	(:require [genifer.backward_chaining		:as backward])
 	(:require [genifer.knowledge_representation	:as knowledge])
 )
-(declare induce)
+(def executor2 (Executors/newCachedThreadPool))
+(declare induce refine check-complete check-consistent)
 
 ;;; Each hypothesis has a list of clauses
 ;;; Each clause is either a rule or a fact (ie, with empty premise (= body))
@@ -33,12 +41,7 @@
 ; clause = [ head, body, args ]
 
 (def *max-clause-length* 4)
-
-(def clausendex 0)
-(def *max-clausendex* 0)
-(def argndex 0)
-(def *max-argndex* 0)
-(def literalndex 0)
+(def *max-literalndex* 3)
 
 (def starting-hypothesis
 	[0 ; score
@@ -55,13 +58,11 @@
 ;                     :body '(Z-AND (parent ?1 ?2) (female ?2))
 ;                     :args '(?1 ?2))))
 
-(def background-literals '(
-	[(parent ?1 ?2),	(?1 ?2)]
-	[(male   ?1),		(?1)]
-	[(female ?1),		(?1)]
+(def *background-literals* '(
+	(parent X Y)
+	(male   X)
+	(female X)
 	))
-
-(def max-literalndex 3)
 
 ; Each clause is [ (a list of literals) , (a list of variables in the clause) ]
 
@@ -85,124 +86,80 @@
 ;   '(long-hair rita)
 ))
 
-;;; Note:  due to the use of similar algorithmic ideas (eg best-first search), the procedures
-;;; of this module will have the suffix '-I' to distinguish it from deduction.
-
 ;;; Best-first search algorithm:
 ;;; 1. If priority queue is empty, return fail
 ;;; 2. Remove first item from priority list and test it
 ;;; 3. Refine the current hypothesis
 ;;; 4. Merge results with priority queue
-(defn induce []
-	(setf priority-list (list starting-hypothesis))
-	(loop
-		;; 1. If priority queue is empty, return fail
-		(if (null priority-list)
-			(return 'fail))
-		;; 2. Remove first item from priority list and test it
-		;(print-priority-list)
-		(setf best (car priority-list))
-		(setf priority-list (cdr priority-list))
-		;; Test it
-		(if (and (check-complete   best)
-				 (check-consistent best))
-			(return best))
-		;(break "****************** tested 1 hype ********************")
-		;; 3. Refine the current hypothesis
-		(setf refinements (refine-hyp best))
-		;; 4. Merge results with the priority queue
-		(****DEBUG 2 "merging with P-queue")
-		(sort refinements #'compare-scores)
-		(setf priority-list (merge 'list refinements priority-list #'compare-scores))))
-
-;;; Compare the scores of 2 priority-list items
-(defn compare-scores [new old]
-  (< (score new) (score old)))
+(defn induce [hype]
+	;; get initial hype
+	;; test initial hype
+	;; if success return
+	;; get a list of refinements
+	;; recurse on all those hypes
+	(if (> (+ (check-complete	hype)
+			  (check-consistent	hype)) 1.5)
+		; accept hype
+		(let [refinements (refine hype)]
+			;; Spawn processes -- no dependencies
+			;; It may be desirable to sort the candidates and try the promising ones first
+			(doseq [refined refinements]
+				(induce refined)
+))))
 
 ;;; Find refinements of a hypothesis
-;;; Return:  a list of refinements
+;; INPUT:		hype
+;; OUTPUT:	a list of refinements
 ; There are 3 possible ways to generate a new hype:
 ; 1)	equating 2 distinct variables in the old hype
 ; 2)	adding a new background literal to clause (with new vars as arguments)
-; 3)	refine a variable into a structured term, perhaps X ==> father of X?
-(defn refine-hype [hype]
-	;; Initialize
-	(setf 	results		(list nil)
-			clausendex	0)
-	;; Select a clause from the hypothesis
-	(for [clause (clauses hype)]
-		;; Try to make variable substitutions
-		(****DEBUG 2 "Trying variable subs")
-		(setf args (args clause))
-		(setf rest-args args)
-		(for [pivot1 args]
-			(setf rest-args (cdr rest-args))
-			(for [pivot2 rest-args]
-				(if (not (= pivot1 pivot2))
-					(do
-						;; Make a copy
-						(setf hyp1 (make-copy hype))
-						;; Find the current clause in copy
-						(setf clause1 (nth clausendex (clauses hyp1)))
-						;; Make the substitution
-						(setf sub (list (cons pivot2 pivot1)))
-						(setf (head clause1) (do-subst (head clause1) sub))
-						(setf (body clause1) (do-subst (body clause1) sub))
-						;; Delete the variable from the clause's variable list
-						(setf (args clause1) (delete pivot2 (args clause1)))
-						;; Output as refined hypothesis:
-						;; Calculate new score
-						(setf (score hyp1) (- (score hyp1) 1))
-						(nconc results (list hyp1))))))
-		;; Try to add literals
-		(****DEBUG 2 "Trying add literals")
-		(for [literal background-literals]
-			;; Make a copy
-			(setf hyp1 (make-copy hype))
-			;; Find the current clause in copy
-			(setf clause1 (nth clausendex (clauses hyp1)))
-			;; 'Standardize apart'
-			(setf subs (standardize-apart clause1))
-			(setf (head clause1) (do-subst (head clause1) subs))
-			(setf (body clause1) (do-subst (body clause1) subs))
-			(setf (args clause1) (do-subst (args clause1) subs))
-			;; Add literal to hypothesis
-			(if (null (body clause))
-				(setf   (body clause1) (list 'ID    (car literal)))
-				(if (eql 'ID (car (body clause)))
-					(setf (body clause1) (list 'Z-AND (second (body clause1)) (car literal)))
-					(setf (body clause1) (list 'Z-AND (body clause1)          (car literal)))))
-			(nconc (args clause1) (cdr literal))
-			;; Output as refined hypothesis:
-			;; Calculate new score
-			(setf (score hyp1) (+ 10
-						(score hyp1)
-						(length (cdr literal))))
-			(nconc results (list hyp1)))
-		(incf clausendex))
-	;; Return the list -- first item is nil so it's discarded:
-	(cdr results)))
+; 3)	refine a variable into a structured term, eg: X ==> a X b
+(defn refine [hype]
+	(concat
+		(refine-by-var	hype)
+		(refine-clause	hype)
+		(refine-term	hype)))
 
-;;; 'Standardizing apart' -- seems to be completely wacky -- need new version
-(defn standardize-apart [clause]
-  (setf *new-vars* nil)
-  (find-all-vars (head clause))
-  (find-all-vars (body clause))
-  (create-unique-subs *new-vars*))
+;; Refine by equating 2 distinct variables
+;; -- may need to remove redundant refinements
+(defn refine-by-var [hype]
+	(for [	;; For each clause in hype
+			clause	hype
+			;; For all distinct pairs of variables in hype
+			[x y]	(combinatorics/combinations (vars-of hype) 2) ]
+		;; Create the substitution { X/Y } and apply it to clause
+		(map #(subst/substitute-atomic [x y] &) clause)))
 
-; why is this needed?
-(defn make-copy [hype]
-  (setf clause-list (list nil))
-  (dolist (clause (clauses hype))
-    (nconc clause-list (list (makenstance 'clause
-                               :head (copy-tree (head clause))
-                               :body (copy-tree (body clause))
-                               :args (copy-tree (args clause))))))
-  (makenstance 'hypothesis
-    :score (score hype)
-    :clauses (cdr clause-list)))
+;; Find all variables in hype
+(defn vars-of [hype]
+	(memoize vars-of_))		; memoization for better performance
+
+(defn vars-of_ [hype]
+	(apply concat
+		(for [clause hype]
+			(concat
+				(filter variable? (first  clause))
+				(filter variable? (second clause))))))
+
+;; Refine by adding a literal to a clause
+(defn refine-clause [hype]
+	(for [	;; For each clause in hype
+			clause	hype
+			;; For each "addable" background literal
+			literal	*background-literals* ]
+		(assoc-in hype
+			(unify/standardize-apart literal))))
+
+;; Refine a term "structurally"
+;; -- change a variable X into aX, Xa, aXb, ..., where ax, xa, axb, ... are common constants, and such that these constants are compatible with X's type
+;; The variable X is already in some kind of context, so the refinement of X should be congruent with it.
+;; If X occurs as the only variable in a term T, then T is defining of X, which may lead to other truths about X.
+(defn refine-by-term [hype]
+	()
+)
 
 (def *completeness-tolerance* 0)	; how many failures to tolerate
+(def *consistency-tolerance* 0)		;		''
 
 ;;; ***** Check that hype covers all positive examples
 ; algorithm:
@@ -213,6 +170,7 @@
 ; 5.	restore Working Memory to prior state
 ; -- Note:  function can return earlier by short-circuit, so we use lazy "take n" and "filter"
 ;; -- To-do:	may set a limit for testing hypes
+;; OUTPUT: a score in [0,1] = passed so far / tested so far
 (defn check-complete [hype]
 	;; Keep a reference to the old Working Memory, so we can restore to this state afterwards
 	(let [old-WM @knowledge/working-mem]
@@ -226,8 +184,6 @@
 			;; Restore prior state of Working Memory
 			(send knowledge/working-mem (fn [_] old-WM))
 			score)))
-
-(def *consistency-tolerance* 0)		; how many failures to tolerate
 
 ;;; Check that hype does NOT cover any negative example -- same as check-complete
 (defn check-consistent [hype]
