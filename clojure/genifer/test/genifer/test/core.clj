@@ -6,6 +6,20 @@
 	(:require [genifer.narrowing :as narrow])
 	(:require [genifer.unification :as unify])
 	(:require [genifer.substitution :as subst])
+	(:require [genifer.io :as io])
+)
+
+(deftest ^:io test_io
+	(printf "=============================== I/O ==============================\n")
+	(println "Y M C A")
+	(println
+		(io/form-formula '((M C) (Y M) (C A)) ()))
+	(prn "1,2,3,4,5,6,") (println)
+	(println
+		(io/formularize "1,2,3,4,5,6,"))
+	(prn "1,2,4,2,5,") (println)
+	(println
+		(io/formularize "1,2,4,2,5,"))
 )
 
 (deftest ^:narrow test_narrow ; Narrowing

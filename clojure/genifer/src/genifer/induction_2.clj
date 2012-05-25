@@ -154,6 +154,7 @@
 ;; -- change a variable X into aX, Xa, aXb, ..., where ax, xa, axb, ... are common constants, and such that these constants are compatible with X's type
 ;; The variable X is already in some kind of context, so the refinement of X should be congruent with it.
 ;; If X occurs as the only variable in a term T, then T is defining of X, which may lead to other truths about X.
+;; Problem of joint refinement of aX etc.
 (defn refine-by-term [hype]
 	()
 )
