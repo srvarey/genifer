@@ -155,32 +155,32 @@
 			(string/split line #"[\s\.\?]"))))	; Split the line on spaces, ".", and "?"
 
 (defn help []
-	(string/join '(
-	"\n<><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n"
-	"You can evaluate any Clojure expression, eg:\n"
-	"    (+ 1 2)\n"
-	"    (defn triple [x] (+ x x x))\n"
-	"    (triple 7)\n"
-	"    [1,2,3,4]\n"
-	"Simple Genifer logic statements (fullstop is optional):\n"
-	"    john loves mary.\n"
-	"    john loves mary obsessively\n"
-	"Simple statements will be added to KB, then forward-chaining will be called.\n"
-	"Questions end with '?', eg:\n"
-	"    john loves mary?\n"
-	"    mary is happy?\n"
-	"    X is sad?\n"
-	"(Variable names begin with uppercase)\n"
-	"Questions invoke backward-chaining\n"
-	"Clojure objects can be included in Genifer logic, eg:\n"
-	"    john loves number (+ 10 3)\n"
-	"    \"Clark Kent\" is string\n"
-	"    [1,2,3,4] is list\n"
-	"'!' escapes a Clojure term explicitly, eg:\n"
-	"    namespace is !*ns*\n"
-	"More functions (such as learning) will be added later.\n"
-	"<><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n\n"
-)))
+	(println "<><><><><><><><><><><><><><><><><><><><><><><><><><><><><>")
+	(println "You can evaluate any Clojure expression, eg:")
+	(println "    (+ 1 2)")
+	(println "    (defn triple [x] (+ x x x))")
+	(println "    (triple 7)")
+	(println "    [1,2,3,4]")
+	(println "Simple Genifer logic statements (fullstop is optional):")
+	(println "    john loves mary.")
+	(println "    john loves mary obsessively")
+	(println "Simple statements will be added to KB, then forward-chaining will be called.")
+	(println "Questions end with '?', eg:")
+	(println "    john loves mary?")
+	(println "    mary is happy?")
+	(println "    X is sad?")
+	(println "(Variable names begin with uppercase)")
+	(println "Questions invoke backward-chaining")
+	(println "Clojure objects can be included in Genifer logic, eg:")
+	(println "    john loves number (+ 10 3)")
+	(println "    \"Clark Kent\" is string")
+	(println "    [1,2,3,4] is list")
+	(println "'!' escapes a Clojure term explicitly, eg:")
+	(println "    namespace is !*ns*")
+	(println "More functions (such as learning) will be added later.")
+	(println "<><><><><><><><><><><><><><><><><><><><><><><><><><><><><>")
+	(println)
+	"Output has directed to STDOUT.\n")
 
 ;; ==============================================================
 ;; This may be a simpler way to invoke the Clojure REPL, will explore later when I have time
