@@ -6,7 +6,7 @@
 	(:require [clojure.set :as set :only union])
 	(:gen-class)
 )
-(declare formularize build-formula build-formula-1 nice-tail replace-nums pretty-formula)
+(declare formularize build-formula build-formula-1 replace-nums pretty-formula)
 
 ;; INPUT:  links = a sequence of target nodes from the source nodes 1,2,3,...
 ;;			represented as a string such as "2,3,4,5"
@@ -62,6 +62,7 @@
 						(rest pairs)
 						new-formula)))))
 
+;; ***** Grow formula using 1 pair
 ;; Assume the pair is (A,B)
 ;; 0.	if current position is a set
 ;; 1.		recurse into set
@@ -109,12 +110,6 @@
 			;; Try next position
 			(build-formula-1 pair tail
 				(concat head (list current))))))
-
-; *** When doing set-union with the tail, if the tail is a singleton it can appear as a bare atom, to avoid clutter
-(defn nice-tail [tail]
-	(if (= 1 (count tail))
-		(first tail)
-		tail))
 
 ;; **** Replace numbers (0,1,2, ...) with words
 ;; INPUT:	words = a list of strings
