@@ -11,15 +11,28 @@
 
 (deftest ^:io test_io
 	(printf "=============================== I/O ==============================\n")
-	(println "Y M C A")
+	(println "Y=1 M=0 C=2 A=3, expect 3*2*0*1")
 	(println
-		(io/form-formula '((M C) (Y M) (C A)) ()))
-	(prn "1,2,3,4,5,6,") (println)
+		(io/build-formula '((0 2) (1 0) (2 3)) ()))
+	(println)
+
 	(println
-		(io/formularize "1,2,3,4,5,6,"))
-	(prn "1,2,4,2,5,") (println)
+		(io/formularize "2,0,3," "M,Y,C,A,"))
+	(println)
+	
+	(prn "1,2,3,4,5,-1,")
 	(println
-		(io/formularize "1,2,4,2,5,"))
+		(io/formularize "1,2,3,4,5,-1," "this,is,a,very,long,test"))
+	(println)
+
+	(prn "-1,0,1,1,3")
+	(println
+		(io/formularize "-1,0,1,1,3" "john,walks,slowly,to,church"))
+	(println)
+
+	(prn "-1,0,1,1,6,6,3")
+	(println
+		(io/formularize "-1,0,1,1,6,6,3," "they,stab,it,with,their,steely,knives"))
 )
 
 (deftest ^:narrow test_narrow ; Narrowing

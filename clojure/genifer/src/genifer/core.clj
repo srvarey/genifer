@@ -12,7 +12,7 @@
 	(:require [genifer.backward_chaining :as backward])
 	(:require [genifer.core :as core])
 	(:require [clojure.main])
-	(:require [clojure.string :as string :only [split triml join]])
+	(:require [clojure.string :as string :only [split triml]])
 	(:gen-class)
 		; :name genifer.core
 		; :methods [#^{:static true} [repl1 [String] String]]
