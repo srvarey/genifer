@@ -20,19 +20,25 @@
 		(io/formularize "2,0,3," "M,Y,C,A,"))
 	(println)
 	
-	(prn "1,2,3,4,5,-1,")
+	(prn "This is a very long test")
 	(println
 		(io/formularize "1,2,3,4,5,-1," "this,is,a,very,long,test"))
 	(println)
 
-	(prn "-1,0,1,1,3")
+	(prn "John walks slowly to church")
 	(println
 		(io/formularize "-1,0,1,1,3" "john,walks,slowly,to,church"))
 	(println)
 
-	(prn "-1,0,1,1,6,6,3")
+	(prn "They stab it with their steely knives")
 	(println
 		(io/formularize "-1,0,1,1,6,6,3," "they,stab,it,with,their,steely,knives"))
+	(println)
+
+	(prn "The best way to predict the future is to invent it")
+	(println
+		(io/formularize "1,2,-1,2,3,6,4,2,7,8,9," "the,best,way,to,predict,the,future,is,to,invent,it"))
+	(println)
 )
 
 (deftest ^:narrow test_narrow ; Narrowing
