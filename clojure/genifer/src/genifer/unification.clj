@@ -3,7 +3,7 @@
 ;;; We assume the 2 terms are normalized (to sum of products) and standardized apart prior to calling unify.
 
 (ns genifer.unification
-	(:require [clojure.set :as set :only union])
+	(:require [clojure.set :as set])
 )
 (declare unify const? variable? fork-subs add-sub)
 

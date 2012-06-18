@@ -3,9 +3,10 @@
 ;;; For use with Genifer GUI
 
 (ns genifer.io
-	(:require [clojure.string :as string :only [split join]])
-	(:gen-class)
-)
+	(:require	[genifer.knowledge_representation :as knowledge]
+				[clojure.string :as string]
+				[cheshire.core] )
+	(:gen-class))
 (declare formularize build-formula build-formula-1 replace-nums simplify pretty-formula)
 
 ;; INPUT:  links = a sequence of target nodes from the source nodes 1,2,3,...
@@ -24,7 +25,7 @@
 			formula2 (replace-nums words2 formula1)
 			formula3 (simplify formula2)
 			output	 (pretty-formula formula3) ]
-		;; Remove outermost parentheses
+		;; Remove outer-most parentheses
 		(string/join (butlast (rest output)))))
 
 ;; ***** Glue together a formula from a list of pairs
@@ -160,3 +161,14 @@
 			")")
 	:else
 		(println (type formula))))
+
+;; Send a KB formula as JSON string
+(defn send-formula [index]
+	(cheshire.core/generate-string (nth @knowledge/working-mem
+		(Integer/parseInt index))))
+
+;; Parse a JSON formula and add it to KB
+(defn get-formula [s]
+	(send-off knowledge/working-mem conj
+		;; "true" means get back keywords as keywords, not as strings
+		(cheshire.core/parse-string s true)))

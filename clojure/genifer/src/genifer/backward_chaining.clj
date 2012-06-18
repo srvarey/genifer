@@ -21,11 +21,10 @@
 ;;; ------------------------------------------------------
 
 (ns genifer.backward_chaining
-	(:require [genifer.unification				:as unify])
-	(:require [genifer.substitution				:as subst])
-	(:require [genifer.knowledge_representation	:as knowledge])
-	(:require [clojure.math.combinatorics		:as combinatorics :only cartesian-product])
-)
+	(:require	[genifer.unification				:as unify]
+				[genifer.substitution				:as subst]
+				[genifer.knowledge_representation	:as knowledge]
+				[clojure.math.combinatorics		:as combinatorics] ))
 
 (import '(java.util.concurrent Executors ExecutorCompletionService))
 (def executor
@@ -40,7 +39,7 @@
 (defn match-facts [goal]
 	(apply concat
 		(remove false?
-			(map #(unify/unify % goal) @knowledge/work-mem))))
+			(map #(unify/unify % goal) @knowledge/working-mem))))
 
 ;; Find rules that unifies with goal
 ;; OUTPUT:	a lazy sequence of rule bodies with subs applied, can be ()

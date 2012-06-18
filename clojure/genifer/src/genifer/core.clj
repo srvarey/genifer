@@ -8,11 +8,10 @@
 ;;; 	   "!" in Genifer input escapes one Clojure term, eg: ![1,2,[3,4]]
 
 (ns genifer.core
-	(:require [genifer.forward_chaining :as forward])
-	(:require [genifer.backward_chaining :as backward])
-	(:require [genifer.core :as core])
-	(:require [clojure.main])
-	(:require [clojure.string :as string :only [split triml]])
+	(:require	[genifer.forward_chaining :as forward]
+				[genifer.backward_chaining :as backward]
+				[clojure.main :as clj]
+				[clojure.string :as string] )
 	(:gen-class)
 		; :name genifer.core
 		; :methods [#^{:static true} [repl1 [String] String]]
