@@ -14,11 +14,11 @@
 ;;;				  apply substitutions to the head and add it to KB
 
 (ns genifer.forward_chaining
-	(:require [genifer.unification				:as unify])
-	(:require [genifer.substitution				:as subst])
-	(:require [genifer.knowledge_representation :as knowledge])
-	(:require [clojure.math.combinatorics 		:as combinatorics :only cartesian-product])
-	(:require [clojure.string					:as string :only join])
+	(:require	[genifer.unification				:as unify]
+				[genifer.substitution				:as subst]
+				[genifer.knowledge_representation	:as knowledge]
+				[clojure.math.combinatorics 		:as combinatorics]
+				[clojure.string						:as string] )
 )
 
 (declare forward-chain solve-rule solve-goal)
@@ -29,7 +29,7 @@
 
 (defn forward-chain [incoming]
 	;; On entry, the incoming fact is added to working memory
-	(send-off knowledge/work-mem conj incoming)
+	(send-off knowledge/working-mem conj incoming)
 	(let [	result1 (string/join (list "Added: " (prn-str incoming)))
 	;; Match new fact with rules;  will use indexed fetch in the future
 	;; Find all rules that matches incoming
@@ -60,4 +60,4 @@
 (defn solve-goal [goal]
 	(apply concat				; flatten results of map
 		(remove false?
-			(map #(unify/unify % goal) @knowledge/work-mem))))
+			(map #(unify/unify % goal) @knowledge/working-mem))))

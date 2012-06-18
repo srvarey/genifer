@@ -79,6 +79,8 @@
 )
 
 (deftest ^:forward test_forward ; Forward-chaining
+	(printf "============================ FORWARD =========================\n")
+
 	;(is (= 1 1) "Testing forward-chaining...")
 	;(satisfy-rule '[[X and Y are happy] [X loves Y] [Y loves X]])
 	;(println "Working memory: " @work-mem)
@@ -88,6 +90,8 @@
 )
 
 (deftest ^:backward test_backward ; Backward-chaining
+	(printf "============================ BACKWARD =========================\n")
+
 	(printf "\n**** match facts: john loves mary ==> \n\t")
 	(println
 		(backward/match-facts '(john loves mary)))
@@ -132,6 +136,8 @@
 )
 
 (deftest ^:subst test_subst ; Substitution
+	(printf "========================= SUBSTITUTION =========================\n")
+
 	(println "compatible? ==> "
 		(subst/compatible? '((R paul) (Q ann) (R paul) (Q ann))))
 	(println "compatible? ==> "
@@ -208,6 +214,8 @@
 	))
 
 (deftest ^:unify test_unify
+	(printf "============================ UNIFY =========================\n")
+
 	(loop [test unify-tests
 		   count 1]
 		(let [t1 (first test)

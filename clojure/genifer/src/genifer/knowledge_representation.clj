@@ -38,7 +38,7 @@
 ;; ***** Working memory
 ;; -- just a list of facts
 ;; -- use clojure "agent" model because transactions can be asynchronous & uncoordinated
-(def work-mem (agent
+(def working-mem (agent
 (list
 	'(john loves mary)
 	'(john loves jane)
@@ -74,6 +74,6 @@
 
 ;; ***** Dump memory
 (defn dump-mem []
-	(doseq [item @work-mem]
+	(doseq [item @working-mem]
 		(prn item)
 		(println)))
