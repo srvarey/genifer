@@ -158,10 +158,10 @@
 							(unify r1 r2 -1 (list a1,a2))))))
 		)))))
 
-;; Is x a constant?  Yes if name of x begins with lower-case		
+;; Is x a constant?  Yes if name of x begins with lower-case
 (defn const? [x]
 	(if (symbol? x)
-		(Character/isLowerCase (first (name x)))
+		(not (Character/isUpperCase (first (name x))))
 		true))
 
 ;; Is x a variable?  Yes if name of x begins with upper-case

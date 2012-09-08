@@ -27,6 +27,7 @@
 				[clojure.math.combinatorics		:as combinatorics] ))
 
 (import '(java.util.concurrent Executors ExecutorCompletionService))
+(import '(java.util.concurrent TimeUnit))
 (def executor
     "No harm in sharing one executor for all races."
 	(Executors/newCachedThreadPool))
@@ -64,11 +65,12 @@
 ;; For rules, we find the rules that unify with the goal via some subs, apply those subs to the rule's premises (sub-goals), and solve the sub-goals recursively.
 ;; Then we get the sequence of subs, check compatibility, and return viable solutions.
 ;; OUTPUT:  list of compound substitutions, or ()
-(defn solve-goal [goal]
+(defn solve-goal [goal h]						; backward-chain to depth h
 	(let [solutions (match-facts goal)]
 		(if (not (empty? solutions))
 			solutions		; return answers
 			;; Else -- don't wanna indent
+			(if (> h 0)		; depth
 
 	(let [rule-bodies (match-rules goal)]
 		(if (empty? rule-bodies)
@@ -76,20 +78,22 @@
 			;; Spawn new concurrent processes
 			(let [	comp-service (ExecutorCompletionService. executor)
 					futures (doall (for [rule-body rule-bodies]
-								(.submit comp-service #(solve-rule rule-body))))
+								(.submit comp-service #(solve-rule rule-body (dec h)))))
 				  ;; Get the 1st result that's not ()
-					solution (first (drop-while empty?
-						(repeatedly #(.get (.take comp-service)))))]
+					solution (try (first (drop-while empty? (repeatedly
+								#(.get (.poll comp-service (long 2000) TimeUnit/MILLISECONDS)))))
+								(catch NullPointerException e
+									()))]
 				;; Cancel remaining tasks
 				(doseq [future futures]
 					(.cancel future true))
-				solution))))))
+				solution)))))))
 
 ;; INPUT:	rule body = list of literals to be satisfied
 ;; OUTPUT:	list of compound substitutions (and truth values), can be ()
 ;; -- The rule body has a bunch of literals to be satisfied.  We need to test the compatibility of all combinations of solutions to each literal, hence the Cartesian product is used.  Imagine each literal has a lazy sequence of solutions attached to it, like vertical sausages.  After the Cartesian product we have a sequence of horizontal sausages.
-(defn solve-rule [body]
-	(let [results1 (pmap solve-goal body)]				; note use of parallel map
+(defn solve-rule [body h]
+	(let [results1 (pmap #(solve-goal % h) body)]		; note use of parallel map
 		;; solutions1 is a list of lists of compound subs
 		(if (some empty? results1)						; if some sub-goals failed
 			()											; return failure
