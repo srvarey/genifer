@@ -11,6 +11,7 @@
 	(:require	[genifer.forward_chaining :as forward]
 				[genifer.backward_chaining :as backward]
 				[clojure.main :as clj]
+				[genifer.chat :as chat]
 				[clojure.string :as string] )
 	(:gen-class)
 		; :name genifer.core
