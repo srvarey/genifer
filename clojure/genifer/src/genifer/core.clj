@@ -93,9 +93,13 @@
 				(backward/solve-goal sentence))
 		\.										; Statement?
 			;; Call forward-chaining
-			(forward/forward-chain sentence)
+			(do
+				(forward/forward-chain sentence 4)
+				"Forward-chaining completed.\n")
 		;; Statement without "." is fine
-			(forward/forward-chain sentence))))
+			(do
+				(forward/forward-chain sentence 4)
+				"Forward-chaining completed.\n"))))
 
 ;; Scan for Clojure terms, replace it with the Clojure object
 ;; "!" is the escape sequence to Clojure, not needed if a term begins with special character 

@@ -30,9 +30,19 @@
 
 (def rules '(
 ;;	Conclusion    		    <=== 	Premises .....
-	((X and Y are happy)	(X loves Y) (Y loves X))
-	((W is sad)				(Z hates W))
-	((genifer cries)		(X is sad))
+	;((X and Y are happy)	(X loves Y) (Y loves X))
+	;((W is sad)				(Z hates W))
+	((X cries)				(X is sad))
+
+	((S)					(S is-a sentence))
+	((NP VP is-a sentence)	(NP is-a noun-phrase) (VP is-a verb-phrase)
+								(text X1 NP VP X2))
+	((V NP is-a verb-phrase) (V is-a verb) (NP is-a noun-phrase)
+								(text X1 V NP X2))
+	((N is-a noun-phrase)	(N is-a noun))
+	((X is-a verb)			(lexeme-loves X))
+	((X is-a noun)			(lexeme-John X))
+	((X is-a noun)			(lexeme-Mary X))
 ))
 
 ;; ***** Working memory
@@ -40,15 +50,15 @@
 ;; -- use clojure "agent" model because transactions can be asynchronous & uncoordinated
 (def working-mem (agent
 (list
-	'(john loves mary)
-	'(john loves jane)
-	'(pete loves ann)
-	'(paul loves ann)
-	'(ann  loves paul)
-	'(john hates joe)
-	'(superman can fly)
-	'("Clark Kent" is superman)
-	'(roses are red)
+	;'(john loves mary)
+	;'(john loves jane)
+	;'(pete loves ann)
+	;'(paul loves ann)
+	;'(ann  loves paul)
+	;'(john hates joe)
+	;'(superman can fly)
+	;'("Clark Kent" is superman)
+	;'(roses are red)
 	'(13 is prime)
 )))
 

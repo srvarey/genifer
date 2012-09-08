@@ -42,7 +42,7 @@
 )
 
 (deftest ^:narrow test_narrow ; Narrowing
-	(printf "============================ NARROWING =========================\n")
+	(printf "=========================== NARROWING =========================\n")
 
 	(printf "\n**** '(chalk) '(cheese) ==> \n\t")
 	(println
@@ -85,12 +85,20 @@
 	;(satisfy-rule '[[X and Y are happy] [X loves Y] [Y loves X]])
 	;(println "Working memory: " @work-mem)
 	(println "Testing forward: "
-		(forward/forward-chain '(john hates mary)))
+		(forward/forward-chain '(john hates mary) 10))
 	true
 )
 
 (deftest ^:backward test_backward ; Backward-chaining
 	(printf "============================ BACKWARD =========================\n")
+
+	(printf "\n**** match rules:  genifer cries ==> \n\t")
+	(println
+		(backward/match-rules '(genifer cries)))
+
+	(printf "\n**** X is sad ==> \n\t")
+	(println
+		(backward/solve-goal '(X is sad) 5))
 
 	(printf "\n**** match facts: john loves mary ==> \n\t")
 	(println
@@ -98,11 +106,11 @@
 
 	(printf "\n**** john loves mary ==> \n\t")
 	(println
-		(backward/solve-goal '(john loves mary)))
+		(backward/solve-goal '(john loves mary) 5))
 
 	(printf "\n**** X loves mary ==> \n\t")
 	(println
-		(backward/solve-goal '(X loves mary)))
+		(backward/solve-goal '(X loves mary) 5))
 
 	(printf "\n**** match rules: joe is sad ==> \n\t")
 	(println
@@ -110,27 +118,27 @@
 
 	(printf "\n**** joe is sad ==> \n\t")
 	(println
-		(backward/solve-goal '(joe is sad)))
+		(backward/solve-goal '(joe is sad) 5))
 
-	(printf "\n**** U is sad ==> \n\t")
-	(println
-		(backward/solve-goal '(U is sad)))
-
-	(printf "\n**** match rules: Q and R is happy ==> \n\t")
+	(printf "\n**** match rules: Q and R are happy ==> \n\t")
 	(println
 		(backward/match-rules '(Q and R are happy)))
 
-	(printf "\n**** solve rule: Q loves R and R loves Q ==> \n\t")
+	(printf "\n**** match facts: Q and R are happy ==> \n\t")
 	(println
-		(backward/solve-rule '((Q loves R) (R loves Q))))
+		(backward/match-facts '(Q and R are happy)))
 
-	(printf "\n**** Q and R is happy ==> \n\t")
+	(printf "\n**** Q and R are happy ==> \n\t")
 	(println
-		(backward/solve-goal '(Q and R are happy)))
+		(backward/solve-goal '(Q and R are happy) 5))
 
-	(printf "\n**** genifer cries ==> \n\t")
+	(printf "\n**** G cries ==> \n\t")
 	(println
-		(backward/solve-goal '(genifer cries)))
+		(backward/solve-goal '(G cries) 5))
+
+	(printf "\n****  Q loves R and R loves Q ==> \n\t")
+	(println
+		(backward/solve-goal '((Q loves R) (R loves Q)) 5))
 
 	true
 )
