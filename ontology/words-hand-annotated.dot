@@ -1,0 +1,195 @@
+digraph g {
+
+/* physical */
+n1  [label="air"];
+n16 [label="children"];
+n25 [label="food"];
+n34 [label="house"];
+n43 [label="men"];
+n64 [label="sound"];
+
+n1  -> physical;
+n16 -> physical;
+n25 -> physical;
+n34 -> physical;
+n43 -> physical;
+n64 -> physical;
+physical -> noun;
+
+/* abstract */
+n18 [label="day"];
+n20 [label="end"];
+n26 [label="form"];
+n33 [label="home"];
+n40 [label="line"];
+n47 [label="name"];
+n51 [label="number"];
+n56 [label="part"];
+n57 [label="place"];
+n63 [label="something"];
+n70 [label="thought"];
+n84 [label="world"];
+n71 [label="three"];
+
+n18 -> abstract;
+n20 -> abstract;
+n26 -> abstract;
+n33 -> abstract;
+n40 -> abstract;
+n47 -> abstract;
+n51 -> abstract;
+n56 -> abstract;
+n57 -> abstract;
+n63 -> abstract;
+n70 -> abstract;
+n84 -> abstract;
+n71 -> abstract;
+abstract -> noun;
+
+/* pronoun */
+n42 [label="me"];
+n77 [label="us"];
+n42 -> pronoun;
+n77 -> pronoun;
+pronoun -> noun;
+
+/* verbs */
+n15 [label="came"];
+n17 [label="come"];
+n24 [label="find"];
+n27 [label="get"];
+n28 [label="give"];
+n29 [label="go"];
+n31 [label="help"];
+n36 [label="keep"];
+n41 [label="look"];
+n55 [label="own"];
+n58 [label="put"];
+n61 [label="set"];
+n62 [label="show"];
+n67 [label="take"];
+n68 [label="tell"];
+n69 [label="think"];
+n78 [label="want"];
+n80 [label="went"];
+n83 [label="work"];
+
+n15 -> n17;
+n80 -> n29;
+
+n15 -> verb;
+n24 -> verb;
+n27 -> verb;
+n28 -> verb;
+n29 -> verb;
+n31 -> verb;
+n36 -> verb;
+n41 -> verb;
+n55 -> verb;
+n58 -> verb;
+n61 -> verb;
+n62 -> verb;
+n67 -> verb;
+n68 -> verb;
+n69 -> verb;
+n78 -> verb;
+n80 -> verb;
+n83 -> verb;
+
+/* adjectives */
+n5  [label="another"];   
+n6  [label="any"];
+n13 [label="big"];
+n14 [label="both"];
+n19 [label="different"];
+n21 [label="even"];
+n22 [label="every"];
+n23 [label="few"];
+n30 [label="great"];
+n35 [label="important"];
+n37 [label="large"];
+n38 [label="last"];
+n39 [label="left"];
+n49 [label="new"];
+n50 [label="next"];
+n53 [label="old"];
+n54 [label="our"];
+n59 [label="right"];
+n60 [label="same"];
+
+n5  -> adjective;
+n6  -> adjective;
+n13 -> adjective;
+n14 -> adjective;
+n19 -> adjective;
+n21 -> adjective;
+n22 -> adjective;
+n23 -> adjective;
+n30 -> adjective;
+n35 -> adjective;
+n37 -> adjective;
+n38 -> adjective;
+n39 -> adjective;
+n49 -> adjective;
+n50 -> adjective;
+n53 -> adjective;
+n54 -> adjective;
+n59 -> adjective;
+n60 -> adjective;
+
+/* adverbs */
+n0  [label="again"];
+n2  [label="along"];
+n3  [label="also"];
+n4  [label="always"];
+n7  [label="around"];
+n8  [label="away"];
+n9  [label="back"];
+n11 [label="below"];
+n12 [label="between"];
+n32 [label="here"];
+n48 [label="never"];
+n44 [label="might"];
+n45 [label="much"];
+n46 [label="must"];
+n52 [label="off"];
+n65 [label="still"];
+n66 [label="such"];
+n72 [label="through"];
+n73 [label="together"];
+n74 [label="too"];
+n75 [label="under"];
+n76 [label="until"];
+n79 [label="well"];
+n81 [label="while"];
+n82 [label="why"];
+
+n0  -> adverb;
+n2  -> adverb;
+n3  -> adverb;
+n4  -> adverb;
+n7  -> adverb;
+n8  -> adverb;
+n9  -> adverb;
+n11 -> adverb;
+n12 -> adverb;
+n32 -> adverb;
+n48 -> adverb;
+n44 -> adverb;
+n45 -> adverb;
+n46 -> adverb;
+n52 -> adverb;
+n65 -> adverb;
+n66 -> adverb;
+n72 -> adverb;
+n73 -> adverb;
+n74 -> adverb;
+n75 -> adverb;
+n76 -> adverb;
+n79 -> adverb;
+n81 -> adverb;
+n82 -> adverb;
+
+/* connectives */
+n10 [label="because"]
+}

@@ -1,0 +1,65 @@
+digraph G {
+
+man;
+worm;
+
+animal;
+plant;
+artifect;
+
+tree;
+car;
+
+man -> animal
+worm -> organism
+
+cat;
+dog;
+
+cat -> animal
+dog -> animal
+
+tree -> plant;
+car -> artifect;
+plant -> "physical object";
+artifect -> "physical object";
+
+
+/* --------------------------------------- abstract ------- */
+
+prime;
+number;
+
+addition;
+multiplication;
+
+math;
+
+math -> abstract;
+addition -> operation;
+multiplication -> operation;
+operation -> math;
+
+number -> math;
+prime -> number;
+
+love;
+hate;
+justice;
+
+emotion;
+love -> emotion;
+hate -> emotion;
+social;
+justice -> social;
+emotion -> social;
+social -> abstract;
+
+/* ------------------------- upper ------------ */
+
+everything [color="red"];
+"physical object" -> everything;
+abstract -> everything;
+organism -> "physical object";
+animal -> organism
+}
